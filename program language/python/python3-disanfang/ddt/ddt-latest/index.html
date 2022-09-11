@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DDT 1.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html#document-index" class="icon icon-home"> DDT
+          
+
+          
+          </a>
+
+          
+            
+            
+            
+              <div class="version">
+                latest
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-example">Example usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-api">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-misc">Misc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#docstring-handling">Docstring Handling</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html#document-index">DDT</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html#document-index">Docs</a> &raquo;</li>
+        
+      <li>DDT 1.4.4 documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/txels/ddt/blob/master/docs/index.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-ddt-s-documentation">
+<h1>Welcome to DDT’s documentation!<a class="headerlink" href="#welcome-to-ddt-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>DDT (Data-Driven Tests) allows you to multiply one test case
+by running it with different test data, and make it appear as
+multiple test cases.</p>
+<p>You can find (and fork) the project on <a class="reference external" href="https://github.com/datadriventests/ddt">Github</a>.</p>
+<p>DDT should work on Python2 and Python3, but we only officially test it for
+versions 2.7 and 3.5-3.8.</p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<span id="document-example"></span><div class="section" id="example-usage">
+<h2>Example usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
+<p>DDT consists of a class decorator <code class="docutils literal notranslate"><span class="pre">ddt</span></code> (for your <code class="docutils literal notranslate"><span class="pre">TestCase</span></code> subclass)
+and two method decorators (for your tests that want to be multiplied):</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: contains as many arguments as values you want to feed to the test.</li>
+<li><code class="docutils literal notranslate"><span class="pre">file_data</span></code>: will load test data from a JSON or YAML file.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only files ending with “.yml” and “.yaml” are loaded as YAML files. All
+other files are loaded as JSON files.</p>
+</div>
+<p>Normally each value within <code class="docutils literal notranslate"><span class="pre">data</span></code> will be passed as a single argument to
+your test method. If these values are e.g. tuples, you will have to unpack them
+inside your test. Alternatively, you can use an additional decorator,
+<code class="docutils literal notranslate"><span class="pre">unpack</span></code>, that will automatically unpack tuples and lists into multiple
+arguments, and dictionaries into multiple keyword arguments. See examples
+below.</p>
+<p>This allows you to write your tests as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+
+<span class="kn">from</span> <span class="nn">ddt</span> <span class="kn">import</span> <span class="n">ddt</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">file_data</span><span class="p">,</span> <span class="n">idata</span><span class="p">,</span> <span class="n">unpack</span>
+<span class="kn">from</span> <span class="nn">test.mycode</span> <span class="kn">import</span> <span class="n">larger_than_two</span><span class="p">,</span> <span class="n">has_three_elements</span><span class="p">,</span> <span class="n">is_a_greeting</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">have_yaml_support</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">have_yaml_support</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># A good-looking decorator</span>
+<span class="n">needs_yaml</span> <span class="o">=</span> <span class="n">unittest</span><span class="o">.</span><span class="n">skipUnless</span><span class="p">(</span>
+    <span class="n">have_yaml_support</span><span class="p">,</span> <span class="s2">&quot;Need YAML to run this test&quot;</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Mylist</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="n">other</span> <span class="ow">or</span> \
+               <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">MyClass</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">vars</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;TestObject </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">annotated</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Mylist</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="s2">&quot;test_</span><span class="si">%d</span><span class="s2">_greater_than_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+
+<span class="k">def</span> <span class="nf">annotated2</span><span class="p">(</span><span class="n">listIn</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">docstring</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Mylist</span><span class="p">(</span><span class="n">listIn</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;__doc__&quot;</span><span class="p">,</span> <span class="n">docstring</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+
+<span class="nd">@ddt</span>
+<span class="k">class</span> <span class="nc">FooTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_undecorated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">larger_than_two</span><span class="p">(</span><span class="mi">24</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_larger_than_two</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">larger_than_two</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_not_larger_than_two</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">larger_than_two</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="n">annotated</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">annotated</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_greater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertGreater</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="nd">@idata</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+    <span class="k">def</span> <span class="nf">test_iterable_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">first_value</span><span class="p">,</span> <span class="n">second_value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertLessEqual</span><span class="p">(</span><span class="n">first_value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertGreaterEqual</span><span class="p">(</span><span class="n">second_value</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="n">annotated2</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;Test_case_1&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;&quot;Test docstring 1&quot;&quot;&quot;</span><span class="p">),</span>
+          <span class="n">annotated2</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;Test_case_2&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;&quot;Test docstring 2&quot;&quot;&quot;</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_greater_with_name_docstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertGreater</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNotNone</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNotNone</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__doc__&quot;</span><span class="p">))</span>
+
+    <span class="nd">@file_data</span><span class="p">(</span><span class="s1">&#39;data/test_data_dict_dict.json&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_file_data_json_dict_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertLess</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertLess</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertGreater</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+
+    <span class="nd">@file_data</span><span class="p">(</span><span class="s1">&#39;data/test_data_dict.json&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_file_data_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">has_three_elements</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@file_data</span><span class="p">(</span><span class="s1">&#39;data/test_data_list.json&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_file_data_json_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_a_greeting</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@needs_yaml</span>
+    <span class="nd">@file_data</span><span class="p">(</span><span class="s1">&#39;data/test_data_dict_dict.yaml&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_file_data_yaml_dict_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertLess</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertLess</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertGreater</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+
+    <span class="nd">@needs_yaml</span>
+    <span class="nd">@file_data</span><span class="p">(</span><span class="s1">&#39;data/test_data_dict.yaml&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_file_data_yaml_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">has_three_elements</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@needs_yaml</span>
+    <span class="nd">@file_data</span><span class="p">(</span><span class="s1">&#39;data/test_data_list.yaml&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_file_data_yaml_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">is_a_greeting</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="nd">@unpack</span>
+    <span class="k">def</span> <span class="nf">test_tuples_extracted_into_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_value</span><span class="p">,</span> <span class="n">second_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">first_value</span> <span class="o">&gt;</span> <span class="n">second_value</span><span class="p">)</span>
+
+    <span class="nd">@data</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="nd">@unpack</span>
+    <span class="k">def</span> <span class="nf">test_list_extracted_into_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_value</span><span class="p">,</span> <span class="n">second_value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">first_value</span> <span class="o">&gt;</span> <span class="n">second_value</span><span class="p">)</span>
+
+    <span class="nd">@unpack</span>
+    <span class="nd">@data</span><span class="p">({</span><span class="s1">&#39;first&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;third&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+          <span class="p">{</span><span class="s1">&#39;first&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;third&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+    <span class="k">def</span> <span class="nf">test_dicts_extracted_into_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">third</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">third</span> <span class="o">&lt;</span> <span class="n">second</span><span class="p">)</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;non-ascii-</span><span class="se">\N{SNOWMAN}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_unicode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIn</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="sa">u</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;non-ascii-</span><span class="se">\N{SNOWMAN}</span><span class="s1">&#39;</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_larger_than_two_with_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Larger than two with value {0}&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">larger_than_two</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_doc_missing_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Missing args with value {0} and {1}&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">larger_than_two</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_doc_missing_kargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Missing kargs with value {value} {value2}&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">larger_than_two</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="nd">@data</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+    <span class="nd">@unpack</span>
+    <span class="k">def</span> <span class="nf">test_list_extracted_with_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_value</span><span class="p">,</span> <span class="n">second_value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extract into args with first value {} and second value {}&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">first_value</span> <span class="o">&gt;</span> <span class="n">second_value</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">have_yaml_support</span><span class="p">:</span>
+    <span class="c1"># This test will only succeed if the execution context is from the ddt</span>
+    <span class="c1"># directory. pyyaml cannot locate test.test_example.MyClass otherwise!</span>
+
+    <span class="nd">@ddt</span>
+    <span class="k">class</span> <span class="nc">YamlOnlyTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+        <span class="nd">@file_data</span><span class="p">(</span><span class="s1">&#39;data/test_custom_yaml_loader.yaml&#39;</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">UnsafeLoader</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">test_custom_yaml_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">expected</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Test with yaml tags to create specific classes to compare&quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">test_data_dict_dict.json</span></code>:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;positive_integer_range&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;start&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;end&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="mi">1</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;negative_integer_range&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;start&quot;</span><span class="o">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;end&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;positive_real_range&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;start&quot;</span><span class="o">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;end&quot;</span><span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="mf">0.5</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;negative_real_range&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;start&quot;</span><span class="o">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">&quot;end&quot;</span><span class="o">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="o">:</span> <span class="o">-</span><span class="mf">0.5</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>and <code class="docutils literal notranslate"><span class="pre">test_data_dict_dict.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">positive_integer_range</span><span class="p">:</span>
+    <span class="nt">start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">end</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+
+<span class="nt">negative_integer_range</span><span class="p">:</span>
+    <span class="nt">start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-2</span>
+    <span class="nt">end</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-1</span>
+
+<span class="nt">positive_real_range</span><span class="p">:</span>
+    <span class="nt">start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0</span>
+    <span class="nt">end</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.0</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+
+<span class="nt">negative_real_range</span><span class="p">:</span>
+    <span class="nt">start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-1.0</span>
+    <span class="nt">end</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0</span>
+    <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-0.5</span>
+</pre></div>
+</div>
+<p>and <code class="docutils literal notranslate"><span class="pre">test_data_dict.json</span></code>:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;unsorted_list&quot;</span><span class="o">:</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span> <span class="p">],</span>
+    <span class="s2">&quot;sorted_list&quot;</span><span class="o">:</span> <span class="p">[</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">50</span> <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>and <code class="docutils literal notranslate"><span class="pre">test_data_dict.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">unsorted_list</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">15</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+
+<span class="nt">sorted_list</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">15</span><span class="p p-Indicator">,</span> <span class="nv">12</span><span class="p p-Indicator">,</span> <span class="nv">50</span> <span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>and <code class="docutils literal notranslate"><span class="pre">test_data_list.json</span></code>:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="s2">&quot;Hello&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Goodbye&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>and <code class="docutils literal notranslate"><span class="pre">test_data_list.yaml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="s">&quot;Hello&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;Goodbye&quot;</span>
+</pre></div>
+</div>
+<p>And then run them with your favourite test runner, e.g. if you use pytest:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pytest test/test_example.py
+</pre></div>
+</div>
+<p>The number of test cases actually run and reported separately has been
+multiplied.</p>
+<p>DDT will try to give the new test cases meaningful names by converting the
+data values to valid python identifiers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Python 2.7.3 introduced <em>hash randomization</em> which is by default
+enabled on Python 3.3 and later. DDT’s default mechanism to
+generate meaningful test names will <strong>not</strong> use the test data value
+as part of the name for complex types if hash randomization is
+enabled.</p>
+<p class="last">You can disable hash randomization by setting the
+<code class="docutils literal notranslate"><span class="pre">PYTHONHASHSEED</span></code> environment variable to a fixed value before
+running tests (<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PYTHONHASHSEED=1</span></code> for example).</p>
+</div>
+</div>
+<span id="document-api"></span><div class="section" id="module-ddt">
+<span id="api"></span><h2>API<a class="headerlink" href="#module-ddt" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ddt.TestNameFormat">
+<em class="property">class </em><code class="descclassname">ddt.</code><code class="descname">TestNameFormat</code><a class="headerlink" href="#ddt.TestNameFormat" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enum to configure how <code class="docutils literal notranslate"><span class="pre">mk_test_name()</span></code> to compose a test name.  Given
+the following example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@data</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">testSomething</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>if using just <code class="docutils literal notranslate"><span class="pre">&#64;ddt</span></code> or together with <code class="docutils literal notranslate"><span class="pre">DEFAULT</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">testSomething_1_a</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">testSomething_2_b</span></code></li>
+</ul>
+<p>if using <code class="docutils literal notranslate"><span class="pre">INDEX_ONLY</span></code>:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">testSomething_1</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">testSomething_2</span></code></li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.add_test">
+<code class="descclassname">ddt.</code><code class="descname">add_test</code><span class="sig-paren">(</span><em>cls</em>, <em>test_name</em>, <em>test_docstring</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.add_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a test case to this class.</p>
+<p>The test will be based on an existing function but will give it a new
+name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.data">
+<code class="descclassname">ddt.</code><code class="descname">data</code><span class="sig-paren">(</span><em>*values</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method decorator to add to your test methods.</p>
+<p>Should be added to methods of instances of <code class="docutils literal notranslate"><span class="pre">unittest.TestCase</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.ddt">
+<code class="descclassname">ddt.</code><code class="descname">ddt</code><span class="sig-paren">(</span><em>arg=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.ddt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class decorator for subclasses of <code class="docutils literal notranslate"><span class="pre">unittest.TestCase</span></code>.</p>
+<p>Apply this decorator to the test case class, and then
+decorate test methods with <code class="docutils literal notranslate"><span class="pre">&#64;data</span></code>.</p>
+<p>For each method decorated with <code class="docutils literal notranslate"><span class="pre">&#64;data</span></code>, this will effectively create as
+many methods as data items are passed as parameters to <code class="docutils literal notranslate"><span class="pre">&#64;data</span></code>.</p>
+<p>The names of the test methods follow the pattern
+<code class="docutils literal notranslate"><span class="pre">original_test_name_{ordinal}_{data}</span></code>. <code class="docutils literal notranslate"><span class="pre">ordinal</span></code> is the position of the
+data argument, starting with 1.</p>
+<p>For data we use a string representation of the data value converted into a
+valid python identifier.  If <code class="docutils literal notranslate"><span class="pre">data.__name__</span></code> exists, we use that instead.</p>
+<p>For each method decorated with <code class="docutils literal notranslate"><span class="pre">&#64;file_data('test_data.json')</span></code>, the
+decorator will try to load the test_data.json file located relative
+to the python file containing the method that is decorated. It will,
+for each <code class="docutils literal notranslate"><span class="pre">test_name</span></code> key create as many methods in the list of values
+from the <code class="docutils literal notranslate"><span class="pre">data</span></code> key.</p>
+<p>Decorating with the keyword argument <code class="docutils literal notranslate"><span class="pre">testNameFormat</span></code> can control the
+format of the generated test names.  For example:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">&#64;ddt(testNameFormat=TestNameFormat.DEFAULT)</span></code> will be index and values.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&#64;ddt(testNameFormat=TestNameFormat.INDEX_ONLY)</span></code> will be index only.</li>
+<li><code class="docutils literal notranslate"><span class="pre">&#64;ddt</span></code> is the same as DEFAULT.</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.feed_data">
+<code class="descclassname">ddt.</code><code class="descname">feed_data</code><span class="sig-paren">(</span><em>func</em>, <em>new_name</em>, <em>test_data_docstring</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.feed_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This internal method decorator feeds the test data item to the test.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.file_data">
+<code class="descclassname">ddt.</code><code class="descname">file_data</code><span class="sig-paren">(</span><em>value</em>, <em>yaml_loader=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.file_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method decorator to add to your test methods.</p>
+<p>Should be added to methods of instances of <code class="docutils literal notranslate"><span class="pre">unittest.TestCase</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code> should be a path relative to the directory of the file
+containing the decorated <code class="docutils literal notranslate"><span class="pre">unittest.TestCase</span></code>. The file
+should contain JSON encoded data, that can either be a list or a
+dict.</p>
+<p>In case of a list, each value in the list will correspond to one
+test case, and the value will be concatenated to the test method
+name.</p>
+<p>In case of a dict, keys will be used as suffixes to the name of the
+test case, and values will be fed as test data.</p>
+<p><code class="docutils literal notranslate"><span class="pre">yaml_loader</span></code> can be used to customize yaml deserialization.
+The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which results in using the <code class="docutils literal notranslate"><span class="pre">yaml.safe_load</span></code>
+method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.idata">
+<code class="descclassname">ddt.</code><code class="descname">idata</code><span class="sig-paren">(</span><em>iterable</em>, <em>index_len=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.idata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method decorator to add to your test methods.</p>
+<p>Should be added to methods of instances of <code class="docutils literal notranslate"><span class="pre">unittest.TestCase</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iterable</strong> – iterable of the values to provide to the test function.</li>
+<li><strong>index_len</strong> – an optional integer specifying the width to zero-pad the
+test identifier indices to.  If not provided, this will add the fewest
+zeros necessary to make all identifiers the same length.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.mk_test_name">
+<code class="descclassname">ddt.</code><code class="descname">mk_test_name</code><span class="sig-paren">(</span><em>name</em>, <em>value</em>, <em>index=0</em>, <em>index_len=5</em>, <em>name_fmt=&lt;TestNameFormat.DEFAULT: 0&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.mk_test_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a new name for a test case.</p>
+<p>It will take the original test name and append an ordinal index and a
+string representation of the value, and convert the result into a valid
+python identifier by replacing extraneous characters with <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p>
+<p>We avoid doing str(value) if dealing with non-trivial values.
+The problem is possible different names with different runs, e.g.
+different order of dictionary keys (see PYTHONHASHSEED) or dealing
+with mock objects.
+Trivial scalar values are passed as is.</p>
+<p>A “trivial” value is a plain scalar, or a tuple or list consisting
+only of trivial values.</p>
+<p>The test name format is controlled by enum <code class="docutils literal notranslate"><span class="pre">TestNameFormat</span></code> as well. See
+the enum documentation for further details.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.process_file_data">
+<code class="descclassname">ddt.</code><code class="descname">process_file_data</code><span class="sig-paren">(</span><em>cls</em>, <em>name</em>, <em>func</em>, <em>file_attr</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.process_file_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process the parameter in the <cite>file_data</cite> decorator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddt.unpack">
+<code class="descclassname">ddt.</code><code class="descname">unpack</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#ddt.unpack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method decorator to add unpack feature.</p>
+</dd></dl>
+
+</div>
+<span id="document-misc"></span><div class="section" id="misc">
+<h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
+<p>This page contains some of the miscellaneous functionality.</p>
+<div class="section" id="docstring-handling">
+<h3>Docstring Handling<a class="headerlink" href="#docstring-handling" title="Permalink to this headline">¶</a></h3>
+<p>If one of the passed data objects has a docstring, the resulting testcase borrows it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">Dataobj</span><span class="p">()</span>
+<span class="n">d1</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;This is a new docstring&quot;&quot;&quot;</span>
+
+<span class="n">d2</span> <span class="o">=</span> <span class="n">Dataobj</span><span class="p">()</span>
+
+<span class="nd">@data</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_something</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is an old docstring&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span>
+</pre></div>
+</div>
+<p>The first of the resulting test cases will have <code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;This</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">new</span> <span class="pre">docstring&quot;&quot;&quot;</span></code> as its docstring and the second will
+keep its old one (<code class="docutils literal notranslate"><span class="pre">&quot;&quot;&quot;This</span> <span class="pre">is</span> <span class="pre">an</span> <span class="pre">old</span> <span class="pre">docstring&quot;&quot;&quot;</span></code>).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2012, Carles Barrobés
+      
+        <span class="commit">
+          Revision <code>2588ffbd</code>.
+        </span>
+      
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl>
+        <dt>Versions</dt>
+        
+          <dd><a href="/en/latest/">latest</a></dd>
+        
+          <dd><a href="/en/stable/">stable</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>Downloads</dt>
+        
+          <dd><a href="//ddt.readthedocs.io/_/downloads/en/latest/pdf/">pdf</a></dd>
+        
+          <dd><a href="//ddt.readthedocs.io/_/downloads/en/latest/htmlzip/">html</a></dd>
+        
+          <dd><a href="//ddt.readthedocs.io/_/downloads/en/latest/epub/">epub</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>On Read the Docs</dt>
+          <dd>
+            <a href="//readthedocs.org/projects/ddt/?fromdocs=ddt">Project Home</a>
+          </dd>
+          <dd>
+            <a href="//readthedocs.org/builds/ddt/?fromdocs=ddt">Builds</a>
+          </dd>
+      </dl>
+      <hr/>
+      Free document hosting provided by <a href="http://www.readthedocs.org">Read the Docs</a>.
+
+    </div>
+  </div>
+
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+   
+
+</body>
+</html>

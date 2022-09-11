@@ -1,0 +1,3489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0049)https://www.ruanyifeng.com/blog/2016/07/yaml.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<meta name="generator" content="Movable Type  5.2.2">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--link rel="stylesheet" href="http://www.ruanyifeng.com/blog/styles.css" type="text/css" /-->
+<link rel="start" href="https://www.ruanyifeng.com/blog/" title="Home">
+<link rel="alternate" type="application/atom+xml" title="Recent Entries" href="https://feeds.feedburner.com/ruanyifeng">
+<script src="./YAML 语言教程 - 阮一峰的网络日志_files/hm.js"></script><script async="" src="./YAML 语言教程 - 阮一峰的网络日志_files/analytics.js"></script><script type="text/javascript" src="./YAML 语言教程 - 阮一峰的网络日志_files/mt.js"></script>
+<script type="text/javascript" src="./YAML 语言教程 - 阮一峰的网络日志_files/advertisements.js"></script>
+<!--
+<rdf:RDF xmlns="http://web.resource.org/cc/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<Work rdf:about="http://www.ruanyifeng.com/blog/2012/11/require_js.html">
+<dc:title>Javascript模块化编程（三）：require.js的用法</dc:title>
+<dc:description>这个系列的第一部分和第二部分，介绍了Javascript模块原型和理论概念，今天介绍如何将它们用于实战。...</dc:description>
+<dc:creator>阮一峰</dc:creator>
+<dc:date>2012-11-07T18:06:27+08:00</dc:date>
+<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/3.0/" />
+</Work>
+<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/3.0/">
+</License>
+</rdf:RDF>
+-->
+
+<style>
+body {
+  background-color: #f5f5d5;
+}
+
+#container::before {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: rgba(0,0,0,0.1);
+  text-align: center;
+  content: "本站显示不正常，可能因为您使用了广告拦截器。";
+}
+
+</style>
+<script>
+function loadjscssfile(filename, filetype){
+    if (filetype=="js"){ //if filename is a external JavaScript file
+        var fileref=document.createElement('script')
+        fileref.setAttribute("type","text/javascript")
+        fileref.setAttribute("src", filename)
+    }
+    else if (filetype=="css"){ //if filename is an external CSS file
+        var fileref=document.createElement("link")
+        fileref.setAttribute("rel", "stylesheet")
+        fileref.setAttribute("type", "text/css")
+        fileref.setAttribute("href", filename)
+    }
+    if (typeof fileref!="undefined")
+        document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+//loadjscssfile("http://www.ruanyifeng.com/blog/styles.css", "css");
+loadjscssfile('/static/themes/theme_scrapbook/theme_scrapbook.min.css', "css");
+
+
+function checker() {
+  if (/mobile|android/i.test(navigator.userAgent)) return; 
+  window.comments && window.comments.setAttribute("style", "!important");
+  // var img = document.querySelector('img[src^="http://www.ruanyifeng.com/blog/images"]');
+  var img = document.querySelector('a > img[src*="wangbase.com/blogimg/asset/"]');
+  var isAdblocker = (typeof adblock === 'undefined');
+  if (
+    /*isAdblocker || */
+    (img && window.getComputedStyle(img).display === 'none') ||
+    (img && window.getComputedStyle(img.parentElement).display === 'none')
+  ){
+    var sponsor = document.querySelector('#main-content');
+    var prompt = document.createElement('div');
+    prompt.style = 'border: 1px solid #c6c6c6;border-radius: 4px;background-color: #f5f2f0;padding: 15px; font-size: 14px;';
+    prompt.innerHTML = '<p>您使用了广告拦截器，导致本站内容无法显示。</p><p>请将 www.ruanyifeng.com 加入白名单，解除广告屏蔽后，刷新页面。谢谢。</p>';
+    sponsor.parentNode.replaceChild(prompt, sponsor);
+    // document.querySelector('#main-content').innerHTML = '';
+  }
+}
+
+setTimeout(checker, 1000);
+</script><link rel="stylesheet" type="text/css" href="./YAML 语言教程 - 阮一峰的网络日志_files/theme_scrapbook.min.css">
+
+    
+    <link rel="prev" href="https://www.ruanyifeng.com/blog/2016/07/google-monolithic-source-repository.html" title="谷歌的代码管理">
+    <link rel="next" href="https://www.ruanyifeng.com/blog/2016/07/edge-recognition.html" title="如何识别图像边缘？">
+    
+    <title>YAML 语言教程 - 阮一峰的网络日志</title>
+</head>
+<body id="scrapbook" class="mt-entry-archive one-column">
+<script>
+if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) document.body.classList.add('mobile');
+
+/*
+window.addEventListener('load', function(event) {
+  setTimeout(function () {
+    hab('#sup-post-2');
+    hab('#cre-inner');
+  }, 1000);
+});
+*/
+</script>
+    <div id="container">
+        <div id="container-inner">
+
+            <div id="header">
+    <div id="header-inner">
+        <div id="header-content">
+
+
+            <div id="header-name">阮一峰的网络日志 <span id="site_location"> » <a href="https://www.ruanyifeng.com/blog/" accesskey="1">首页</a></span><span id="site_archive"> » <a href="https://www.ruanyifeng.com/blog/archives.html">档案</a></span>
+</div>
+
+<div id="google_search">
+<!-- SiteSearch Google -->
+<form action="https://www.baidu.com/s" target="_blank" method="get" id="cse-search-box">
+  <div>
+  <input type="text" size="20" name="origin" class="searchbox" id="sbi" value="">
+  <input type="hidden" name="wd" value="">
+  <!--input type="image" src="/static/themes/theme_scrapbook/images/top_search_submit.gif" class="searchbox_submit" value="" alt="搜索" name="sa" onclick="this.form.wd.value = this.form.origin.value + ' inurl:www.ruanyifeng.com/blog'" /-->
+  <input type="image" src="./YAML 语言教程 - 阮一峰的网络日志_files/top_search_submit.gif" class="searchbox_submit" value="" alt="搜索" name="sa" onclick="this.form.wd.value = this.form.origin.value + &#39; 阮一峰&#39;">
+</div>
+</form>
+
+<!-- SiteSearch Google -->
+</div>
+<div id="feed_icon">
+<a href="https://www.ruanyifeng.com/feed.html?utm_source=" title="订阅Feed">
+<!--img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAUzSURBVHjavFdbbFRVFF3nPjoz7dTWTittaW0jUDRAUqaNojyqREnEQKgfUj9MqqAmhqRt/OCD4CuY+Kckoh+aiGKC+gMJbdHoRysJ8dkhhmJLNdDKtJU+6GMK87j3Hs85d2Z6HzNtMYWb3Dn3NWftvfba+5xNYDl+e6Fkj6yqb/oDRbWq14vlPBLRKCITkxf0ROLt+hNjp1PPSRK4kA3vF1dXNRcWlyA2OQU9eos9opAkAiKxD+XkKO6t15aRWO7J/MgmAZU8MEgexgZHMX518Dh72sYMmVKShnxWuWHdHtxKIDIYTgMuDzgfmSOIQkYMpdUF8OY92Hytt4/jvkg47czzU16iQovM3QFwmNck+Yyduu7D6NA0Z6JR4THntFs9V4tWQg6Ui3s6MwKDncsFTnXKLJhDSeUK3AgPtyhccDzmVs999buRt/1Vm4i0od+hX7+MRG87jPGB/w1u8FPj9xEw7McVrnYuOCvtpjTth3J/nTg99c8LRhKhr6D3dTB5R24bXFwbMXBsyZzeoXaycEpJ95TB09AGX/NpqLVNtw8urnVzLvHjFNxiFqRy2OOHuqUVnue+ACkoWzo4O6lGzTmuHq6nPvY2m9rVqjrIK2rMEKxqyG5NPAKt+wjo0LklgfNxJkZMA3KJvqRUk3z5UFY3QH14P0h+WUY79HPvgv7VuSg4ZRGY1YgZgqXmORccF17sy2ehnf9AeO085K2HQFbtXBScj0LcpgF2cN+WV+DZ/LJQu6gD4R7oV7pBJwbSgtMvfiPoVp56DySwxm7EtkMs1WdAB7qzggsDJKQYsHucSkOudrkiCPWR/fA2nYCn8SNIK4NptSMyAu3sAdDRkIsJdfth0LzSrODUoPNZ4KI9SxJI5UHk7D4GdQfz2us31c7CoHMjRkKuDPHseCMrONVhNcDJwMJpKFVvg9L4OaTiNWm1x789KCqkrXhVBiEz0WYCT2nAzQAD1/vaETv1GrRfP4Vx5cfMNcDPwvP0h0DhanPym7OIf/+O67vcJ1/PCJ4KgdzaUP6Wz+dU+5yIL6fV+PsHGAOdwlPpvvUOyeeAVGyCdqkDNB6DPjsBSrnndfOGevOh3RhGItxvA+fX1CtbGFhgYUFkFMZPR6F1HnClHq8HyubWtJexX06CRmdt33hrd7nA7SFY4qoGpnYuOKcRykPPgDCBcsHx9Iv+fNL2PueBehCWUfYQIIMGLOCcOmXDXsh1+yCt35tUPfvzGFuSvzvoinXOxqa02qOhM6733nVP2MAdaej2XN11DPKjLZCD+yBvahGCo7JfTKAN9UD7s8Oe9zUNIhz8fWI8DG2k38WCFdxugANcXrvTVd1IEbuv3Jour7Hzn7jLMBNfKs7R3i67gRVrbeCOEDhinmWhAatsqdquM2XzHZINhK2cqTjHr/XZdVJUbgN3MWAVXKbSyg9jesRW2xP9di+lwrL5ojM3m2H/kG9hwcIA37c71W6wJdW2J2S5nrjYbq/t1AHAhJsKQeyfPvf6IMJgghPJhFZ4x0KlfLFvt22du45Au/A1SOlGc0P672XXwhLtOcM0kTTEMMd0qkVmMNXxMd/tsedUjInr4SQDgOfeXMSiN0FCL5WHah4L1qqYXPJOJlttd+a5M+YpcG5poLYKQ5f+6JJ4r8bbJYP47hq4r7QAs9PjYNhHJd4o8l5taiwuOpa7AS4XKqI/5NjJbTnaWK92nLdLuhQAJayRNMiygXPBeQN+Qbvu0zDc3y+aUzhbkGR73sI7ljvUnndx2q3t+X8CDAD66FtrIL864AAAAABJRU5ErkJggg==" alt="" style="border: 0pt none;" /-->
+<img src="./YAML 语言教程 - 阮一峰的网络日志_files/bg2021072117.png" alt="" style="border: 0pt none;">
+</a></div>
+
+        </div>
+    </div>
+</div>
+
+
+
+            <div id="content">
+                <div id="content-inner">
+
+
+                    <div id="alpha">
+                        <div id="alpha-inner">
+
+
+                            <div id="entry-1895" class="entry-asset asset hentry">
+                                <div class="asset-header">
+<div class="asset-nav entry-nav">
+
+<div class="entry-location">
+<ul>
+<li>上一篇：<a href="https://www.ruanyifeng.com/blog/2016/07/google-monolithic-source-repository.html" title="谷歌的代码管理">谷歌的代码管理&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+<li>下一篇：<a href="https://www.ruanyifeng.com/blog/2016/07/edge-recognition.html" title="如何识别图像边缘？">如何识别图像边缘？&nbsp;&nbsp;</a></li>
+</ul>
+</div>
+
+
+    
+                                    <div class="entry-categories">
+                                        <p>分类<span class="delimiter">：</span></p>
+                                        <ul>
+                                            <li><a href="https://www.ruanyifeng.com/blog/developer/" rel="tag">开发者手册</a></li>
+                                        </ul>
+                                    </div>
+    
+
+
+                                            
+<div class="entry-location-mobile" style="float: right;">
+<ul>
+<li><a href="https://www.ruanyifeng.com/blog/2016/07/google-monolithic-source-repository.html" title="谷歌的代码管理">⇐&nbsp;</a></li>
+<li><a href="https://www.ruanyifeng.com/blog/2016/07/edge-recognition.html" title="如何识别图像边缘？">&nbsp;⇒</a></li>
+</ul>
+</div>
+
+</div>
+</div>
+
+                          
+<article class="hentry">
+                                    <h1 id="page-title" class="asset-name entry-title">YAML 语言教程</h1>
+
+
+
+<div class="asset-meta">
+                                        
+
+                                            <p class="vcard author">作者： <a class="fn url" href="https://www.ruanyifeng.com/">阮一峰</a></p>
+                                    <p>日期： <a href="https://www.ruanyifeng.com/blog/2016/07/"><abbr class="published" title="2016-07-04T06:07:45+08:00">2016年7月 4日</abbr></a></p>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+                                
+                                <div class="asset-content entry-content" id="main-content">
+
+                                    <!-- div class="asset-body" -->
+                                        <p>编程免不了要写配置文件，怎么写配置也是一门学问。</p>
+
+                                    <!-- /div -->
+
+
+                                    <!-- div id="more" class="asset-more" -->
+                                        <p>YAML 是专门用来写配置文件的语言，非常简洁和强大，远比 JSON 格式方便。</p>
+
+<p>本文介绍 YAML 的语法，以 <a href="https://github.com/nodeca/js-yaml" target="_blank">JS-YAML</a> 的实现为例。你可以去<a href="https://nodeca.github.io/js-yaml/" target="_blank">在线 Demo</a> 验证下面的例子。</p>
+
+<p><img src="./YAML 语言教程 - 阮一峰的网络日志_files/bg2016070403.png" alt="" title=""></p>
+
+<h2>一、简介</h2>
+
+<p>YAML 语言（发音 /ˈjæməl/ ）的设计目标，就是方便人类读写。它实质上是一种通用的数据串行化格式。</p>
+
+<p>它的基本语法规则如下。</p>
+
+<blockquote>
+  <ul>
+<li>大小写敏感</li>
+<li>使用缩进表示层级关系</li>
+<li>缩进时不允许使用Tab键，只允许使用空格。</li>
+<li>缩进的空格数目不重要，只要相同层级的元素左侧对齐即可</li>
+</ul>
+</blockquote>
+
+<p><code>#</code> 表示注释，从这个字符一直到行尾，都会被解析器忽略。</p>
+
+<p>YAML 支持的数据结构有三种。</p>
+
+<blockquote>
+  <ul>
+<li>对象：键值对的集合，又称为映射（mapping）/ 哈希（hashes） / 字典（dictionary）</li>
+<li>数组：一组按次序排列的值，又称为序列（sequence） / 列表（list）</li>
+<li>纯量（scalars）：单个的、不可再分的值</li>
+</ul>
+</blockquote>
+
+<p>以下分别介绍这三种数据结构。</p>
+
+<h2>二、对象</h2>
+
+<p>对象的一组键值对，使用冒号结构表示。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+animal<span class="token punctuation">:</span> pets
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> animal<span class="token punctuation">:</span> <span class="token string">'pets'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>Yaml 也允许另一种写法，将所有键值对写成一个行内对象。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+hash<span class="token punctuation">:</span> <span class="token punctuation">{</span> name<span class="token punctuation">:</span> Steve<span class="token punctuation">,</span> foo<span class="token punctuation">:</span> bar <span class="token punctuation">}</span> 
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> hash<span class="token punctuation">:</span> <span class="token punctuation">{</span> name<span class="token punctuation">:</span> <span class="token string">'Steve'</span><span class="token punctuation">,</span> foo<span class="token punctuation">:</span> <span class="token string">'bar'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<h2>三、数组</h2>
+
+<p>一组连词线开头的行，构成一个数组。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token operator">-</span> Cat
+<span class="token operator">-</span> Dog
+<span class="token operator">-</span> Goldfish
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">[</span> <span class="token string">'Cat'</span><span class="token punctuation">,</span> <span class="token string">'Dog'</span><span class="token punctuation">,</span> <span class="token string">'Goldfish'</span> <span class="token punctuation">]</span>
+</code></pre></blockquote>
+
+<p>数据结构的子成员是一个数组，则可以在该项下面缩进一个空格。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token operator">-</span>
+ <span class="token operator">-</span> Cat
+ <span class="token operator">-</span> Dog
+ <span class="token operator">-</span> Goldfish
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">[</span> <span class="token punctuation">[</span> <span class="token string">'Cat'</span><span class="token punctuation">,</span> <span class="token string">'Dog'</span><span class="token punctuation">,</span> <span class="token string">'Goldfish'</span> <span class="token punctuation">]</span> <span class="token punctuation">]</span>
+</code></pre></blockquote>
+
+<p>数组也可以采用行内表示法。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+animal<span class="token punctuation">:</span> <span class="token punctuation">[</span>Cat<span class="token punctuation">,</span> Dog<span class="token punctuation">]</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> animal<span class="token punctuation">:</span> <span class="token punctuation">[</span> <span class="token string">'Cat'</span><span class="token punctuation">,</span> <span class="token string">'Dog'</span> <span class="token punctuation">]</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<h2>四、复合结构</h2>
+
+<p>对象和数组可以结合使用，形成复合结构。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+languages<span class="token punctuation">:</span>
+ <span class="token operator">-</span> Ruby
+ <span class="token operator">-</span> Perl
+ <span class="token operator">-</span> Python 
+websites<span class="token punctuation">:</span>
+ YAML<span class="token punctuation">:</span> yaml<span class="token punctuation">.</span>org 
+ Ruby<span class="token punctuation">:</span> ruby<span class="token operator">-</span>lang<span class="token punctuation">.</span>org 
+ Python<span class="token punctuation">:</span> python<span class="token punctuation">.</span>org 
+ Perl<span class="token punctuation">:</span> use<span class="token punctuation">.</span>perl<span class="token punctuation">.</span>org 
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> languages<span class="token punctuation">:</span> <span class="token punctuation">[</span> <span class="token string">'Ruby'</span><span class="token punctuation">,</span> <span class="token string">'Perl'</span><span class="token punctuation">,</span> <span class="token string">'Python'</span> <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  websites<span class="token punctuation">:</span> 
+   <span class="token punctuation">{</span> YAML<span class="token punctuation">:</span> <span class="token string">'yaml.org'</span><span class="token punctuation">,</span>
+     Ruby<span class="token punctuation">:</span> <span class="token string">'ruby-lang.org'</span><span class="token punctuation">,</span>
+     Python<span class="token punctuation">:</span> <span class="token string">'python.org'</span><span class="token punctuation">,</span>
+     Perl<span class="token punctuation">:</span> <span class="token string">'use.perl.org'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<h2>五、纯量</h2>
+
+<p>纯量是最基本的、不可再分的值。以下数据类型都属于 JavaScript 的纯量。</p>
+
+<blockquote>
+  <ul>
+<li>字符串</li>
+<li>布尔值</li>
+<li>整数</li>
+<li>浮点数</li>
+<li>Null</li>
+<li>时间</li>
+<li>日期</li>
+</ul>
+</blockquote>
+
+<p>数值直接以字面量的形式表示。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+number<span class="token punctuation">:</span> <span class="token number">12.30</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> number<span class="token punctuation">:</span> <span class="token number">12.30</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>布尔值用<code>true</code>和<code>false</code>表示。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+isSet<span class="token punctuation">:</span> <span class="token boolean">true</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> isSet<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p><code>null</code>用<code>~</code>表示。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+parent<span class="token punctuation">:</span> <span class="token operator">~</span> 
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> parent<span class="token punctuation">:</span> <span class="token keyword">null</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>时间采用 ISO8601 格式。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+iso8601<span class="token punctuation">:</span> <span class="token number">2001</span><span class="token operator">-</span><span class="token number">12</span><span class="token operator">-</span>14t21<span class="token punctuation">:</span><span class="token number">59</span><span class="token punctuation">:</span><span class="token number">43.10</span><span class="token operator">-</span><span class="token number">05</span><span class="token punctuation">:</span><span class="token number">00</span> 
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> iso8601<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token string">'2001-12-14t21:59:43.10-05:00'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>日期采用复合 iso8601 格式的年、月、日表示。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+date<span class="token punctuation">:</span> <span class="token number">1976</span><span class="token operator">-</span><span class="token number">07</span><span class="token operator">-</span><span class="token number">31</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> date<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token string">'1976-07-31'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>YAML 允许使用两个感叹号，强制转换数据类型。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+e<span class="token punctuation">:</span> <span class="token operator">!</span><span class="token operator">!</span>str <span class="token number">123</span>
+f<span class="token punctuation">:</span> <span class="token operator">!</span><span class="token operator">!</span>str <span class="token boolean">true</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> e<span class="token punctuation">:</span> <span class="token string">'123'</span><span class="token punctuation">,</span> f<span class="token punctuation">:</span> <span class="token string">'true'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<h2>六、字符串</h2>
+
+<p>字符串是最常见，也是最复杂的一种数据类型。</p>
+
+<p>字符串默认不使用引号表示。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+str<span class="token punctuation">:</span> 这是一行字符串
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> str<span class="token punctuation">:</span> <span class="token string">'这是一行字符串'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>如果字符串之中包含空格或特殊字符，需要放在引号之中。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+str<span class="token punctuation">:</span> <span class="token string">'内容： 字符串'</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> str<span class="token punctuation">:</span> <span class="token string">'内容: 字符串'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>单引号和双引号都可以使用，双引号不会对特殊字符转义。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+s1<span class="token punctuation">:</span> <span class="token string">'内容\n字符串'</span>
+s2<span class="token punctuation">:</span> <span class="token string">"内容\n字符串"</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> s1<span class="token punctuation">:</span> <span class="token string">'内容\\n字符串'</span><span class="token punctuation">,</span> s2<span class="token punctuation">:</span> <span class="token string">'内容\n字符串'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>单引号之中如果还有单引号，必须连续使用两个单引号转义。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+str<span class="token punctuation">:</span> <span class="token string">'labor'</span><span class="token string">'s day'</span> 
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> str<span class="token punctuation">:</span> <span class="token string">'labor\'s day'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>字符串可以写成多行，从第二行开始，必须有一个单空格缩进。换行符会被转为空格。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+str<span class="token punctuation">:</span> 这是一段
+  多行
+  字符串
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> str<span class="token punctuation">:</span> <span class="token string">'这是一段 多行 字符串'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>多行字符串可以使用<code>|</code>保留换行符，也可以使用<code>&gt;</code>折叠换行。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+this<span class="token punctuation">:</span> <span class="token operator">|</span>
+  Foo
+  Bar
+that<span class="token punctuation">:</span> <span class="token operator">&gt;</span>
+  Foo
+  Bar
+</code></pre></blockquote>
+
+<p>转为 JavaScript 代码如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> this<span class="token punctuation">:</span> <span class="token string">'Foo\nBar\n'</span><span class="token punctuation">,</span> that<span class="token punctuation">:</span> <span class="token string">'Foo Bar\n'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p><code>+</code>表示保留文字块末尾的换行，<code>-</code>表示删除字符串末尾的换行。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+s1<span class="token punctuation">:</span> <span class="token operator">|</span>
+  Foo
+
+s2<span class="token punctuation">:</span> <span class="token operator">|</span><span class="token operator">+</span>
+  Foo
+
+
+s3<span class="token punctuation">:</span> <span class="token operator">|</span><span class="token operator">-</span>
+  Foo
+</code></pre></blockquote>
+
+<p>转为 JavaScript 代码如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> s1<span class="token punctuation">:</span> <span class="token string">'Foo\n'</span><span class="token punctuation">,</span> s2<span class="token punctuation">:</span> <span class="token string">'Foo\n\n\n'</span><span class="token punctuation">,</span> s3<span class="token punctuation">:</span> <span class="token string">'Foo'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>字符串之中可以插入 HTML 标记。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+message<span class="token punctuation">:</span> <span class="token operator">|</span>
+
+  <span class="token operator">&lt;</span>p style<span class="token operator">=</span><span class="token string">"color: red"</span><span class="token operator">&gt;</span>
+    段落
+  <span class="token operator">&lt;</span><span class="token operator">/</span>p<span class="token operator">&gt;</span>
+</code></pre></blockquote>
+
+<p>转为 JavaScript 如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">{</span> message<span class="token punctuation">:</span> <span class="token string">'\n&lt;p style="color: red"&gt;\n  段落\n&lt;/p&gt;\n'</span> <span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<h2>七、引用</h2>
+
+<p>锚点<code>&amp;</code>和别名<code>*</code>，可以用来引用。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+defaults<span class="token punctuation">:</span> <span class="token operator">&amp;</span>defaults
+  adapter<span class="token punctuation">:</span>  postgres
+  host<span class="token punctuation">:</span>     localhost
+
+development<span class="token punctuation">:</span>
+  database<span class="token punctuation">:</span> myapp_development
+  <span class="token operator">&lt;</span><span class="token operator">&lt;</span><span class="token punctuation">:</span> <span class="token operator">*</span>defaults
+
+test<span class="token punctuation">:</span>
+  database<span class="token punctuation">:</span> myapp_test
+  <span class="token operator">&lt;</span><span class="token operator">&lt;</span><span class="token punctuation">:</span> <span class="token operator">*</span>defaults
+</code></pre></blockquote>
+
+<p>等同于下面的代码。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+defaults<span class="token punctuation">:</span>
+  adapter<span class="token punctuation">:</span>  postgres
+  host<span class="token punctuation">:</span>     localhost
+
+development<span class="token punctuation">:</span>
+  database<span class="token punctuation">:</span> myapp_development
+  adapter<span class="token punctuation">:</span>  postgres
+  host<span class="token punctuation">:</span>     localhost
+
+test<span class="token punctuation">:</span>
+  database<span class="token punctuation">:</span> myapp_test
+  adapter<span class="token punctuation">:</span>  postgres
+  host<span class="token punctuation">:</span>     localhost
+</code></pre></blockquote>
+
+<p><code>&amp;</code>用来建立锚点（<code>defaults</code>），<code>&lt;&lt;</code>表示合并到当前数据，<code>*</code>用来引用锚点。</p>
+
+<p>下面是另一个例子。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token operator">-</span> <span class="token operator">&amp;</span>showell Steve 
+<span class="token operator">-</span> Clark 
+<span class="token operator">-</span> Brian 
+<span class="token operator">-</span> Oren 
+<span class="token operator">-</span> <span class="token operator">*</span>showell 
+</code></pre></blockquote> 
+
+<p>转为 JavaScript 代码如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token punctuation">[</span> <span class="token string">'Steve'</span><span class="token punctuation">,</span> <span class="token string">'Clark'</span><span class="token punctuation">,</span> <span class="token string">'Brian'</span><span class="token punctuation">,</span> <span class="token string">'Oren'</span><span class="token punctuation">,</span> <span class="token string">'Steve'</span> <span class="token punctuation">]</span>
+</code></pre></blockquote>
+
+<h2>八、函数和正则表达式的转换</h2>
+
+<p>这是 <a href="https://github.com/nodeca/js-yaml" target="_blank">JS-YAML</a> 库特有的功能，可以把函数和正则表达式转为字符串。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+# example<span class="token punctuation">.</span>yml
+fn<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">}</span>
+reg<span class="token punctuation">:</span> <span class="token regex">/test/</span>
+</code></pre></blockquote>
+
+<p>解析上面的 yml 文件的代码如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token keyword">var</span> yaml <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">'js-yaml'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> fs   <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> doc <span class="token operator">=</span> yaml<span class="token punctuation">.</span><span class="token function">load<span class="token punctuation">(</span></span>
+    fs<span class="token punctuation">.</span><span class="token function">readFileSync<span class="token punctuation">(</span></span><span class="token string">'./example.yml'</span><span class="token punctuation">,</span> <span class="token string">'utf8'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span>doc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">e</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<p>从 JavaScript 对象还原到 yaml 文件的代码如下。</p>
+
+<blockquote><pre class=" language-javascript"><code class=" language-javascript">
+<span class="token keyword">var</span> yaml <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">'js-yaml'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">var</span> fs   <span class="token operator">=</span> <span class="token function">require<span class="token punctuation">(</span></span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">var</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
+  fn<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  reg<span class="token punctuation">:</span> <span class="token regex">/test/</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+  fs<span class="token punctuation">.</span><span class="token function">writeFileSync<span class="token punctuation">(</span></span>
+    <span class="token string">'./example.yml'</span><span class="token punctuation">,</span>
+    yaml<span class="token punctuation">.</span><span class="token function">dump<span class="token punctuation">(</span></span>obj<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token string">'utf8'</span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">e</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log<span class="token punctuation">(</span></span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></blockquote>
+
+<h2>九、参考链接</h2>
+
+<ul>
+<li><a href="http://www.yaml.org/spec/1.2/spec.html" target="_blank">YAML 1.2 规格</a></li>
+<li><a href="https://en.wikipedia.org/wiki/YAML" target="_blank">YAML from Wikipedia</a></li>
+<li><a href="http://yaml.org/YAML_for_ruby.html" target="_blank">YAML for Ruby</a></li>
+</ul>
+
+<p>（完）</p>
+
+                                    <!-- /div -->
+
+                                </div>
+    <script type="text/javascript" src="./YAML 语言教程 - 阮一峰的网络日志_files/newwindow.js"></script>
+                                <div class="asset-footer">
+
+<h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">创意共享3.0许可证</a>）</li>
+<li>发表日期： <abbr class="published" title="2016-07-04T06:07:45+08:00">2016年7月 4日</abbr></li>
+
+</ul>
+                                </div>
+</article>
+                            </div>
+
+
+
+  <div style="display: inline-block ! important;width: 100%;">
+  
+  </div>
+
+
+
+<div id="related_entries">
+<h2>相关文章</h2>
+<ul>
+
+<li><strong>2021.09.07: <a href="https://www.ruanyifeng.com/blog/2021/09/c-language-tutorial.html">《C 语言入门教程》发布了</a></strong>
+
+                           <div class="entry-body">
+                              向大家报告，我写了一本《C 语言入门教程》，已经上线了，欢迎访问。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2021.08.26: <a href="https://www.ruanyifeng.com/blog/2021/08/best-note-taking-software-for-programmers.html">最适合程序员的笔记软件</a></strong>
+
+                           <div class="entry-body">
+                              程序员的笔记软件，应该满足下面几个条件。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2021.05.10: <a href="https://www.ruanyifeng.com/blog/2021/05/scaling-problem.html">软件工程的最大难题</a></strong>
+
+                           <div class="entry-body">
+                              一、引言
+
+大学有一门课程《软件工程》，研究如何组织和管理软件项目。
+
+                           </div>
+
+</li>
+
+ 
+<li><strong>2020.12.13: <a href="https://www.ruanyifeng.com/blog/2020/12/ssh-tutorial.html">《SSH 入门教程》发布了</a></strong>
+
+                           <div class="entry-body">
+                              SSH 是登录 Linux 服务器的必备工具，只要你在做互联网开发，多多少少都会用到它。
+
+                           </div>
+
+</li>
+
+ 
+</ul>
+</div>
+
+
+
+                    
+
+                    <div id="comments" class="comments" style="!important">
+
+
+    
+    
+        
+    <h2 class="comments-header">留言（74条）</h2>
+
+    <div id="comments-content" class="comments-content" style="clear: left;">
+        
+        <div id="comment-360095" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">church</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360095">
+            <p>学symfony的时候一直没去学yaml的语法, 看了这篇文章，感觉清晰不少</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  8:39 AM">2016年7月 4日 08:39</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360095">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用church的这条留言" onclick="return CommentQuote(&#39;comment-quote-360095&#39;,&#39;church&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360097" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mrsu</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360097">
+            <p>六条 最后一例的解析结果   message: '\n&lt;p style="color: red"&gt;\n  段落\n&lt;/p&gt;\n' }</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  9:45 AM">2016年7月 4日 09:45</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360097">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用mrsu的这条留言" onclick="return CommentQuote(&#39;comment-quote-360097&#39;,&#39;mrsu&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360098" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mrsu</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360098">
+            <p>我明白了  是网页显示不出来 需要转义...</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  9:46 AM">2016年7月 4日 09:46</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360098">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用mrsu的这条留言" onclick="return CommentQuote(&#39;comment-quote-360098&#39;,&#39;mrsu&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360099" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">不可能不确定</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360099">
+            <p>Hexo 就是用 yaml 组织配置文件。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  9:51 AM">2016年7月 4日 09:51</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360099">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用不可能不确定的这条留言" onclick="return CommentQuote(&#39;comment-quote-360099&#39;,&#39;不可能不确定&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360100" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">weet</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360100">
+            <p>内容是 YAML 语言，图片确是 YAML CSS framework 的。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  9:57 AM">2016年7月 4日 09:57</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360100">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用weet的这条留言" onclick="return CommentQuote(&#39;comment-quote-360100&#39;,&#39;weet&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360118" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">阮一峰</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360118">
+            <p>@weet：</p>
+
+<p>谢谢指出，已经换过图片了。</p>
+
+<p>@mrsu：</p>
+
+<p>谢谢指出，已经对 HTML 标签转义了。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016 11:56 AM">2016年7月 4日 11:56</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360118">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用阮一峰的这条留言" onclick="return CommentQuote(&#39;comment-quote-360118&#39;,&#39;阮一峰&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360131" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">skip</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360131">
+            <p>YAML有办法进行字符串拼接吗？比如先定义了一个基本的配置 host: xxxx，然后下面有几个配置要跟这个host接接在一起。总不能还在要程序里拼接一次吧？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  2:17 PM">2016年7月 4日 14:17</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360131">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用skip的这条留言" onclick="return CommentQuote(&#39;comment-quote-360131&#39;,&#39;skip&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360155" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Cheng</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360155">
+            <blockquote>
+<pre>引用skip的发言：</pre>
+
+<p>YAML有办法进行字符串拼接吗？比如先定义了一个基本的配置 host: xxxx，然后下面有几个配置要跟这个host接接在一起。总不能还在要程序里拼接一次吧？</p>
+
+</blockquote>
+
+<p>好像可以使用 %{parameter} 进行拼接</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  7:42 PM">2016年7月 4日 19:42</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360155">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Cheng的这条留言" onclick="return CommentQuote(&#39;comment-quote-360155&#39;,&#39;Cheng&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360158" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Alex</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360158">
+            <p>  最烦缩进表示语法了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  8:22 PM">2016年7月 4日 20:22</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360158">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Alex的这条留言" onclick="return CommentQuote(&#39;comment-quote-360158&#39;,&#39;Alex&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360160" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Loyalsoldier</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360160">
+            <blockquote>
+<pre>引用Alex的发言：</pre>
+
+<p>最烦缩进表示语法了</p>
+
+</blockquote>
+
+<p>非常同意！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  4, 2016  9:43 PM">2016年7月 4日 21:43</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360160">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Loyalsoldier的这条留言" onclick="return CommentQuote(&#39;comment-quote-360160&#39;,&#39;Loyalsoldier&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360163" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">skip</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360163">
+            <blockquote>
+<pre>引用Cheng的发言：</pre>
+
+<p></p>
+
+<p>好像可以使用 %{parameter} 进行拼接</p>
+
+</blockquote>
+
+<p>能否举个例子，感谢！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  5, 2016  2:03 AM">2016年7月 5日 02:03</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360163">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用skip的这条留言" onclick="return CommentQuote(&#39;comment-quote-360163&#39;,&#39;skip&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360164" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">axetroy</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360164">
+            <p>阮老师，希望能写一篇关于RxJs，可扩展式的编程开发理念，用法和实际的应用场景。<br>
+github上面也有1W个星，演示的demo也很强大，而且还是家族系列。<br>
+可是为什么就是感觉不温不火的。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  5, 2016  3:12 AM">2016年7月 5日 03:12</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360164">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用axetroy的这条留言" onclick="return CommentQuote(&#39;comment-quote-360164&#39;,&#39;axetroy&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360192" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Joe</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360192">
+            <p>不应该是Yet Another Markup Language吗?</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  5, 2016 10:58 AM">2016年7月 5日 10:58</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360192">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Joe的这条留言" onclick="return CommentQuote(&#39;comment-quote-360192&#39;,&#39;Joe&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360195" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Alex</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360195">
+            <p>第八节函数转换的例子，应该使用<br>
+</p><blockquote><br>
+fn: <strong>!!js/function</strong> function () { return 1 }<br>
+</blockquote><p></p>
+
+<p>但是貌似只能使用js内置函数，毕竟有作用域的问题。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  5, 2016 11:23 AM">2016年7月 5日 11:23</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360195">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Alex的这条留言" onclick="return CommentQuote(&#39;comment-quote-360195&#39;,&#39;Alex&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360211" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">dou4cc</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360211">
+            <p>S-表达式是最好的数据格式！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  5, 2016 12:41 PM">2016年7月 5日 12:41</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360211">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用dou4cc的这条留言" onclick="return CommentQuote(&#39;comment-quote-360211&#39;,&#39;dou4cc&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360242" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Jacob</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360242">
+            <blockquote>
+<pre>引用Joe的发言：</pre>
+
+<p>不应该是Yet Another Markup Language吗?</p>
+
+</blockquote>
+
+<p>Yaml Ain't a Markup Language, 跟json是一类的. </p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  5, 2016  8:42 PM">2016年7月 5日 20:42</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360242">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Jacob的这条留言" onclick="return CommentQuote(&#39;comment-quote-360242&#39;,&#39;Jacob&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360354" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">cherish</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360354">
+            <p>一直以来，从阮老师的博文学习了不少知识。刚无意中翻看了很多阮老师的文章，看到了你小额支付的试验结果，看到了你与百姓网ceo关于为什么要写博文的讨论，看到你说希望通过博文与大家交流......终于静默不住，所以翻到最新的一页博文下，来给你留言。我是一个菜鸟，看博文的过程中，能力有限，无法留言技术相关的东西，因而一直沉默着。但是，内心一直对于你给予的贡献和帮助，非常感谢！我相信由于同样原因沉默的肯定不止我一人，其实我想说的是，很多人都在这里。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  8, 2016 10:15 AM">2016年7月 8日 10:15</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360354">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用cherish的这条留言" onclick="return CommentQuote(&#39;comment-quote-360354&#39;,&#39;cherish&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360575" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">windseeker</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360575">
+            <blockquote>
+<pre>引用cherish的发言：</pre>
+
+<p>一直以来，从阮老师的博文学习了不少知识。刚无意中翻看了很多阮老师的文章，看到了你小额支付的试验结果，看到了你与百姓网ceo关于为什么要写博文的讨论，看到你说希望通过博文与大家交流......终于静默不住，所以翻到最新的一页博文下，来给你留言。我是一个菜鸟，看博文的过程中，能力有限，无法留言技术相关的东西，因而一直沉默着。但是，内心一直对于你给予的贡献和帮助，非常感谢！我相信由于同样原因沉默的肯定不止我一人，其实我想说的是，很多人都在这里。</p>
+
+</blockquote>
+
+<p>是的 比如我也是 哈哈 阮老师 加油</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 12, 2016  5:55 PM">2016年7月12日 17:55</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360575">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用windseeker的这条留言" onclick="return CommentQuote(&#39;comment-quote-360575&#39;,&#39;windseeker&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360652" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">张三</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360652">
+            <p>规则竟然如此sb<br>
+大小写敏感<br>
+使用缩进表示层级关系<br>
+缩进时不允许使用Tab键，只允许使用空格。<br>
+缩进的空格数目不重要，只要相同层级的元素左侧对齐即可</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 14, 2016  2:52 PM">2016年7月14日 14:52</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360652">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用张三的这条留言" onclick="return CommentQuote(&#39;comment-quote-360652&#39;,&#39;张三&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360673" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">赖明星</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360673">
+            <p>一如既往的简洁明了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 14, 2016  5:29 PM">2016年7月14日 17:29</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360673">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用赖明星的这条留言" onclick="return CommentQuote(&#39;comment-quote-360673&#39;,&#39;赖明星&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360798" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">任鸟飞</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360798">
+            <p>计算机语言实在是太多了，学不完啊，YAML第一次听说。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 17, 2016 12:58 PM">2016年7月17日 12:58</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360798">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用任鸟飞的这条留言" onclick="return CommentQuote(&#39;comment-quote-360798&#39;,&#39;任鸟飞&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360799" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">fengyao</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360799">
+            <p>通俗易懂，点滴间展现了老师的深厚功底，佩服~</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 17, 2016  2:23 PM">2016年7月17日 14:23</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360799">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用fengyao的这条留言" onclick="return CommentQuote(&#39;comment-quote-360799&#39;,&#39;fengyao&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360814" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">隔壁老王头</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360814">
+            <p>瞬间感觉知识不够用呀，太厉害了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 18, 2016 12:44 AM">2016年7月18日 00:44</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360814">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用隔壁老王头的这条留言" onclick="return CommentQuote(&#39;comment-quote-360814&#39;,&#39;隔壁老王头&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360815" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">maochunguang</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360815">
+            <p>很好的教程,正好用到这yml配置文件,支持一下</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 18, 2016  9:50 AM">2016年7月18日 09:50</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360815">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用maochunguang的这条留言" onclick="return CommentQuote(&#39;comment-quote-360815&#39;,&#39;maochunguang&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360840" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">陈耀军</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360840">
+            <p>首先，让我先表达一下对您的敬佩，您是我学习的榜样。<br>
+除了用Yaml和Json和ini文件做配置，好象还要以使用Toml，这个可能更适合一些。<br>
+Yaml规范太复杂，Json相对简单，但不能写注释。<br>
+Toml很好，可以参考一下。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 19, 2016 10:15 AM">2016年7月19日 10:15</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360840">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用陈耀军的这条留言" onclick="return CommentQuote(&#39;comment-quote-360840&#39;,&#39;陈耀军&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360889" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">刘亚雄</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360889">
+            <p>阮老师，第一次在您博客留言，但是已经看了您很多文章。很清晰，也帮助了我很多，特此留言表示感谢之情。嘿嘿</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 19, 2016 10:54 PM">2016年7月19日 22:54</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360889">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用刘亚雄的这条留言" onclick="return CommentQuote(&#39;comment-quote-360889&#39;,&#39;刘亚雄&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360911" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">pfchai</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360911">
+            <p>Hexo的配置文件就是YAML格式的，第一次改配置就感觉简单明了。<br>
+用空格缩进不能使用Tab，哈哈哈，这点做得好，阻碍Python初学者的一个原因就是混用空格Tab引起的问题</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 20, 2016 11:23 AM">2016年7月20日 11:23</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360911">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用pfchai的这条留言" onclick="return CommentQuote(&#39;comment-quote-360911&#39;,&#39;pfchai&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-360919" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Deepzz</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-360919">
+            <p>一直想学习yaml，阮大师写的清晰明了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 20, 2016  2:11 PM">2016年7月20日 14:11</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-360919">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Deepzz的这条留言" onclick="return CommentQuote(&#39;comment-quote-360919&#39;,&#39;Deepzz&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-361026" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">大头</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-361026">
+            <p>我怎么觉得还不如json简单易懂呢</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 22, 2016 11:24 AM">2016年7月22日 11:24</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-361026">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用大头的这条留言" onclick="return CommentQuote(&#39;comment-quote-361026&#39;,&#39;大头&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-361113" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">旷野中的摩西</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-361113">
+            <p>阮大师，我是个做JAVA开发的工作两年了，最近一份工作是做PAAS，关注服务器端比较多，慢慢的代码也开始生疏了，但我还想继续JAVA学习，觉得迷茫。能给写建议吗。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 23, 2016  9:31 PM">2016年7月23日 21:31</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-361113">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用旷野中的摩西的这条留言" onclick="return CommentQuote(&#39;comment-quote-361113&#39;,&#39;旷野中的摩西&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-361146" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">布丁布丁吃布丁</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-361146">
+            <p>很不錯的教學</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 25, 2016 12:01 AM">2016年7月25日 00:01</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-361146">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用布丁布丁吃布丁的这条留言" onclick="return CommentQuote(&#39;comment-quote-361146&#39;,&#39;布丁布丁吃布丁&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-361935" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">-random</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-361935">
+            <p>目前写的最多的配置文件是webpack配置，其他的还没接触过，暂时用不上yaml，以后项目大了之后，再来看吧</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August  8, 2016 10:01 AM">2016年8月 8日 10:01</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-361935">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用-random的这条留言" onclick="return CommentQuote(&#39;comment-quote-361935&#39;,&#39;-random&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-362140" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">shujun</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-362140">
+            <p>系列文章都是这么的深入浅出，厉害，佩服!!!</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 11, 2016  3:47 PM">2016年8月11日 15:47</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-362140">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用shujun的这条留言" onclick="return CommentQuote(&#39;comment-quote-362140&#39;,&#39;shujun&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-362354" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">灰姑娘</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-362354">
+            <p>hexo的_config.yml文件似乎不支持嵌入HTML标记呢。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 15, 2016  4:13 PM">2016年8月15日 16:13</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-362354">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用灰姑娘的这条留言" onclick="return CommentQuote(&#39;comment-quote-362354&#39;,&#39;灰姑娘&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-362845" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">philosophia</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-362845">
+            <blockquote>
+<pre>引用张三的发言：</pre>
+
+<p>规则竟然如此sb<br>
+大小写敏感<br>
+使用缩进表示层级关系<br>
+缩进时不允许使用Tab键，只允许使用空格。<br>
+缩进的空格数目不重要，只要相同层级的元素左侧对齐即可</p>
+
+</blockquote>
+
+<p>我也觉得是个sb的格式...<br>
+感觉不如ini,或者readline...<br>
+哎</p>
+
+<p>不过,什么东西都会有工具的</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 21, 2016 12:45 PM">2016年8月21日 12:45</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-362845">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用philosophia的这条留言" onclick="return CommentQuote(&#39;comment-quote-362845&#39;,&#39;philosophia&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-363111" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">bwangel</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-363111">
+            <p>阮老师，我刚刚照着您的例子跑了一下，我用的js-yaml版本是3.6.1。</p>
+
+<p>发现那个导入函数和正则的例子，需要写成下面的形式，才能导入成函数和正则对象吧，如果在值的前面不通过</p><pre>!!</pre>声明类型，那么直接导入成字符串了。<p></p>
+
+<pre># example.yml
+fn: !!js/function function () { return 1}
+reg: !!js/regexp  /test/
+</pre>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 25, 2016 12:51 PM">2016年8月25日 12:51</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-363111">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用bwangel的这条留言" onclick="return CommentQuote(&#39;comment-quote-363111&#39;,&#39;bwangel&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-364605" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">zhouzm</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-364605">
+            <blockquote>
+<pre>引用张三的发言：</pre>
+
+<p>规则竟然如此sb<br>
+大小写敏感<br>
+使用缩进表示层级关系<br>
+缩进时不允许使用Tab键，只允许使用空格。<br>
+缩进的空格数目不重要，只要相同层级的元素左侧对齐即可</p>
+
+</blockquote>
+
+<p>yaml用于展现或编辑具有层级关系的数据非常非常好</p>
+
+<p>“大小写敏感” 是为了大小写敏感的语言进行序列化和反序列化</p>
+
+<p>“使用缩进表示层级关系” 是为了在编辑器里能把层级关系看得清清楚楚</p>
+
+<p>“缩进时不允许使用Tab键，只允许使用空格” 一是为了保证在解析数据时层级关系的准确，二是为了在不同的编辑器里不会因 tab 的占居空格不同而显示为不同的层级关系</p>
+
+<p>“缩进的空格数目不重要，只要相同层级的元素左侧对齐即可” 计算机解析时只需要计算缩进空格数的相等与否，而因人视力的不同，有人能清楚的看出2格缩进，有人却需要8格</p>
+
+<p>举例说明：<br>
+项目的菜单以配置文件的方式保存，随着项目功能代码的变化，需要频繁同步做菜单名称的修改，子菜单项的添加、删除、移动(调整顺序或变换父级菜单)。</p>
+
+<p>这种场景无论是用xml、json、ini或其他格式，都是会一件非常痛苦的事情，使用 yaml 后，一切变得 easy，编辑的时候看得清清楚楚，修改的时候方便又明晰，程序读取的时候，直接反序化为对象输出。</p>
+
+<p><br>
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 16, 2016  2:54 PM">2016年9月16日 14:54</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-364605">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用zhouzm的这条留言" onclick="return CommentQuote(&#39;comment-quote-364605&#39;,&#39;zhouzm&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-367601" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Jackie</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-367601">
+            <p>非常受用，总能在阮老师的网页找到有用的文章，望再接再厉！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November  2, 2016  4:13 PM">2016年11月 2日 16:13</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-367601">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Jackie的这条留言" onclick="return CommentQuote(&#39;comment-quote-367601&#39;,&#39;Jackie&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-370200" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">刘义宝</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-370200">
+            <blockquote>
+<pre>引用大头的发言：</pre>
+
+<p>我怎么觉得还不如json简单易懂呢</p>
+
+</blockquote>
+
+<p>我也觉得</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 12, 2016  9:16 AM">2016年12月12日 09:16</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-370200">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用刘义宝的这条留言" onclick="return CommentQuote(&#39;comment-quote-370200&#39;,&#39;刘义宝&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-370468" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">mrsu</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-370468">
+            <blockquote>
+<pre>引用Joe的发言：</pre>
+
+<p>不应该是Yet Another Markup Language吗?</p>
+
+</blockquote>
+
+<p>这样的话就不递归了呀......</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 16, 2016 10:13 AM">2016年12月16日 10:13</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-370468">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用mrsu的这条留言" onclick="return CommentQuote(&#39;comment-quote-370468&#39;,&#39;mrsu&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-370870" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">skyter.1001</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-370870">
+            <p>这篇文章写的很好，简单明了，非常喜欢。最近在试用YAML时遇到一个小问题，找到原因后来分享下，就是锚点&amp;名称里不能有下划线，否则引用失败。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 22, 2016  8:47 PM">2016年12月22日 20:47</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-370870">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用skyter.1001的这条留言" onclick="return CommentQuote(&#39;comment-quote-370870&#39;,&#39;skyter.1001&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-373336" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Jack</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-373336">
+            <p>你好请问下yaml如何定义变量  并且引用变量</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="February 23, 2017  4:18 PM">2017年2月23日 16:18</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-373336">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Jack的这条留言" onclick="return CommentQuote(&#39;comment-quote-373336&#39;,&#39;Jack&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-373564" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">alex</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-373564">
+            <p>看了很多英文的材料都没有你写的好</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="February 28, 2017  3:15 AM">2017年2月28日 03:15</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-373564">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用alex的这条留言" onclick="return CommentQuote(&#39;comment-quote-373564&#39;,&#39;alex&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-375151" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">kevin</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-375151">
+            <p>如果返回值只有字符串“true”，而不是json格式的字符串，应该怎么写校验？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March 20, 2017  6:05 PM">2017年3月20日 18:05</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-375151">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用kevin的这条留言" onclick="return CommentQuote(&#39;comment-quote-375151&#39;,&#39;kevin&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-377978" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">amberkaka</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-377978">
+            <p>@zhouzm：</p>
+
+<p>我也觉得这种简洁规整的语法好，很清晰，而且和他人合作时也不会混乱。懒得打这么多字去解释，正好看到您的回复，顶一下表示支持。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 15, 2017  4:12 PM">2017年6月15日 16:12</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-377978">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用amberkaka的这条留言" onclick="return CommentQuote(&#39;comment-quote-377978&#39;,&#39;amberkaka&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-378007" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">8023</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-378007">
+            <p>大多数.yml文件开头都是三个横线, 像这样:<br>
+</p><pre><br>
+---<br>
+YAML: YAML Ain't Markup Language<br>
+</pre><br>
+请问其中有什么含义?<p></p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 16, 2017  2:50 PM">2017年6月16日 14:50</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-378007">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用8023的这条留言" onclick="return CommentQuote(&#39;comment-quote-378007&#39;,&#39;8023&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-378544" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">内小子</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-378544">
+            <p>竟然和python风格如此相似，很容易理解，不错</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July  7, 2017  9:23 AM">2017年7月 7日 09:23</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-378544">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用内小子的这条留言" onclick="return CommentQuote(&#39;comment-quote-378544&#39;,&#39;内小子&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-378885" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">crazydyz</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-378885">
+            <p>串行化应该是序列化吧，感觉翻译的不准确</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="July 24, 2017  1:54 PM">2017年7月24日 13:54</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-378885">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用crazydyz的这条留言" onclick="return CommentQuote(&#39;comment-quote-378885&#39;,&#39;crazydyz&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-379220" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">caoyy</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-379220">
+            <p>描述中写道“双引号不会对特殊字符转义”，这个是否应该是单引号？</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August  3, 2017  6:04 PM">2017年8月 3日 18:04</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-379220">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用caoyy的这条留言" onclick="return CommentQuote(&#39;comment-quote-379220&#39;,&#39;caoyy&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-379222" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">matosiki</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-379222">
+            <p>yaml 我在spring boot 看到了，特来学习。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August  3, 2017  9:42 PM">2017年8月 3日 21:42</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-379222">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用matosiki的这条留言" onclick="return CommentQuote(&#39;comment-quote-379222&#39;,&#39;matosiki&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-379352" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">wxnacy</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-379352">
+            <p>最近在写ansible学习笔记，用到yaml，一搜索，果然前排就是阮大文章，看完收益良多</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August  8, 2017 10:41 PM">2017年8月 8日 22:41</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-379352">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用wxnacy的这条留言" onclick="return CommentQuote(&#39;comment-quote-379352&#39;,&#39;wxnacy&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-380513" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">码日光</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-380513">
+            <blockquote>
+<pre>引用8023的发言：</pre>
+
+<p>大多数.yml文件开头都是三个横线, 像这样:</p>
+
+<p>---<br>
+YAML: YAML Ain't Markup Language</p>
+
+<p>请问其中有什么含义?</p>
+
+</blockquote>
+
+<p>在单一文件中，可用连续三个连字号（---）区分多个文件。<br>
+另外，还有选择性的连续三个点号（ ... ）用来表示文件结尾。<br>
+摘选自 <a href="https://zh.wikipedia.org/wiki/YAML" rel="nofollow">https://zh.wikipedia.org/wiki/YAML</a><br>
+</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 17, 2017 12:18 AM">2017年9月17日 00:18</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-380513">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用码日光的这条留言" onclick="return CommentQuote(&#39;comment-quote-380513&#39;,&#39;码日光&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-381225" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">wude</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-381225">
+            <p>有点繁琐。简单的还行，点有点多，复杂点就很容易误解了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="October 12, 2017  5:27 PM">2017年10月12日 17:27</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-381225">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用wude的这条留言" onclick="return CommentQuote(&#39;comment-quote-381225&#39;,&#39;wude&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-383025" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">steven lv</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-383025">
+            <p>yaml层级关系和Python类似，都是用缩进表示，而不是像别的语言用括号或者标签来表示。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December  6, 2017  4:30 PM">2017年12月 6日 16:30</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-383025">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用steven lv的这条留言" onclick="return CommentQuote(&#39;comment-quote-383025&#39;,&#39;steven lv&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-383570" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">hello</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-383570">
+            <blockquote>
+<pre>引用张三的发言：</pre>
+
+<p>规则竟然如此sb<br>
+大小写敏感<br>
+使用缩进表示层级关系<br>
+缩进时不允许使用Tab键，只允许使用空格。<br>
+缩进的空格数目不重要，只要相同层级的元素左侧对齐即可</p>
+
+</blockquote>
+
+<p>怕是被 windows 毒害的开发者</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 25, 2017  1:03 PM">2017年12月25日 13:03</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-383570">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用hello的这条留言" onclick="return CommentQuote(&#39;comment-quote-383570&#39;,&#39;hello&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-387475" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">梁赞</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-387475">
+            <p>@zhouzm：</p>
+
+<p>同意。感觉yaml的卖点就是对人类友好，尽可能符合人类书写和阅读的习惯。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="April  4, 2018 11:55 AM">2018年4月 4日 11:55</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-387475">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用梁赞的这条留言" onclick="return CommentQuote(&#39;comment-quote-387475&#39;,&#39;梁赞&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-389009" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">叶枫</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-389009">
+            <p>2个文件怎么根据不同merge成一个文件</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May 18, 2018  4:42 PM">2018年5月18日 16:42</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-389009">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用叶枫的这条留言" onclick="return CommentQuote(&#39;comment-quote-389009&#39;,&#39;叶枫&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-392115" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">小福</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-392115">
+            <p>同意。感觉yaml的卖点就是对人类友好，尽可能符合人类书写和阅读的习惯。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 13, 2018  1:50 PM">2018年8月13日 13:50</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-392115">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用小福的这条留言" onclick="return CommentQuote(&#39;comment-quote-392115&#39;,&#39;小福&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-392118" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">陈加伟</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-392118">
+            <p>yaml 的语法真的是个性，和其他的都不怎么一样！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 13, 2018  2:00 PM">2018年8月13日 14:00</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-392118">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用陈加伟的这条留言" onclick="return CommentQuote(&#39;comment-quote-392118&#39;,&#39;陈加伟&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-393248" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">千发</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-393248">
+            <p>确实不如json易懂。 json更合适</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 19, 2018 11:34 AM">2018年9月19日 11:34</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-393248">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用千发的这条留言" onclick="return CommentQuote(&#39;comment-quote-393248&#39;,&#39;千发&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-394132" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">付梓沣</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-394132">
+            <p>真的 在google搜大部分技术资料都可以搜到阮老师的。佩服</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="October 17, 2018  4:56 PM">2018年10月17日 16:56</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-394132">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用付梓沣的这条留言" onclick="return CommentQuote(&#39;comment-quote-394132&#39;,&#39;付梓沣&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-401602" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">HYLJ</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-401602">
+            <p>我配置的这个，filterMap1: { "/login": anon, /toLogin: anon} 注入结果却是 filterMap1: {login=anon, toLogin=anon}</p>
+
+<p>阮老师，为什么key中的/和* 全部被过滤掉了</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="January  7, 2019  5:06 PM">2019年1月 7日 17:06</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-401602">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用HYLJ的这条留言" onclick="return CommentQuote(&#39;comment-quote-401602&#39;,&#39;HYLJ&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-411288" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Daniel</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-411288">
+            <blockquote>
+<pre>引用Jacob的发言：</pre>
+
+<p>Yaml Ain't a Markup Language, 跟json是一类的. </p>
+
+</blockquote>
+
+<p>维基百科是这么说的,YAML是"YAML Ain't a Markup Language"（YAML不是一种标记语言）的递归缩写。在开发的这种语言时，YAML 的意思其实是："Yet Another Markup Language"（仍是一种标记语言）[3]，但为了强调这种语言以数据做为中心，而不是以标记语言为重点，而用反向缩略语重命名。</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May 20, 2019 11:57 PM">2019年5月20日 23:57</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-411288">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Daniel的这条留言" onclick="return CommentQuote(&#39;comment-quote-411288&#39;,&#39;Daniel&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-411289" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">Daniel</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-411289">
+            <blockquote>
+<pre>引用千发的发言：</pre>
+
+<p>确实不如json易懂。 json更合适</p>
+
+</blockquote>
+
+<p>YAML is a superset of JSON!</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May 20, 2019 11:59 PM">2019年5月20日 23:59</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-411289">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用Daniel的这条留言" onclick="return CommentQuote(&#39;comment-quote-411289&#39;,&#39;Daniel&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-411612" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">zhouciming</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-411612">
+            <blockquote>
+<pre>引用Cheng的发言：</pre>
+
+<p></p>
+
+<p>好像可以使用 %{parameter} 进行拼接</p>
+
+</blockquote>
+
+<p><br>
+试了，并不行！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June  5, 2019 11:13 AM">2019年6月 5日 11:13</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-411612">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用zhouciming的这条留言" onclick="return CommentQuote(&#39;comment-quote-411612&#39;,&#39;zhouciming&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-412838" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">文明</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-412838">
+            <p>大师，想请教一下如何是用代码来设置锚点和引用</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="August 20, 2019 10:47 AM">2019年8月20日 10:47</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-412838">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用文明的这条留言" onclick="return CommentQuote(&#39;comment-quote-412838&#39;,&#39;文明&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-414577" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">吴庆庆</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-414577">
+            <p>      单引号会解析字符串中的\<br>
+      双引号不会解析字符串中的\<br>
+      s1: '内容\n字符串'<br>
+      s2: "内容\n字符串"<br>
+      转换为Javascript得应该时这样：<br>
+      {<br>
+       s1：'内容\n字符串',<br>
+       s2: '内容\\n字符串'<br>
+       }<br>
+       Javascript中\代表不解析后面的斜杠</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 15, 2019  3:26 PM">2019年11月15日 15:26</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-414577">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用吴庆庆的这条留言" onclick="return CommentQuote(&#39;comment-quote-414577&#39;,&#39;吴庆庆&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-418135" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">xgqfrms</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-418135">
+            <blockquote>
+<pre>引用陈耀军的发言：</pre>
+
+<p>首先，让我先表达一下对您的敬佩，您是我学习的榜样。<br>
+除了用Yaml和Json和ini文件做配置，好象还要以使用Toml，这个可能更适合一些。<br>
+Yaml规范太复杂，Json相对简单，但不能写注释。<br>
+Toml很好，可以参考一下。</p>
+
+</blockquote>
+
+<p>JSON5 了解一下，能写注释;</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="May  2, 2020 10:02 PM">2020年5月 2日 22:02</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-418135">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用xgqfrms的这条留言" onclick="return CommentQuote(&#39;comment-quote-418135&#39;,&#39;xgqfrms&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-418980" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">toybear</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-418980">
+            <p>常用部分，简洁清晰！</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June  5, 2020 10:33 AM">2020年6月 5日 10:33</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-418980">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用toybear的这条留言" onclick="return CommentQuote(&#39;comment-quote-418980&#39;,&#39;toybear&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-419714" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">网友哒哒哒</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-419714">
+            <p>最不喜欢的就是缩进语法，逆天的操作</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="June 24, 2020  5:59 PM">2020年6月24日 17:59</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-419714">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用网友哒哒哒的这条留言" onclick="return CommentQuote(&#39;comment-quote-419714&#39;,&#39;网友哒哒哒&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-425813" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">tonybest</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-425813">
+            <p>YAML 作为配置文件应用范围很广啊，k8S、gitlab、ansible</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="March  7, 2021  6:05 PM">2021年3月 7日 18:05</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-425813">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用tonybest的这条留言" onclick="return CommentQuote(&#39;comment-quote-425813&#39;,&#39;tonybest&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-429854" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">szmcdull</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-429854">
+            <p>请问一下<br>
+--- {}<br>
+三个横杠之后还有花括号，这是什么意思呢</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="September 30, 2021  4:53 PM">2021年9月30日 16:53</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-429854">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用szmcdull的这条留言" onclick="return CommentQuote(&#39;comment-quote-429854&#39;,&#39;szmcdull&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-430885" class="comment">
+    <div class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">刘凯</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-430885">
+            <p>阮老师，关于引用这一部分，从YAML 1.2规范文档中并我未找到
+
+</p><p>抑或是多数编辑器、解释器增加的一种新特性支持呢？</p><p></p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="November 30, 2021 10:11 AM">2021年11月30日 10:11</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-430885">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用刘凯的这条留言" onclick="return CommentQuote(&#39;comment-quote-430885&#39;,&#39;刘凯&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    
+        
+        <div id="comment-431135" class="comment">
+    <div id="comment-last" class="inner">
+        <div class="comment-header">
+            <div class="asset-meta">
+<p>
+                <span class="byline">
+                    
+
+                    <span class="vcard author">zhichu</span>
+
+ 说：
+                </span>
+</p>
+            </div>
+        </div>
+        <div class="comment-content" id="comment-quote-431135">
+            <p>讲得十分清晰，谢谢老师</p>
+        </div>
+<div class="comment-footer">
+<div class="comment-footer-inner">
+<p>
+                   <abbr class="published" title="December 10, 2021  1:00 PM">2021年12月10日 13:00</abbr>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-431135">#</a>
+ | <a href="https://www.ruanyifeng.com/blog/2016/07/yaml.html#comment-text" title="引用zhichu的这条留言" onclick="return CommentQuote(&#39;comment-quote-431135&#39;,&#39;zhichu&#39;);">引用</a>
+</p>
+</div>
+</div>
+    </div>
+</div>
+        
+    </div>
+        
+    
+
+
+    
+    
+    <div class="comments-open" id="comments-open">
+        <h2 class="comments-open-header">我要发表看法</h2>
+        <div class="comments-open-content">
+
+        
+            <div id="comment-greeting"></div>
+
+            <form method="post" action="https://www.ruanyifeng.com/cgi-bin/mtos/mt-comments.cgi" name="comments_form" id="comments-form" onsubmit="return pleaseWait();">
+                <input type="hidden" name="static" value="1">
+                <input type="hidden" name="entry_id" value="1895">
+                <input type="hidden" name="__lang" value="en">
+                <input type="hidden" name="parent_id" value="" id="comment-parent-id">
+                <input type="hidden" name="armor" value="1">
+                <input type="hidden" name="preview" value="">
+                <input type="hidden" name="sid" value="">
+                <div id="comments-open-data">
+            <div id="comments-open-text">
+                    <p><label for="comment-text">您的留言
+                    （HTML标签部分可用）</label></p>
+                    <p><textarea id="comment-text" name="text" rows="10" cols="50"></textarea></p>
+                </div>
+                    <div id="comment-form-name">
+                        <p><label for="comment-author">您的大名：</label></p>
+                        <p><input id="comment-author" name="author" size="30" value="">  <span class="hint"> «-必填</span></p>
+                    </div>
+                    <div id="comment-form-email">
+                        <p><label for="comment-email">电子邮件：</label></p>
+                        <p><input id="comment-email" name="email" size="30" value="">  <span class="hint"> «-必填，不公开</span></p>
+                    </div>
+                    <div id="comment-form-url">
+                        <p><label for="comment-url">个人网址：</label></p>
+                        <p><input id="comment-url" name="url" size="30" value="">  <span class="hint"> «-我信任你，不会填写广告链接</span></p>
+                    </div>
+                    <div id="comment-form-remember-me">
+                        <p>
+                        <label for="comment-bake-cookie">记住个人信息？</label><input type="checkbox" id="comment-bake-cookie" name="bakecookie" onclick="!this.checked?forgetMe(document.comments_form):rememberMe(document.comments_form)" value="1" accesskey="r"></p>
+                    </div>
+                </div>
+                    <div id="comment-form-reply" style="display:none">
+                    <input type="checkbox" id="comment-reply" name="comment_reply" value="" onclick="mtSetCommentParentID()">
+                    <label for="comment-reply" id="comment-reply-label"></label>
+                </div>
+                <div id="comments-open-captcha"></div>
+                <div id="comments-open-footer">
+<div id="wait" style="display:none;">
+<p><strong>正在发表您的评论，请稍候</strong></p>
+<p>
+<input type="text" name="percent" size="3" style="font-family:Arial; color:black;text-align:center; border-width:medium; border-style:none;">           
+<input type="text" name="chart" size="46" style="font-family:Arial;font-weight:bolder; color:black; padding:0px; border-style:none;">
+</p>
+</div>
+
+                    <p><input type="submit" accesskey="s" name="post" id="comment-submit" value="发表">  <span class="hint"> «- 点击按钮</span></p>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+
+    
+
+
+</div>
+
+
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        <script type="text/javascript" src="./YAML 语言教程 - 阮一峰的网络日志_files/prism.js"></script>
+        <script type="text/javascript" src="./YAML 语言教程 - 阮一峰的网络日志_files/checker.js"></script> 
+            <div id="footer">
+<div id="footer-inner">
+  <div id="footer-content">
+
+      
+<!--
+      <section> 
+     </section>
+  <p><a title="Instagram" target="_blank" href="http://instagram.com/ruanyf">Instagram</a></p>
+       <p><a title="订阅" href="https://app.feedblitz.com/f/f.fbz?Sub=348868" target="_blank">邮件订阅</a></p>
+  
+       <h2>Feed</h2>
+       <p><a title="FeedBurner" href="http://feeds.feedburner.com/ruanyifeng" target="_blank">FeedBurner</a></p>
+       <p><a title="atom.xml" href="http://www.ruanyifeng.com/blog/atom.xml" target="_blank">atom.xml</a></p>
+     
+      <p>支付宝：<a title="支付宝" href="alipays://platformapi/startapp?appId=20000067&url=http%3A%2F%2Fwww.ruanyifeng.com%2Fblog" target="_blank">yifeng.ruan@gmail.com</a></p>
+-->
+
+     <section>
+<!--
+       <h2>授权方式</h2>
+       <p><a title="许可证" href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">自由转载-非商用-非衍生-保持署名</a></p>
+       <h2>微信公号</h2>
+       <h2>社交帐号</h2>
+       <h2>联系方式</h2>
+     -->
+       <p><img src="./YAML 语言教程 - 阮一峰的网络日志_files/bg2020013101.jpg" alt="微信扫描"></p>
+       <p>
+         <a title="微博" href="https://weibo.com/ruanyf" target="_blank">Weibo</a> | 
+         <a title="Twitter" target="_blank" href="https://twitter.com/ruanyf">Twitter</a> |
+         <a title="GitHub" target="_blank" href="https://github.com/ruanyf">GitHub</a>
+       </p>
+     
+     <p>Email: <a title="电子邮件" href="mailto:yifeng.ruan@gmail.com" target="_blank">yifeng.ruan@gmail.com</a></p>
+     </section>
+  
+  
+
+
+  </div>
+</div>
+</div>
+<script>
+function insertLine(e,t){for(var n=0;n<t;n++)e.parentNode.insertBefore(document.createElement("p"),e)}function getImg(){if(!window["main-content"])return!1;for(var e,t=Array.prototype.slice.call(window["main-content"].getElementsByTagName("img")),n=0;n<t.length;n++){if("display: none !important;"===(e=t[n]).getAttribute("style"))return e;if(n===t.length-1)return!1}}function toObjectUrl(e,t){return fetch(e).then(e=>e.blob()).then(e=>{t(URL.createObjectURL(e))})}function toDataURL(e,t){var n=new XMLHttpRequest;n.open("get",e),n.responseType="blob",n.onload=function(){var e=new FileReader;e.onload=function(){t(this.result)},e.readAsDataURL(n.response)},n.send()}setTimeout(function(){var e=getImg();e&&(insertLine(e.parentNode,2),toObjectUrl(e.src,function(t){var n=document.createElement("p"),r=document.createElement("img");r.src=t,n.appendChild(r),e.parentNode.parentNode.insertBefore(n,e.parentNode)}))},3e3);
+</script>                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46829782-1', 'ruanyifeng.com');
+  ga('send', 'pageview');
+
+</script>
+
+<script type="text/javascript" src="./YAML 语言教程 - 阮一峰的网络日志_files/stats.js"></script>
+<script>
+var supportImg = document.querySelector('#support-img');
+
+if (supportImg && _hmt) {
+  _hmt.push(['_trackEvent', 'banner', 'load']);
+  supportImg.addEventListener('click', function () {
+    _hmt.push(['_trackEvent', 'banner', 'click']);
+  }, false);
+}
+
+var homepageImg = document.querySelector('#homepage_sponsor');
+if (homepageImg && _hmt) {
+  _hmt.push(['_trackEvent', 'homepage-banner', 'load']);
+  homepageImg.addEventListener('click', function () {
+    _hmt.push(['_trackEvent', 'homepage-banner', 'click']);
+  }, false);
+}
+</script>
+
+
+
+        </div>
+    </div>
+
+</body></html>

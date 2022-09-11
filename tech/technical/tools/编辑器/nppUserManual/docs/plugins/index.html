@@ -1,0 +1,182 @@
+<!doctype html><html lang=en>
+<!-- Mirrored from 127.0.0.1:1313/docs/plugins/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Apr 2021 22:52:23 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Extend functionality with plugins | Notepad&#43;&#43; User Manual</title><link rel=stylesheet href=../../book.min.6c7317d2e8552a0ac3ea8fd4ba500c3dfb1cc9c74e7afd73eee6d729751fad30.css><script defer src=../../search.min.1edbf2a04abc62c4968fd31f4a688df16e5f4f28b3fa21b7bd34a4fd1e826f79.js></script><link rel=icon href=../../favicon.png type=image/x-icon><script async src="https://www.googletagmanager.com/gtag/js?id=UA-151884174-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-151884174-1');</script></head><body><input type=checkbox style=display:none id=menu-control><main class="flex container"><aside class="book-menu fixed"><nav><h2 class=book-brand><a href=http://localhost:1313/>Notepad&#43;&#43; User Manual</a></h2><div class=book-search><input type=text placeholder=Search id=book-search-input maxlength=64 readonly><div class="book-search-spinner spinner hidden"></div><ul id=book-search-results></ul></div><ul><li><a href=../getting-started/index.html>Getting started</a></li><li><a href=../programing-languages/index.html>Programming Languages</a></li><li><a href=../user-defined-language-system/index.html>User Defined Languages</a></li><li><a href=../editing/index.html>Editing</a></li><li><a href=../searching/index.html>Searching</a></li><li><a href=../session/index.html>Sessions, Workspaces, and Projects</a></li><li><a href=../macros/index.html>Task automation with macros</a></li><li><a href=../auto-completion/index.html>Auto-completion</a></li><li><a href=../function-list/index.html>Function List</a></li><li><a href=index.html class=active>Extend functionality with plugins</a></li><li><a href=../plugin-communication/index.html>Plugin Communication</a></li><li><a href=../preferences/index.html>Preferences</a></li><li><a href=../themes/index.html>Themes</a></li><li><a href=../config-files/index.html>Configuration Files Details</a></li><li><a href=../command-prompt/index.html>Usage via the command prompt</a></li><li><a href=../shell-extension/index.html>Shell Extension</a></li><li><a href=../binary-translation/index.html>Binary Translation</a></li><li><a href=../ghost-typing/index.html>Ghost Typing</a></li><li><a href=../upgrading/index.html>Upgrading</a></li><li><a href=../other-resources/index.html>Other Resources</a></li><li><a href=../license/index.html>Copyright &amp; License</a></li></ul></nav><script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script></aside><div class=book-page><header class="flex align-center justify-between book-header"><label for=menu-control><img src=../../svg/menu.svg alt=Menu></label>
+<strong>Extend functionality with plugins</strong></header><article class=markdown><p>Notepad++ is very extensible using so called plugins. Plugins are small or big
+additions to Notepad++ to enhance its functionality. Notepad++ comes bundled
+with a few plugins (when using the installer, you can choose which ones to add),
+but you can always add your own or remove some. The plugins are located in the
+Plugins directory in the main Notepad++ installation directory. They are DLL
+files and simply removing or adding them is enough.</p><h2 id=how-to-install-a-plugin>How to install a plugin</h2><h3 id=install-using-plugins-admin>Install using Plugins Admin</h3><p>The Plugins Admin allows you to easily install plugins that are in the
+Plugins List. To do so, place a check mark next to the Plugin(s) you wish to
+install, then select Install.</p><p><img src=../images/pluginsAdmin.png alt></p><h3 id=install-plugin-manually>Install plugin manually</h3><p>If the plugin you want to install is not listed in the Plugins Admin, you may
+still install it manually. The plugin (in the DLL form) should be placed in
+the plugins subfolder of the Notepad++ Install Folder, under the subfolder
+with the same name of plugin binary name without file extension.
+For example, if the plugin you want to install named <code>myAwesomePlugin.dll</code>,
+you should install it with the following path:
+<code>%PROGRAMFILES(x86)%\Notepad++\plugins\myAwesomePlugin\myAwesomePlugin.dll</code></p><p>Once you installed the plugin, you can use (and you may configure) it via the menu &ldquo;Plugins&rdquo;.</p><h2 id=how-to-develop-a-plugin>How to develop a plugin</h2><h3 id=getting-started>Getting started</h3><p>Here are the instructions to make your first Notepad++ plugin in less 10 minutes,
+by following 6 steps:</p><ol><li>Download and unzip the latest release of <a href=https://github.com/npp-plugins/plugintemplate/releases>Notepad++ Plugin Template</a>.</li><li>Open <code>NppPluginTemplate.vcproj</code> in your Visual Studio.</li><li>Define your plugin name in <code>PluginDefinition.h</code></li><li>Define your plugin commands number in <code>PluginDefinition.h</code></li><li>Customize plugin commands names and associated function name (and the other stuff, optional) in <code>PluginDefinition.cpp</code>.</li><li>Define the associated functions.</li></ol><p>You are guided by the following comments in both
+<a href=https://github.com/npp-plugins/plugintemplate/blob/master/src/PluginDefinition.h>PluginDefinition.h</a>
+and <a href=https://github.com/npp-plugins/plugintemplate/blob/master/src/PluginDefinition.cpp>PluginDefinition.cpp</a> files:</p><pre><code>//-- STEP 1. DEFINE YOUR PLUGIN NAME --//
+//-- STEP 2. DEFINE YOUR PLUGIN COMMAND NUMBER --//
+//-- STEP 3. CUSTOMIZE YOUR PLUGIN COMMANDS --//
+//-- STEP 4. DEFINE YOUR ASSOCIATED FUNCTIONS --//
+</code></pre><p>A good sample illustrates better the whole picture than a detailed documentation.
+You can check <a href=https://github.com/npp-plugins/plugindemo/releases>Notepad++ Plugin Demo</a>
+to learn how to make some commands more complex.</p><p>However, the knowledge of Notepad++ plugin system is required, if you want to
+accomplish some sophisticated plugin commands.</p><p>You can use
+<a href=https://notepad-plus-plus.org/community/category/5/plugin-development>Plugin development forum</a>
+for any technical questions/answers and the announcement your new plugin.</p><h3 id=in-other-languages>In other languages</h3><ul><li><a href=https://notepad-plus-plus.org/assets/files/NppHelloAdaDemo.zip>Ada</a></li><li><a href=https://github.com/kbilsted/NotepadPlusPlusPluginPack.Net>C#</a></li><li><a href=https://gitlab.com/dokutoku/npp-api>D</a></li><li><a href=https://sourceforge.net/projects/npp-plugins/files/DelphiPluginTemplate/DelphiPluginTemplate 2.0 UNICODE/DelphiPluginTemplate2.zip/download>Delphi</a></li></ul><h3 id=building-a-lexer-plugin>Building a lexer plugin</h3><p>A lexer plugin is a kind of extension compared to a normal plugin,<br>i.e. in addition to all the functions already mentioned, additional ones have to be exported and also an XML file defining the styles has to be generated.</p><p>Notepad++ (Npp) currently supports only the <a href=https://www.scintilla.org/ScintillaDoc.html#LexerObjects>ILexer4</a> interface.<br>A lexer should define all methods of this interface to ensure a smooth interaction.</p><p>The additional lexer functions to be exported by the plugin are<br>- GetLexerCount<br>- GetLexerName<br>- GetLexerStatusText<br>- GetLexerFactory</p><p>Unlike the previous functions, these must be exported as <a href="https://docs.microsoft.com/en-us/cpp/cpp/stdcall?view=msvc-160">stdcall calling convention</a>.</p><ol><li><p>GetLexerCount</p><pre><code>(typedef int (EXT_LEXER_DECL *GetLexerCountFn)();)
+Args: none
+Return: 32bit signed integer
+Description:
+	A Lexer_Plugin can contain multiple lexers, so GetLexerCount returns the  
+	number of defined lexers in this plugin. Mostly this will be 1.  
+</code></pre></li><li><p>GetLexerName</p><pre><code>(typedef void (EXT_LEXER_DECL *GetLexerNameFn)(unsigned int index, char *name, int buflength);)  
+Args:   
+	- Index  
+	- name  
+	- buflength  
+Return: none
+Description:
+	This function should return the name which should be displayed in the LanguageMenu.   
+	If more than one lexer is contained in a plugin, this function will be called accordingly often  
+	and the respective lexer is queried via index.   
+	Name is a pointer to the memory area allocated by Npp.   
+	The size is given by buflength.  
+</code></pre></li><li><p>GetLexerStatusText</p><pre><code>(typedef void (EXT_LEXER_DECL *GetLexerStatusTextFn)(unsigned int Index, TCHAR *desc, int buflength);)  
+Args:   
+	- Index  
+	- name  
+	- buflength  
+Return: none  
+Description:
+	This function should return the description to be displayed in the first field of the status line.  
+	The parameters are to be treated in the same way as in the GetLexerName function.  
+</code></pre></li><li><p>GetLexerFactory</p><pre><code>(typedef LexerFactoryFunction(EXT_LEXER_DECL *GetLexerFactoryFunction)(unsigned int Index);)  
+Args:   
+	- Index  
+Return: function pointer  
+Description:
+	This function returns a function pointer that returns a pointer to an implementation of the ILexer4 interface.  
+	If the lexer is written in Cpp, this means you create a class with all virtual methods of the ILexer4 interface.  
+	If another programming language is used to create the Lexer_Plugin this means that you create a fixed array with voidptr, pointing to the methods to be implemented, and assign this to a variable from which you return the pointer.
+</code></pre></li></ol><p>Example of a ILexer4 implementation in Pseudocode:<br>(Note: The C-style comments here are for reference only)</p><pre><code>Function GetLexerFactory(index)  
+	return LexerFactoryImplementation  
+	  
+Function LexerFactoryImplementation()  
+	ILexer4[0] = voidptr(version)				// virtual int SCI_METHOD Version() const = 0;  
+	ILexer4[1] = voidptr(release)				// virtual void SCI_METHOD Release() = 0;  
+	ILexer4[2] = voidptr(property_names)			// virtual const char * SCI_METHOD PropertyNames() = 0;  
+	ILexer4[3] = voidptr(property_type)			// virtual int SCI_METHOD PropertyType(const char *name) = 0;  
+	ILexer4[4] = voidptr(describe_property)		// virtual const char * SCI_METHOD DescribeProperty(const char *name) = 0;  
+	ILexer4[5] = voidptr(property_set)			// virtual Sci_Position SCI_METHOD PropertySet(const char *key, const char *val) = 0;  
+	ILexer4[6] = voidptr(describe_word_list_sets)		// virtual const char * SCI_METHOD DescribeWordListSets() = 0;  
+	ILexer4[7] = voidptr(word_list_set)			// virtual Sci_Position SCI_METHOD WordListSet(int n, const char *wl) = 0;  
+	ILexer4[8] = voidptr(lex)				// virtual void SCI_METHOD Lex(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) = 0;  
+	ILexer4[9] = voidptr(fold)				// virtual void SCI_METHOD Fold(Sci_PositionU startPos, Sci_Position lengthDoc, int initStyle, IDocument *pAccess) = 0;  
+	ILexer4[10] = voidptr(private_call)			// virtual void * SCI_METHOD PrivateCall(int operation, void *pointer) = 0;  
+	ILexer4[11] = voidptr(line_end_types_supported)	// virtual int SCI_METHOD LineEndTypesSupported() = 0;  
+	ILexer4[12] = voidptr(allocate_sub_styles)		// virtual int SCI_METHOD AllocateSubStyles(int styleBase, int numberStyles) = 0;  
+	ILexer4[13] = voidptr(sub_styles_start)		// virtual int SCI_METHOD SubStylesStart(int styleBase) = 0;  
+	ILexer4[14] = voidptr(sub_styles_length)		// virtual int SCI_METHOD SubStylesLength(int styleBase) = 0;  
+	ILexer4[15] = voidptr(style_from_sub_style)		// virtual int SCI_METHOD StyleFromSubStyle(int subStyle) = 0;  
+	ILexer4[16] = voidptr(primary_style_from_style)	// virtual int SCI_METHOD PrimaryStyleFromStyle(int style) = 0;  
+	ILexer4[17] = voidptr(free_sub_styles)		// virtual void SCI_METHOD FreeSubStyles() = 0;  
+	ILexer4[18] = voidptr(set_identifiers)		// virtual void SCI_METHOD SetIdentifiers(int style, const char *identifiers) = 0;  
+	ILexer4[19] = voidptr(distance_to_secondary_styles)	// virtual int SCI_METHOD DistanceToSecondaryStyles() = 0;  
+	ILexer4[20] = voidptr(get_sub_style_bases)		// virtual const char * SCI_METHOD GetSubStyleBases() = 0;  
+	ILexer4[21] = voidptr(named_styles)			// virtual int SCI_METHOD NamedStyles() = 0;  
+	ILexer4[22] = voidptr(name_of_style)			// virtual const char * SCI_METHOD NameOfStyle(int style) = 0;  
+	ILexer4[23] = voidptr(tags_of_style)			// virtual const char * SCI_METHOD TagsOfStyle(int style) = 0;  
+	ILexer4[24] = voidptr(description_of_style)		// virtual const char * SCI_METHOD DescriptionOfStyle(int style) = 0;		  
+  
+	ilexer = Pointer(ILexer4)  
+	return Pointer(ilexer)  
+	  
+Function version()  
+...  
+  
+Function release()  
+...  
+  
+Function property_names()  
+...  
+</code></pre><p>The most important functions a lexer has to provide are Lex, Fold and WordListSet.<br>As the names suggest, Lex is called by Npp (actually Scintilla) to color the current buffer and then Fold to define any fold points.<br>WordListSet is called depending on how many keyword groups have been defined in the styles XML file and each time changes are made via the Npp StyleDialog.<br>More information about these and all other methods can be obtained from <a href=https://www.scintilla.org/ScintillaDoc.html#SCI_LOADLEXERLIBRARY>https://www.scintilla.org/ScintillaDoc.html#SCI_LOADLEXERLIBRARY</a>.</p><p>Creating the Lexer Styles XML file.</p><p>In order for Npp to know how to color which style, an XML file with the same name as the lexer must be created in addition to the original lexer dll.<br>E.g. if the Lexer plugin is called MyNewLexer.dll, the XML file must be called MyNewLexer.xml and must be present in the plugin config directory.</p><p>The XML file must have the following layout.</p><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;  
+&lt;NotepadPlus&gt;  
+    &lt;Languages&gt;  
+        &lt;Language name=&quot;NAME_OF_THE_LEXER&quot; ext=&quot;EXTENSIONS_USED_TO_IDENTIFY_THE_LEXER&quot; commentLine=&quot;//&quot; commentStart=&quot;/*&quot; commentEnd=&quot;*/&quot;&gt;  
+            &lt;Keywords name=&quot;instre1&quot;&gt;if then else ...&lt;/Keywords&gt;  
+            &lt;Keywords name=&quot;instre2&quot;&gt;...&lt;/Keywords&gt;  
+            &lt;Keywords name=&quot;type1&quot;&gt;...&lt;/Keywords&gt;  
+            &lt;Keywords name=&quot;type2&quot;&gt;...&lt;/Keywords&gt;  
+            &lt;Keywords name=&quot;type3&quot;&gt;...&lt;/Keywords&gt;  
+            &lt;Keywords name=&quot;type4&quot;&gt;...&lt;/Keywords&gt;  
+            &lt;Keywords name=&quot;type5&quot; /&gt;  
+            &lt;Keywords name=&quot;type6&quot; /&gt;  
+        &lt;/Language&gt;  
+    &lt;/Languages&gt;  
+    &lt;LexerStyles&gt;  
+        &lt;LexerType name=&quot;NAME_OF_THE_LEXER&quot; desc=&quot;DESCRIPTION_OF_THE_LEXER_SHOWN_IN_STATUSBAR&quot; ext=&quot;&quot; excluded=&quot;no&quot;&gt;  
+            &lt;WordsStyle styleID=&quot;0&quot; name=&quot;Default&quot; fgColor=&quot;000000&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;0&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;1&quot; name=&quot;WHATEVER&quot; fgColor=&quot;FF0000&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;2&quot; name=&quot;SOMETHING_DIFFERENT&quot; fgColor=&quot;00FF00&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;3&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;4&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;5&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;6&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;instre1&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;7&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;instre2&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;8&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;type1&quot; fontSize=&quot;&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;9&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;type2&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;10&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;type3&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;11&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;type4&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;12&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;type5&quot; /&gt;  
+            &lt;WordsStyle styleID=&quot;13&quot; name=&quot;...&quot; fgColor=&quot;...&quot; bgColor=&quot;FFFFFF&quot; colorStyle=&quot;1&quot; fontName=&quot;&quot; fontStyle=&quot;0&quot; keywordClass=&quot;type6&quot; /&gt;  
+        &lt;/LexerType&gt;  
+    &lt;/LexerStyles&gt;  
+&lt;/NotepadPlus&gt;  
+</code></pre><p>Currently, a maximum of 8 keyword groups can be defined in <languages><language>.<br>These must then be referenced via a respective keywordClass attribute in the WordsStyle tag of the <lexerstyles><lexertype>node.<br>The advantage and sense of colorStyle can be read <a href=https://npp-user-manual.org/docs/user-defined-language-system/#udl-and-themes>here</a>.</p><p>The attribute ext in <languages><language>is the default extension and in <lexerstyles><lexertype>the additional ones defined by the user.</p><p>With this everything is done. Actually quite simple.<br>But, as usual in software development, there are also some not so obvious pitfalls.</p><h4 id=tips-and-tricks>Tips and Tricks</h4><ol><li><p>Npp uses 2 views with different scintilla instances.<br>To identify which instance should be handled with which document at the moment,<br>pAccess can be used in Lex and Fold.<br>Hint: It is possible to scroll an inactive instance and thus trigger Lex and Fold callbacks.</p></li><li><p>API XML files, which are used for autocompletion by Npp, as well as funtionlist XML files can,<br>currently, not be used by plugin lexers.<br>So it makes sense to implement these functionalities as well.</p></li><li><p>GetLexerName and GetLexerCount are called twice.<br>Once from Npp directly and once from Scintilla.<br>Each with different buffer length.</p></li><li><p>When Npp loads the Lexer plugin it is expected that the corresponding styles XML file<br>is also present in the plugin config directory.<br>Since, for whatever reason, this file might not be present, it is a good idea to check this in the setInfo callback and to react accordingly</p></li></ol><h2 id=plugins-admin>Plugins Admin</h2><p>Built-in <strong>Plugins Admin</strong> shows the list of available plugins, allows users
+to install new plugins and to update/remove installed plugins.
+It needs <strong>Plugin List</strong> (see next section) to work.</p><h2 id=plugin-list>Plugin List</h2><p>A list in JSON format wrapped in a dll contains the most poplular Notepad++ plugins.
+This list which is maintained by the team, is also an open source project hosted
+in the GitHub: <a href=https://github.com/notepad-plus-plus/nppPluginList/>https://github.com/notepad-plus-plus/nppPluginList/</a>.
+Any plugin is welcome to join in the list.</p><h3 id=test-your-plugins-locally>Test your plugins locally</h3><p>For testing your plugin for listing, installation, removal and update under
+Plugin Admin, you need Notepad++ binary in debug mode
+<a href=https://notepad-plus-plus.org/assets/pluginListTestTools/npp.debug.x32.zip>32-bit</a>
+or <a href=https://notepad-plus-plus.org/assets/pluginListTestTools/npp.debug.x64.zip>64-bit</a>,
+the latest version of wingup
+<a href=https://notepad-plus-plus.org/assets/pluginListTestTools/wingup.release.x32.zip>32-bit</a>
+or
+<a href=https://notepad-plus-plus.org/assets/pluginListTestTools/wingup.release.x64.zip>64-bit</a>
+and nppPluginList.json (you should rename it from <code>pl.x64.json</code> or <code>pl.x86.json</code>,
+according your plugin&rsquo;s architecture). Replace <code>notepad++.exe</code> and <code>GUP.exe</code> of your
+Notepad++ installation by downloaded ones, copy <code>pl.x64.json</code> or <code>pl.x86.json</code> to
+<code>&lt;NPP_INST_DIR&gt;\plugins\Config\nppPluginList.json</code>, then
+you&rsquo;re all set - the menu item <strong>Plugins Admin</strong> will be under menu <strong>Plugins</strong> of your
+debug mode notepad++.exe. Launch this command will launch the <strong>Plugins Admin</strong> dialog
+and the rest should be intuitive.</p><h3 id=rules-for-adding-your-plugins-into-list>Rules for adding your plugins into list</h3><ol><li>Architecture: your 32-bits plugin should be added to
+<a href=https://github.com/notepad-plus-plus/nppPluginList/blob/master/src/pl.x86.json>pl.x86.json</a>,
+64-bits plugin should be added to <a href=https://github.com/notepad-plus-plus/nppPluginList/blob/master/src/pl.x64.json>pl.x64.json</a>.</li><li>Unicity: the value of <strong>folder-name</strong> of your plugin should be unique in the list.
+it means if there&rsquo;s already another same name plugin in the list, you have to rename
+your plugin&rsquo;s folder-name (and your plugin). Keep in mind that your plugin binary
+name (w/o the extension .dll) should be always the same as the folder-name,
+otherwise your plugins won&rsquo;t be loaded.</li><li>Security: the value of <strong>id</strong> is plugin package&rsquo;s (zip file) finger print in
+SHA-256. This id is checked with the downloaded dll to avoid
+<a href=https://en.wikipedia.org/wiki/Man-in-the-middle_attack>MITM</a>.
+You can use Notepad++ to get your plugin&rsquo;s SHA-256 hash
+(Menu: <strong>Tools &gt; SHA-256 &gt; Generate from files&hellip;</strong>) or some online sha256 generators.</li><li>Update info: the value of <strong>version</strong> is exact the version of your plugin binary
+version which you want to be deployed. This version will compare with installed
+plugin&rsquo;s version to decide if update should be applied.
+Please check <a href=https://docs.microsoft.com/en-us/windows/desktop/menurc/versioninfo-resource>Microsoft&rsquo;s document about binary version</a>
+for setting the version correctly onto your DLL.</li><li>Download location: the value of <strong>repository</strong> is the URL where Plugin Admin can
+download the plugin to install/update it.</li><li>Packaging: Only zip package is supported. Your plugin (DLL) should have the same
+name as the <strong>folder-name</strong> and the plugin DLL file should be placed at the root
+level of the ZIP file. Otherwise Plugin Admin won&rsquo;t install it. Any additionals
+files (DLL or data) can be placed at the root level or in an arbitrary subfolder.</li></ol><h3 id=do-your-pr-to-join-plugin-list>Do your PR to join plugin list</h3><p>Once your test has been done, and everything is ok, you can fork and do your PR on:
+<a href=https://github.com/notepad-plus-plus/nppPluginList/>https://github.com/notepad-plus-plus/nppPluginList/</a>. Only the json part you should
+modify. The json file will be built into the a binary (<code>nppPluginList.dll</code>), which will
+be signed (for thes sake of security) and be included in the official distribution.</p><h3 id=questions-support>Questions &amp; support</h3><p>Ask your questions here: <a href=https://notepad-plus-plus.org/community/topic/16789/support-for-plugins-admin-npppluginlist-round-2>https://notepad-plus-plus.org/community/topic/16789/support-for-plugins-admin-npppluginlist-round-2</a></p></article></div><aside class="book-toc level-6 fixed"><nav id=TableOfContents><ul><li><ul><li><a href=#how-to-install-a-plugin>How to install a plugin</a><ul><li><a href=#install-using-plugins-admin>Install using Plugins Admin</a></li><li><a href=#install-plugin-manually>Install plugin manually</a></li></ul></li><li><a href=#how-to-develop-a-plugin>How to develop a plugin</a><ul><li><a href=#getting-started>Getting started</a></li><li><a href=#in-other-languages>In other languages</a></li><li><a href=#building-a-lexer-plugin>Building a lexer plugin</a><ul><li><a href=#tips-and-tricks>Tips and Tricks</a></li></ul></li></ul></li><li><a href=#plugins-admin>Plugins Admin</a></li><li><a href=#plugin-list>Plugin List</a><ul><li><a href=#test-your-plugins-locally>Test your plugins locally</a></li><li><a href=#rules-for-adding-your-plugins-into-list>Rules for adding your plugins into list</a></li><li><a href=#do-your-pr-to-join-plugin-list>Do your PR to join plugin list</a></li><li><a href=#questions-support>Questions &amp; support</a></li></ul></li></ul></li></ul></nav></aside></main><script data-no-instant>document.write('<script src="../../livereloada582.js?port=1313&amp;mindelay=10&amp;v=2"></'+'script>')</script></body>
+<!-- Mirrored from 127.0.0.1:1313/docs/plugins/ by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 02 Apr 2021 22:52:27 GMT -->
+</html>

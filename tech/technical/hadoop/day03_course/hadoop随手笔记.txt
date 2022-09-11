@@ -1,0 +1,145 @@
+1、大数据特点
+   1.1》大体量 - 从TB级别开始算
+	 1.2》多样性 - 数据种类和来源多(多种易构数据源)
+	 1.3》时效性 - 在一定时间内得到结果(很难做到毫秒级)
+	 1.4》准确性 - 保证结果的准确性
+	 1.5》大价值 - 探究挖掘数据的深度价值
+2、Hadoop特点
+   2.1》高可靠性
+	 2.2》高扩展性 - 横向扩展,扩展的datanode
+	 2.3》高效性 - 各个datanode之间动态的移动数据
+	 2.4》高容错性 - 副本冗余机制,默认3副本,可自行设定
+3、HDFS(Hadoop Distributed File System)
+   Hadoop分布式文件系统
+   3.1》Client(客户端)：切分文件
+	 3.2》NameNode(Master)：存元数据,监测datanode状态
+	 3.3》SecondaryNameNode：向NameNode同步元数据和日志信息,关键时刻可转正
+	 3.4》DataNode(Slave)：存储具体数据
+	 3.5》Block(块)：客户端切分文件的块(默认128M)
+4、相关进程
+   4.1》namenode
+	 4.2》datanode
+	 4.3》secondarynamenode
+5、Hadoop核心组件
+   5.1》HDFS(分布式存储)
+	      hadoop fs -put 本地文件  HDFS绝对路径
+				hadoop fs -mkdir HDFS绝对路径
+				hadoop fs -text HDFS绝对路径
+				hadoop fs -rm -r HDFS绝对路径
+	 5.2》MapReduce(分布式计算)
+   5.3》Yarn(资源管理系统)
+6、HDFS重点
+   6.1》优点
+	      高可靠性、高扩展性、高容错性、高效性、低成本
+	 6.2》缺点
+        不适合低延迟的应用,适合大文件离线批处理
+				不适合存储大量小文件,因为namenode资源有限
+				不支持修改HDFS上文件,适合一次写入多次读取场景
+7、MapReduce过程
+   7.1》Map
+	 7.2》Shuffle & Sort
+	 7.3》Reduce
+   7.4》编程模型 - mrjob
+	      from mrjob.job import MRJob
+				class Xxx(MRJob):
+				    def mapper(self, key, value):
+						    pass
+						def reducer(self, key, values):
+						    pass
+				if __name__ == '__main__':
+				    Xxx.run()
+8、Hive(数据仓库的工具)
+   8.1》优点
+	      学习成本低,开发效率高,适合大文件离线批处理
+	 8.2》缺点
+	      不支持行级别的修改,不提供事务支持
+   8.3》hive本质
+	      把HDFS上的一个文件映射为Hive中的一张表
+9、Hive特殊
+   9.1》库和表,会在HDFS的指定路径下创建对应的文件夹
+	      /user/hive/warehouse/库名.db/表名/
+	 9.2》文件上传到HDFS指定目录的两种方法
+	      hadoop fs -put 文件名 /user/hive/......
+				hive>load data local inpath '文件名' into table 表名;
+	 9.3》创建表
+	      create table 表名(
+				name string
+				)row format delimited fields terminated by '';
+   9.4》执行HQL命令时,简单的HQL不会转为MapReduce程序
+	      复杂的HQL(分组、聚合、排序、连接查询),会转为底层的MapReduce程序
+10、复杂数据类型
+   10.1》array
+	       字段名 array<string>
+				 row format delimited fields terminated by ''
+				 collection items teminated by '分隔符'
+	       
+				 select 字段名[index] from 表名;
+				 select * from 表名 where array_contains(字段名,'数组中元素');
+   10.2》map
+	       字段名 map<string,string>
+				 row format delimited fields terminated by ''
+				 collection items terminated by ''
+				 map keys terminated by ''
+
+				 select 字段名[key] from 表名 where 字段名[key] is not null;
+   10.3》struct
+         字段名 struct<key1:string,key2:int>
+				 查询时：字段名.key1   字段名.key2
+11、分区表
+   11.1》partitioned by(分区字段名)
+	 11.2》alter table 表名 add partition(具体分区);
+	 11.3》show partitons 表名;
+	 11.4》load data local inpath '' into table 表名 partition(具体分区);
+
+	 练习: 
+	 在date1="2000-01-02"分区中,存入文件(employee2.txt)
+	 
+	 5,赵云,5000
+	 6,张飞,6000
+
+	 存入指定分区后,查询2000-01-02的数据
+12、添加分区的两种方式
+   12.1》两条命令
+	       alter table 表名 add partition(...);
+				 load data local inpath '' ... partition(...)
+
+	 12.2》首先创建完整的分区目录结构,并传入文件
+	       修复分区: msck repair table 表名;
+13、分桶表步骤
+   13.1》首先创建普通表,并导入数据
+	 13.2》开启分桶功能,并指定桶的个数
+	 13.3》创建分桶表,并导入数据
+14、Hive综合案例
+   14.1》用户信息表: t_user
+	 14.2》电影信息表: t_movie
+	 14.3》评分信息:   t_rating
+
+
+
+
+
+
+
+
+
+MySQL建立索引: 避免全表扫描
+HIVE中分区表|分桶表: 避免全文件扫描,加快数据检索速度
+
+
+
+
+内部表：
+  create table xxx()...
+  /user/hive/warehouse/aid2008db.db/xxx/文件名
+
+	drop table 表名;
+	对应的目录和文件一并删除,永远不能恢复!!!
+
+外部表：
+  create external table xxx() location '路径' ;
+  /aid2008/stu/文件名
+
+	drop table 表名;
+	只会删除表映射信息,不会删除HDFS上具体的文件！
+	如果你就想删,那你使用 hadoop fs -rm -r 文件名
+

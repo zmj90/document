@@ -1,0 +1,6 @@
+1,佩奇,Python
+2,乔治,Hive
+3,丹尼,Python
+4,羚羊夫人,Hadoop
+5,奥特曼,AI
+6,怪兽,DS
