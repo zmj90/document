@@ -1,287 +1,210 @@
-# 安装环境
-
-## 驱动安装
+# base_page
 
 ```python
-【1】定义
-    phantomjs为无界面浏览器(又称无头浏览器)，在内存中进行页面加载,高效
- 
-【2】下载地址
-    2.1) chromedriver : 下载对应版本
-       http://npm.taobao.org/mirrors/chromedriver/
-    
-    2.2) geckodriver
-       https://github.com/mozilla/geckodriver/releases
-            
-    2.3) phantomjs
-       https://phantomjs.org/download.html
-
-【3】Ubuntu安装
-    3.1) 下载后解压 : tar -zxvf geckodriver.tar.gz 
-        
-    3.2) 拷贝解压后文件到 /usr/bin/ （添加环境变量）
-         sudo cp geckodriver /usr/bin/
-        
-    3.3) 添加可执行权限
-         sudo chmod 777 /usr/bin/geckodriver
-
-【4】Windows安装
-    4.1) 下载对应版本的phantomjs、chromedriver、geckodriver
-    4.2) 把chromedriver.exe拷贝到python安装目录的Scripts目录下(添加到系统环境变量)
-         # 查看python安装路径: where python
-    4.3) 验证
-         cmd命令行: chromedriver
- 
-***************************总结**************************************
-【1】解压 - 放到用户主目录(chromedriver、geckodriver、phantomjs)
-【2】拷贝 - sudo cp /home/tarena/chromedriver /usr/bin/
-【3】权限 - sudo chmod 777 /usr/bin/chromedriver
-
-# 验证
-【Ubuntu | Windows】
-ipython3
-from selenium import webdriver
-webdriver.Chrome()
-或者
-webdriver.Firefox()
-
-【mac】
-ipython3
-from selenium import webdriver
-webdriver.Chrome(executable_path='/Users/xxx/chromedriver')
-或者
-webdriver.Firefox(executable_path='/User/xxx/geckodriver')
-```
-
-## 第三库selenium安装
-
-```python
-安装：pip install selenium==XXXX
-卸载 pip uninstall selenium
-查看版本号：pip show selenium
-```
-
-# **示例代码**
-
-```python
-"""示例代码一：使用 selenium+浏览器 打开百度"""
-
-# 导入seleinum的webdriver接口
-from selenium import webdriver
-import time
-
-# 创建浏览器对象
-browser = webdriver.Chrome()
-browser.get('http://www.baidu.com/')
-# 5秒钟后关闭浏览器
-time.sleep(5)
-browser.quit()
-```
-
-```python
-"""示例代码二：打开百度，搜索赵丽颖，点击搜索，查看"""
+"""
+基础对象
+"""
+import json
+import os.path as path
 
 from selenium import webdriver
-import time
 
-# 1.创建浏览器对象 - 已经打开了浏览器
-browser = webdriver.Chrome()
-# 2.输入: http://www.baidu.com/
-browser.get('http://www.baidu.com/')
-# 3.找到搜索框,向这个节点发送文字: 赵丽颖
-browser.find_element_by_xpath('//*[@id="kw"]').send_keys('赵丽颖')
-# 4.找到 百度一下 按钮,点击一下
-browser.find_element_by_xpath('//*[@id="su"]').click()
-```
+from stub.config.settings import BASE_DIR
 
-```python
-案例：
-启动火狐浏览器，
-首先打开我要自学网页面，打印网页标题，等待3秒
-打开百度首页，打印网页标题，再等待2秒
-关闭浏览器。
-from selenium import webdriver
-from time import sleep
 
-#加载浏览器驱动
-driver=webdriver.Firefox()
+def browser():
+    _ = webdriver.ChromeOptions()
+    # 无头模式
+    # _.headless = True
+    _.add_argument("--start-maximized")
+    # _.add_argument('--no-sandbox --start-maximized')
+    driver = webdriver.Chrome(options=_)
+    driver.implicitly_wait(10)
+    return driver
 
-#打开自学网页面
-driver.get("http://www.51zxw.net")
-print(driver.title)
-sleep(3)
 
-#打开百度首页
-driver.get("http://www.baidu.com")
-print(driver.title)
-sleep(3)
+class BasePage:
+    def __init__(self, d):
+        self.driver: webdriver.Chrome = d
 
-#关闭浏览器
-driver.quit()
+    def quit(self):
+        input("输入任意字符退出：")
+        self.driver.quit()
+
+    def cookies_login(self):
+        with open(path.join(BASE_DIR, "lib", "cookies.json"), "r") as f:
+            for i in json.load(f):
+                self.driver.add_cookie(i)
+
 ```
 
 
 
-# **浏览器对象方法**
+
+
+# webdriver
 
 ```python
-【1】browser.get(url=url)   - 地址栏输入url地址并确认   
-【2】browser.quit()         - 关闭浏览器
-【3】browser.close()        - 关闭当前页
-【4】browser.page_source    - HTML结构源码
-【5】browser.page_source.find('字符串')
-    从html源码中搜索指定字符串,没有找到返回：-1,经常用于判断是否为最后一页
-【6】browser.maximize_window() - 浏览器窗口最大化
-【7】browser执行JS脚本
-    browser.execute_script('window.scrollTo(0,document.body.scrollHeight)')
-
 from selenium import webdriver
-driver = webdriver.Firefox()
+driver = webdriver.Chrome()
+# 地址栏输入url地址并确认  
+driver.get(url=url) 
+
+# 关闭当前页
+driver.close()
+
+# 浏览器窗口最大化
+driver.maximize_window()
+
+# 设置当前窗口的宽度和高度。
+driver.set_window_size()
+
+# 设置当前窗口的x、y位置。
+driver.set_window_position()
+
+# browser执行JS脚本
+driver.execute_script('window.scrollTo(0,document.body.scrollHeight)')
+
 driver.get('https://www.baidu.com')
 driver.get('https://news.baidu.com')
 # 后退
 driver.back()
+
 # 前进
 driver.forward()
+
+# 刷新当前页面。
+driver.refresh()
+
+# 退出驱动程序并关闭浏览器
 driver.quit()
+
+# HTML结构源码
+driver.page_source
+# 从html源码中搜索指定字符串,没有找到返回：-1,经常用于判断是否为最后一页
+driver.page_source.find('字符串')
+
+# 返回当前页面的标题。
+driver.title
+
+# 获取当前页面的URL。
+driver.current_url
+
+# 隐式等待
+driver.implicitly_wait()
 ```
+
+
+
+# WebElement
 
 ```python
-浏览器操作
-浏览器窗口大小设置
-页面前进后退
-页面刷新
-from  selenium import webdriver
-from time import  sleep
+# 点击元素。
+click()
 
-driver=webdriver.Firefox()
+# 获取元素的给定属性或属性。
+get_attribute()
 
-driver.get("http://www.51zxw.net")
-driver.maximize_window()
-sleep(2)
+# 元素是否对用户可见。
+is_displayed()
 
-driver.get("http://www.51zxw.net/list.aspx?cid=615")
-driver.set_window_size(400,800)
-driver.refresh()
-sleep(2)
+# 返回元素是否可用。
+is_enabled()
 
-driver.back()
-sleep(2)
+# 返回元素是否被选中。
+is_selected()
 
-driver.forward()
+# 元素的大小。
+size
 
-sleep(2)
-driver.quit()
+# 元素的文本。
+text
+
+【1】文本框操作
+    1.1) node.send_keys('')  - 向文本框发送内容
+    1.2) node.clear()        - 清空文本
+    1.3) node.get_attribute('value') - 获取文本内容
+    
+【2】按钮操作
+    1.1) node.click()      - 点击
+    1.2) node.is_enabled() - 判断按钮是否可用
+    1.3) node.get_attribute('value') - 获取按钮文本
 ```
+
+
 
 
 
 # 定位节点八种方法
 
-```python
-【1】单元素查找('结果为1个节点对象')
-    1.1) 【最常用】browser.find_element_by_id('id属性值')
-    1.2) 【最常用】browser.find_element_by_name('name属性值')
-    1.3) 【最常用】browser.find_element_by_class_name('class属性值')
-    1.4) 【最万能】browser.find_element_by_xpath('xpath表达式')
-    1.5) 【匹配a节点时常用】browser.find_element_by_link_text('链接文本')
-    1.6) 【匹配a节点时常用】browser.find_element_by_partical_link_text('部分链接文本')
-    1.7) 【最没用】browser.find_element_by_tag_name('标记名称')
-    1.8) 【较常用】browser.find_element_by_css_selector('css表达式')
 
-【2】多元素查找('结果为[节点对象列表]')
-    2.1) browser.find_elements_by_id('id属性值')
-    2.2) browser.find_elements_by_name('name属性值')
-    2.3) browser.find_elements_by_class_name('class属性值')
-    2.4) browser.find_elements_by_xpath('xpath表达式')
-    2.5) browser.find_elements_by_link_text('链接文本')
-    2.6) browser.find_elements_by_partical_link_text('部分链接文本')
-    2.7) browser.find_elements_by_tag_name('标记名称')
-    2.8) browser.find_elements_by_css_selector('css表达式')
-    
-元素定位不到：
-元素没有加载完成
-iframe
-元素不可用，不可读，不可见
-动态属性
-```
 
 ## id与name 定位
 
 ```python
-from  selenium import webdriver
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 from time import sleep
 
-driver=webdriver.Firefox()
+driver = webdriver.Chrome()
 driver.get("http://www.baidu.com")
 
-driver.find_element_by_id("kw").send_keys("Selenium我要自学网")
-driver.find_element_by_name("wd").send_keys("Selenium我要自学网")
+driver.find_element(By.ID, "kw").send_keys("Selenium我要自学网")
+driver.find_element(By.NAME, "wd").send_keys("Selenium我要自学网")
 
 sleep(2)
-driver.find_element_by_id("su").click()
+driver.find_element(By.ID, "su").click()
 driver.close()
+
 ```
+
+
 
 ## tag_name定位
 
 ```python
 # 案例：打开我要自学网页面，在用户名输入框输入用户名“selenium”
-from  selenium import webdriver
-from  time import sleep
-
-driver=webdriver.Firefox()
-
+driver = webdriver.Chrome()
 driver.get("http://www.51zxw.com")
-
 # 定位标签名为input的元素
-driver.find_element_by_tag_name("input").send_keys("selenium")
-
+driver.find_element(By.TAG_NAME, "input").send_keys("selenium")
 # 获取页面所有标签名称为“input”的标签。
-driver.find_elements_by_tag_name("input")[0].send_keys("selenium")
-
+driver.find_elements(By.TAG_NAME, "input")[0].send_keys("selenium")
 sleep(3)
-
 driver.quit()
 ```
+
+
 
 ## class_name定位
 
 ```python
 # 根据标签中属性class来进行定位的一种方法
-from  selenium import webdriver
-from  time import sleep
-
-driver=webdriver.Firefox()
-
+driver = webdriver.Chrome()
 driver.get("http://www.baidu.com")
-
-driver.find_element_by_class_name("s_ipt").send_keys("Selenium 我要自学网")
+driver.find_element(By.CLASS_NAME, "s_ipt").send_keys("Selenium 我要自学网")
 sleep(2)
-
-driver.find_element_by_id("su").click()
+driver.find_element(By.ID, "su").click()
 sleep(3)
-
 driver.quit()
 ```
+
+
 
 ## link_text与partial_link_text定位
 
 ```python
 # link_text定位就是根据超链接文字进行定位。
-from selenium import webdriver
-from time import sleep
-
-driver=webdriver.Firefox()
-
+driver = webdriver.Chrome()
 driver.get("http://www.51zxw.net/")
-
-driver.find_element_by_link_text('程序设计').click()
+driver.find_element(By.LINK_TEXT, '程序设计').click()
 sleep(3)
-driver.find_element_by_partial_link_text('神秘面纱').click()
+driver.find_element(By.PARTIAL_LINK_TEXT, '数据库教程').click()
 sleep(3)
 driver.quit()
 ```
+
+
 
 ## XPath定位
 
@@ -420,13 +343,9 @@ sleep(3)
 driver.quit()
 ```
 
+
+
 ## css定位
-
-冻结窗口
-
-setTimeout(function(){debugger}, 5000)
-
-
 
 Selenium极力推荐使用CSS 定位，而不是XPath来定位元素，原因是CSS 定位比XPath 定速度快，语法也更加简洁。 
 
@@ -469,34 +388,6 @@ driver.find_element_by_css_selector("form#loginForm>ul>input").send_keys("51zxw"
 
 sleep(2)
 driver.quit()
-```
-
-
-
-# **节点对象操作**
-
-```python
-【1】文本框操作
-    1.1) node.send_keys('')  - 向文本框发送内容
-    1.2) node.clear()        - 清空文本
-    1.3) node.get_attribute('value') - 获取文本内容
-    
-【2】按钮操作
-    1.1) node.click()      - 点击
-    1.2) node.is_enabled() - 判断按钮是否可用
-    1.3) node.get_attribute('value') - 获取按钮文本
-```
-
-# 设置无界面模式
-
-```python
-from selenium import webdriver
-
-options = webdriver.ChromeOptions()
-# 添加无界面参数
-options.add_argument('--headless')
-browser = webdriver.Chrome(options=options)
-
 ```
 
 
@@ -905,248 +796,23 @@ sleep(3)
 driver.quit()
 ```
 
-# 自动化测试模型
 
-## 概念
 
-自动化测试模型可以看作自动化测试框架与工具设计的思想。自动化测试不仅仅是单纯写写脚本运行就可以了，还需要考虑到如何使脚本运行效率提高，代码复用、参数化等问题。自动化测试模型分为四大类：线性模型，模块化驱动测试、数据驱动、关键词驱动。
+# 元素定位不到的几种场景
 
 ```python
-线性模型
-线性脚本中每个脚本都相互独立，且不会产生其他依赖与调用，其实就是简单模拟用户某个操作流程的脚本。
+# 1 元素没有加载完成
 
-模块化驱动测试
-线性模型虽然每个用例都可以拿出来独立运行，但是用例之间重复代码很多，开发、维护成本高。其实把重复的操作代码封装为独立的公共模块，当用例执行时需要用到这部分，直接调用即可，这就是模块驱动的方式。比如登录系统、退出登录、截图函数等等。
+# 2 iframe
 
-数据驱动测试
-模块驱动的模型虽然解决了脚本的重复问题，但是需要测试不同数据的用例时，模块驱动的方式就不很适合了。 数据驱动就是数据的改变从而驱动自动化测试的执行，最终引起测试结果的改变。 装载数据的方式可以是列表、字典或是外部文件（txt、csv、xml、excel），目的就是实现数据和脚本的分离。
+# 3 元素不可用，不可读，不可见
 
-关键字驱动测试
-通过关键字的改变引起测试结果的改变叫关键字驱动测试。 selenium IDE也是一种传统的关键字驱动的自动化工具，Robot Framework 是一个功能更强大的关键字驱动测试框架
+# 4 动态属性
+冻结窗口
+setTimeout(function(){debugger}, 5000)
 ```
 
 
 
 
 
-# **Fiddler抓包工具**
-
-- **配置Fiddler**
-
-  ```python
-  【1】Tools -> Options -> HTTPS
-      1.1) 添加证书信任:  勾选 Decrypt Https Traffic 后弹出窗口，一路确认
-      1.2) 设置之抓浏览器的包:  ...from browsers only
-
-  【2】Tools -> Options -> Connections
-      2.1) 设置监听端口（默认为8888）
-
-  【3】配置完成后重启Fiddler（'重要'）
-      3.1) 关闭Fiddler,再打开Fiddler
-  ```
-
-- **配置浏览器代理**
-
-  ```python
-  【1】安装Proxy SwitchyOmega谷歌浏览器插件
-
-  【2】配置代理
-      2.1) 点击浏览器右上角插件SwitchyOmega -> 选项 -> 新建情景模式 -> myproxy(名字) -> 创建
-      2.2) 输入  HTTP://  127.0.0.1  8888
-      2.3) 点击 ：应用选项
-      
-  【3】点击右上角SwitchyOmega可切换代理
-
-  【注意】: 一旦切换了自己创建的代理,则必须要打开Fiddler才可以上网
-  ```
-
-- **Fiddler常用菜单**
-
-  ```python
-  【1】Inspector ：查看数据包详细内容
-      1.1) 整体分为请求和响应两部分
-      
-  【2】Inspector常用菜单
-      2.1) Headers ：请求头信息
-      2.2) WebForms: POST请求Form表单数据 ：<body>
-                     GET请求查询参数: <QueryString>
-      2.3) Raw : 将整个请求显示为纯文本
-  ```
-
-# selenium
-
-```python
-【1】定义
-    1.1) 开源的Web自动化测试工具
-    
-【2】用途
-    2.1) 对Web系统进行功能性测试,版本迭代时避免重复劳动
-    2.2) 兼容性测试(测试web程序在不同操作系统和不同浏览器中是否运行正常)
-    2.3) 对web系统进行大数量测试
-    
-【3】特点
-    3.1) 可根据指令操控浏览器
-    3.2) 只是工具，必须与第三方浏览器结合使用
-    
-【4】安装
-    4.1) Linux: sudo pip3 install selenium
-    4.2) Windows: python -m pip install selenium
-```
-
-- **PhantomJS浏览器**
-
-  ```python
-  【1】定义
-      phantomjs为无界面浏览器(又称无头浏览器)，在内存中进行页面加载,高效
-   
-  【2】下载地址
-      2.1) chromedriver : 下载对应版本
-         http://npm.taobao.org/mirrors/chromedriver/
-      
-      2.2) geckodriver
-         https://github.com/mozilla/geckodriver/releases
-              
-      2.3) phantomjs
-         https://phantomjs.org/download.html
-
-  【3】Ubuntu安装
-      3.1) 下载后解压 : tar -zxvf geckodriver.tar.gz 
-          
-      3.2) 拷贝解压后文件到 /usr/bin/ （添加环境变量）
-           sudo cp geckodriver /usr/bin/
-          
-      3.3) 添加可执行权限
-           sudo chmod 777 /usr/bin/geckodriver
-
-  【4】Windows安装
-      4.1) 下载对应版本的phantomjs、chromedriver、geckodriver
-      4.2) 把chromedriver.exe拷贝到python安装目录的Scripts目录下(添加到系统环境变量)
-           # 查看python安装路径: where python
-      4.3) 验证
-           cmd命令行: chromedriver
-   
-  ***************************总结**************************************
-  【1】解压 - 放到用户主目录(chromedriver、geckodriver、phantomjs)
-  【2】拷贝 - sudo cp /home/tarena/chromedriver /usr/bin/
-  【3】权限 - sudo chmod 777 /usr/bin/chromedriver
-
-  # 验证
-  【Ubuntu | Windows】
-  ipython3
-  from selenium import webdriver
-  webdriver.Chrome()
-  或者
-  webdriver.Firefox()
-
-  【mac】
-  ipython3
-  from selenium import webdriver
-  webdriver.Chrome(executable_path='/Users/xxx/chromedriver')
-  或者
-  webdriver.Firefox(executable_path='/User/xxx/geckodriver')
-  ```
-
-  ```shell
-
-  ```
-
-
-
-  sudo apt-get update
-  1.开机先卸载python2.7
-  	sudo apt-get remove python2.7
-  2.卸载python2.7及其依赖
-  	sudo apt-get remove --auto-remove python2.7
-  3.消除python2.7
-  	sudo apt-get purge python2.7 or sudo apt-get purge --auto-remove python2.7
-  4.国内源	-i https://pypi.tuna.tsinghua.edu.cn/simple
-
-
-
-
-  4.安装系统环境
-  python3.6
-
-  mysql		       sudo apt  install mysql-server
-  	如果安装过程中没有提示设置账户密码，那么 
-  		查看账号密码：sudo cat /etc/mysql/debian.cnf
-  		然后用此账号登陆mysql
-  		换到mysql数据库，查看user表中root用户的权限及密码：
-  		mysql> use mysql
-  		mysql> select Host,user,authentication_string,plugin from user;
-  		查看用户的权限，是否是mysql_native_password，如果不是，则将auth_sock改为mysql_native_password。
-  		mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '你的密码';
-  	允许MYSQL远程连接：
-  		sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
-  		将bind-address = 127.0.0.1注释掉
-  		设置某个用户可以远程访问
-  		update user set host='%' where user='root' and host='localhost';
-  		flush privileges;
-  		退出数据库 重启数据库 sudo service mysql restart
-
-  nginx                  	sudo apt install nginx
-  mysqlclient            	sudo apt-get install python3-dev default-libmysqlclient-dev
-  				查看是否已安装	apt list | grep 'default-libmysqlclient-dev'
-  				进行安装		sudo pip3 install mysqlclient
-  				再次查看是否安装完成 pip3 list | grep 'mysqlclient'
-  redis                  		sudo apt-get install redis-server
-  redis-sentinel	       	sudo apt install redis-sentinel
-  mongodb		sudo apt install mongodb
-  tesseract-ocr	       	sudo apt-get install tesseract-ocr	# 图像识别库，提取文字
-  nmap			sudo apt  install nmap	# 扫描局域网内所有IP	nmap -sP 176.198.105.0/24
-
-
-  5.安装pip3
-  pip3		       	sudo apt install python3-pip
-
-
-
-  6.安装python库
-  mycli			pip3 install mycli			#MySQL的命令行工具
-  			sudo apt  install mycli
-  redis			sudo pip3 install redis		# redis
-  django  2.2.12         		sudo pip3 install django==2.2.12
-  uwsgi   2.0.18         		sudo pip3 install uwsgi==2.0.18
-  django-cors-headers    	sudo pip3 install django-cors-headers	# 跨域
-  Celery		       	sudo pip3 install -U Celery		# 异步
-  django-redis	       	sudo pip3 install django-redis
-  jieba		       	sudo pip3 install jieba		# 中文分词器
-  django-crontab	       	sudo pip3 install django-crontab   	# 定时器
-  python-alipay-sdk      	sudo pip3 install python-alipay-sdk 	# 阿里支付
-  pymongo		       	sudo pip3 install pymongo		# 爬虫存数据用的
-  fake_useragent	       	sudo pip3 install fake_useragent	# 爬虫生成useragent的插件
-  lxml		       	sudo pip3 install lxml		# 爬虫xpath解析模块
-  selenium	       		sudo pip3 install selenium		# web测试工具	服务器没装
-  scrapy_redis	       	sudo pip3 install scrapy_redis		# 分布式爬虫
-  pytesseract	       	sudo pip3 install pytesseract		# 图像识别成文字
-  pycryptodome		sudo pip3 install pycryptodome	# 加解密模块
-  # 数据分析库
-  numpy			sudo pip3 install numpy		# 基础数值算法 
-  scipy			sudo pip3 install scipy		# 科学计算
-  matplotlib      		sudo pip3 install matplotlib      	# 数据可视化
-  pandas           		sudo pip3 install pandas           	# 序列高级函数
-
-
-  7.爬虫框架
-  Scrapy			sudo pip3 install Scrapy
-  	如果依赖缺失：
-  		1.1) 安装依赖包
-  			a> sudo apt-get install libffi-dev
-  			b> sudo apt-get install libssl-dev
-  			c> sudo apt-get install libxml2-dev
-  			d> sudo apt-get install python3-dev
-  			e> sudo apt-get install libxslt1-dev
-  			f> sudo apt-get install zlib1g-dev
-  			g> sudo pip3 install -I -U service_identity
-​          
-      		1.2) 安装scrapy框架
-          		a> sudo pip3 install Scrapy
-
-  8.机器学习，数据分析库	（服务器没装）
-  jupyter		sodu pip3 install jupyter		# 网页在线编程
-
-  ```
-
-
- 
-  ```

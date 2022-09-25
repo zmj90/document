@@ -18,9 +18,13 @@ HTML元素以id属性来设置id选择器,CSS 中 id 选择器以 "#" 来定义�
 
 ## 实例
 
-\#para1{    text-align:center;    color:red;}
-
-尝试一下 »
+```css
+#para1
+{
+    text-align:center;
+    color:red;
+}
+```
 
 ![Remark](https://www.runoob.com/images/lamp.gif) ID属性不要以数字开头，数字开头的ID在 Mozilla/Firefox 浏览器中不起作用。
 
@@ -36,9 +40,9 @@ class 选择器在HTML中以class属性表示, 在 CSS 中，类选择器以一�
 
 ## 实例
 
+```css
 .center {text-align:center;}
-
-尝试一下 »
+```
 
 你也可以指定特定的HTML元素使用class。
 
@@ -46,9 +50,9 @@ class 选择器在HTML中以class属性表示, 在 CSS 中，类选择器以一�
 
 ## 实例
 
+```css
 p.center {text-align:center;}
-
-尝试一下 »
+```
 
 ![Remark](https://www.runoob.com/images/lamp.gif) 类名的第一个字符不能使用数字！它无法在 Mozilla 或 Firefox 中起作用。
 
@@ -60,9 +64,7 @@ p.center {text-align:center;}
 
 ## CSS 组合选择符
 
-| ![Note](https://www.runoob.com/images/lamp.jpg) | 组合选择符说明了两个选择器之间的关系。 |
-| ---------------------------------------- | ------------------- |
-|                                          |                     |
+组合选择符说明了两个选择器之间的关系。
 
 CSS组合选择符包括各种简单选择符的组合方式。
 
@@ -83,9 +85,12 @@ CSS组合选择符包括各种简单选择符的组合方式。
 
 ## 实例
 
-div p{  background-color:yellow;}
-
-尝试一下 »
+```css
+div p
+{
+  background-color:yellow;
+}
+```
 
 ------
 
@@ -97,9 +102,12 @@ div p{  background-color:yellow;}
 
 ## 实例
 
-div>p{  background-color:yellow;}
-
-尝试一下 »
+```css
+div>p
+{
+  background-color:yellow;
+}
+```
 
 ------
 
@@ -113,9 +121,12 @@ div>p{  background-color:yellow;}
 
 ## 实例
 
-div+p{  background-color:yellow;}
-
-尝试一下 »
+```css
+div+p
+{
+  background-color:yellow;
+}
+```
 
 ------
 
@@ -127,13 +138,16 @@ div+p{  background-color:yellow;}
 
 ## 实例
 
-div~p{  background-color:yellow;}
+```css
+div~p
+{
+  background-color:yellow;
+}
+```
 
-尝试一下 »
 
 
-
-# CSS 伪类(Pseudo-classes)
+# CSS 伪类
 
 ------
 
@@ -159,9 +173,10 @@ selector.class:pseudo-class {property:value;}
 
 ## 实例
 
-a:link {color:#FF0000;} /* 未访问的链接 */a:visited {color:#00FF00;} /* 已访问的链接 */a:hover {color:#FF00FF;} /* 鼠标划过链接 */a:active {color:#0000FF;} /* 已选中的链接 */
-
-尝试一下 »
+a:link {color:#FF0000;} /* 未访问的链接 */
+a:visited {color:#00FF00;} /* 已访问的链接 */
+a:hover {color:#FF00FF;} /* 鼠标划过链接 */
+a:active {color:#0000FF;} /* 已选中的链接 */
 
 **注意：** 在CSS定义中，a:hover 必须被置于 a:link 和 a:visited 之后，才是有效的。
 
@@ -175,7 +190,10 @@ a:link {color:#FF0000;} /* 未访问的链接 */a:visited {color:#00FF00;} /* �
 
 伪类可以与 CSS 类配合使用：
 
-a.red:visited {color:#FF0000;} <a class="red" href="css-syntax.html">CSS 语法</a>
+```css
+a.red:visited {color:#FF0000;} 
+<a class="red" href="css-syntax.html">CSS 语法</a>
+```
 
 如果在上面的例子的链接已被访问，它会显示为红色。
 
@@ -193,9 +211,12 @@ a.red:visited {color:#FF0000;} <a class="red" href="css-syntax.html">CSS 语法<
 
 ## 实例
 
-p:first-child{    color:blue;}
-
-尝试一下 »
+```csss
+p:first-child
+{
+    color:blue;
+}
+```
 
 ------
 
@@ -205,9 +226,12 @@ p:first-child{    color:blue;}
 
 ## 实例
 
-p > i:first-child{    color:blue;}
-
-尝试一下 »
+```css
+p > i:first-child
+{
+    color:blue;
+}
+```
 
 ------
 
@@ -217,9 +241,12 @@ p > i:first-child{    color:blue;}
 
 ## 实例
 
-p:first-child i{    color:blue;}
-
-尝试一下 »
+```css
+p:first-child i
+{
+    color:blue;
+}
+```
 
 ------
 
@@ -467,9 +494,12 @@ h1:after{    content:url(smiley.gif);}
 
 ## 实例
 
-[title]{    color:blue;}
-
-尝试一下 »
+```css
+[title]
+{
+    color:blue;
+}
+```
 
 ------
 
@@ -479,9 +509,12 @@ h1:after{    content:url(smiley.gif);}
 
 ## 实例
 
-[title=runoob]{    border:5px solid green;}
-
-尝试一下 »
+```css
+[title=runoob]
+{
+    border:5px solid green;
+}
+```
 
 ------
 
