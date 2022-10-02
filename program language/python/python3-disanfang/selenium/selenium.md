@@ -347,49 +347,6 @@ driver.quit()
 
 ## css定位
 
-Selenium极力推荐使用CSS 定位，而不是XPath来定位元素，原因是CSS 定位比XPath 定速度快，语法也更加简洁。 
-
-CSS常用定位方法
-
-1. find_element_by_css_selector（）
-
-2. #id id选择器根据id属性来定位元素
-
-3. .class  class选择器，根据class属性值来定位元素
-
-4. [attribute='value'] 根据属性来定位元素
-
-5. element>element 根据元素层级来定位 父元素>子元素
-
-```python
-from selenium import webdriver
-from time import sleep
-
-driver=webdriver.Firefox()
-
-driver.get("http://www.baidu.com")
-
-#根据id来定位
-driver.find_element_by_css_selector('#kw').send_keys("Selenium 我要自学网")
-
-#根据class定位
-driver.find_element_by_css_selector('.s_ipt').send_keys('python')
-
-#通过属性来定位
-driver.find_element_by_css_selector("[autocomplete='off']").send_keys("selenium")
-
-sleep(2)
-driver.find_element_by_id('su').click()
-
-driver.get("http://www.51zxw.net")
-
-#通过元素层级来定位
-driver.find_element_by_css_selector("form#loginForm>ul>input").send_keys("51zxw")
-
-sleep(2)
-driver.quit()
-```
-
 
 
 # 鼠标操作
