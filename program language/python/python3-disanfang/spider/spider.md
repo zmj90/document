@@ -1,6 +1,6 @@
-# Day01笔记
 
-## 概述
+
+# 概述
 
 ```python
 【1】定义
@@ -38,7 +38,7 @@
 
 
 
--   **重大问题思考**
+-   重大问题思考
 
   网站如何来判定是人类正常访问还是爬虫程序访问？--检查请求头！！！
 
@@ -57,7 +57,7 @@
 
 
 
-- **重大问题解决**
+- 重大问题解决
 
   ```python
   """
@@ -65,7 +65,7 @@
   养成好习惯，发送请求携带请求头，重构User-Agent    User-Agent参数详解
   """
   import requests
-  
+
   url = 'http://httpbin.org/get'
   headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1'}
   html = requests.get(url=url,headers=headers).content.decode('utf-8','ignore')  # 'ignore' 忽略无法转码的字符串 防止网页中带有无法识别字符串而报错
@@ -79,7 +79,9 @@
 
 
 
-- **小总结**
+
+
+- 小总结
 
   ```python
   【1】 什么是robots协议，爬虫分为通用网络爬虫和聚焦网络爬虫，只有通用爬虫需要遵守协议
@@ -102,383 +104,7 @@
 
 
 
-## 正则解析模块re
 
-### re模块使用流程
-
-```python
-# 方法一 
-r_list=re.findall('正则表达式',html,re.S)
-# re.S 让正则的.能够匹配\n换行符
-
-# 方法二
-pattern = re.compile('正则表达式',re.S)
-r_list = pattern.findall(html)
-```
-
-
-
-- **思考 - 请写出匹配任意一个字符的正则表达式？**
-
-  ```python
-  import re
-  # 方法一
-  pattern = re.compile('[\s\S]')
-  result = pattern.findall(html)
-  
-  # 方法二
-  pattern = re.compile('.',re.S)
-  result = pattern.findall(html)
-  ```
-
-
-
-- **代码示例**
-
-  ```python
-  import re
-  
-  html = '''
-  <div><p>九霄龙吟惊天变</p></div>
-  <div><p>风云际会潜水游</p></div>
-  '''
-  # 贪婪匹配
-  p = re.compile('<div><p>.*</p></div>',re.S)
-  r_list = p.findall(html)
-  print(r_list)
-  
-  # 非贪婪匹配
-  p = re.compile('<div><p>.*?</p></div>',re.S)
-  r_list = p.findall(html)
-  print(r_list)
-  ```
-
-
-
-### 正则表达式分组
-
-- **作用**
-
-  ```python
-  在完整的模式中定义子模式，将每个圆括号中子模式匹配出来的结果提取出来
-  ```
-
-- **示例代码**
-
-  ```python
-  import re
-  
-  s = 'A B C D'
-  p1 = re.compile('\w+\s+\w+')
-  print(p1.findall(s))
-  # 分析结果是什么？？？
-  # ['A B', 'C D']
-  
-  p2 = re.compile('(\w+)\s+\w+')
-  print(p2.findall(s))
-  # 第一步: ['A B', 'C D']
-  # 第二步: ['A', 'C']
-  
-  
-  p3 = re.compile('(\w+)\s+(\w+)')
-  print(p3.findall(s))
-  # 第一步: ['A B', 'C D']
-  # 第二步: [('A','B'), ('C','D')]
-  ```
-
-- **分组总结**
-
-  ```python
-  1、在网页中,想要什么内容,就加()
-  2、先按整体正则匹配,然后再提取分组()中的内容
-     如果有2个及以上分组(),则结果中以元组形式显示 [(),(),()]
-  ```
-
-- **课堂练习**
-
-  ```python
-  # 从如下html代码结构中完成如下内容信息的提取：
-  问题1 ：[('Tiger',' Two...'),('Rabbit','Small..')]
-  问题2 ：
-  	动物名称 ：Tiger
-  	动物描述 ：Two tigers two tigers run fast
-      **********************************************
-  	动物名称 ：Rabbit
-  	动物描述 ：Small white rabbit white and white
-  ```
-
-- **页面结构如下**
-
-  ```python
-  <div class="animal">
-      <p class="name">
-  			<a title="Tiger"></a>
-      </p>
-      <p class="content">
-  			Two tigers two tigers run fast
-      </p>
-  </div>
-  
-  <div class="animal">
-      <p class="name">
-  			<a title="Rabbit"></a>
-      </p>
-  
-      <p class="content">
-  			Small white rabbit white and white
-      </p>
-  </div>
-  ```
-
-- **练习答案**
-
-  ```python
-  import re
-  
-  html = '''<div class="animal">
-      <p class="name">
-          <a title="Tiger"></a>
-      </p>
-  
-      <p class="content">
-          Two tigers two tigers run fast
-      </p>
-  </div>
-  
-  <div class="animal">
-      <p class="name">
-          <a title="Rabbit"></a>
-      </p>
-  
-      <p class="content">
-          Small white rabbit white and white
-      </p>
-  </div>'''
-  
-  p = re.compile('<div class="animal">.*?title="(.*?)".*?content">(.*?)</p>.*?</div>',re.S)
-  r_list = p.findall(html)
-  
-  for rt in r_list:
-      print('动物名称:',rt[0].strip())   # strip() 去掉字符串两头的空白包括\n\t和空格
-      print('动物描述:',rt[1].strip())
-      print('*' * 50)
-  
-      
-  # 把想要提取的数据先复制出来，再按需删除，删除的地方加上.*?,需要提取的地方加(.*?)
-  ```
-
-## 猫眼电影top100抓取案例
-
-- **爬虫需求**
-
-  ```python
-  【1】确定URL地址
-      百度搜索 - 猫眼电影 - 榜单 - top100榜
-  
-  【2】 爬取目标
-      所有电影的 电影名称、主演、上映时间
-  ```
-
-- **爬虫实现**
-
-  ```python
-  【1】查看网页源码，确认数据来源
-      响应内容中存在所需抓取数据 - 电影名称、主演、上映时间
-  
-  【2】翻页寻找URL地址规律
-      第1页：https://maoyan.com/board/4?offset=0
-      第2页：https://maoyan.com/board/4?offset=10
-      第n页：offset=(n-1)*10
-  
-  【3】编写正则表达式
-      <div class="movie-item-info">.*?title="(.*?)".*?class="star">(.*?)</p>.*?releasetime">(.*?)</p>
-      
-  【4】开干吧兄弟
-  ```
-
-- **代码实现**
-
-  ```python
-  """
-  猫眼电影top100抓取（电影名称、主演、上映时间）
-  """
-  import requests
-  import re
-  import time
-  import random
-  
-  class MaoyanSpider:
-      def __init__(self):
-          self.url = 'https://maoyan.com/board/4?offset={}'
-          self.headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko'}
-  
-      def get_html(self, url):
-          html = requests.get(url=url, headers=self.headers).text
-          # 直接调用解析函数
-          self.parse_html(html)
-  
-      def parse_html(self, html):
-          """解析提取数据"""
-          regex = '<div class="movie-item-info">.*?title="(.*?)".*?<p class="star">(.*?)</p>.*?<p class="releasetime">(.*?)</p>'
-          pattern = re.compile(regex, re.S)
-          r_list = pattern.findall(html)
-          # r_list: [('活着','牛犇','2000-01-01'),(),(),...,()]
-          self.save_html(r_list)
-  
-      def save_html(self, r_list):
-          """数据处理函数"""
-          item = {}
-          for r in r_list:
-              item['name'] = r[0].strip()
-              item['star'] = r[1].strip()
-              item['time'] = r[2].strip()
-              print(item)
-  
-      def run(self):
-          """程序入口函数"""
-          for offset in range(0, 91, 10):
-              url = self.url.format(offset)
-              self.get_html(url=url)
-              # 控制数据抓取频率:uniform()生成指定范围内的浮点数
-              time.sleep(random.uniform(0,1))
-  
-  if __name__ == '__main__':
-      spider = MaoyanSpider()
-      spider.run()
-  ```
-
-## 数据持久化 - MySQL
-
-- **pymysql回顾**
-
-  ```python
-  import pymysql
-  
-  db = pymysql.connect('localhost','root','123456','maoyandb',charset='utf8')
-  cursor = db.cursor()
-  
-  ins = 'insert into filmtab values(%s,%s,%s)'
-  cursor.execute(ins,['霸王别姬','张国荣','1993'])
-  
-  db.commit()
-  cursor.close()
-  db.close()
-  ```
-  
-- **练习 - 将电影信息存入MySQL数据库**
-
-  ```python
-  【1】提前建库建表
-  mysql -h127.0.0.1 -uroot -p123456
-  create database maoyandb charset utf8;
-  use maoyandb;
-  create table maoyantab(
-  name varchar(100),
-  star varchar(300),
-  time varchar(100)
-  )charset=utf8;
-  
-  【2】 使用excute()方法将数据存入数据库思路
-      2.1) 在 __init__() 中连接数据库并创建游标对象
-      2.2) 在 save_html() 中将所抓取的数据处理成列表，使用execute()方法写入
-      2.3) 在run() 中等数据抓取完成后关闭游标及断开数据库连接
-  ```
-
-
-
-- **汽车之家二手车信息抓取**
-
-  ```python
-  【1】URL地址
-      进入汽车之家官网，点击 二手车
-      即：https://www.che168.com/beijing/a0_0msdgscncgpi1lto1cspexx0/
-          
-  【2】抓取目标
-      每辆汽车的
-      2.1) 汽车名称
-      2.2) 行驶里程
-      2.3) 城市
-      2.4) 个人还是商家
-      2.5) 价格
-      
-  【3】抓取前5页
-  ```
-
-- **参考答案**
-
-  ```python
-  import requests
-  import re
-  import time
-  import random
-  
-  class CarSpider:
-      def __init__(self):
-          self.url = 'https://www.che168.com/beijing/a0_0msdgscncgpi1lto1csp{}exx0/?pvareaid=102179#currengpostion'
-          self.headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'}
-  
-      def get_html(self, url):
-          html = requests.get(url=url, headers=self.headers).content.decode('gb2312', 'ignore')
-          self.parse_html(html)
-  
-      def parse_html(self, html):
-          pattern = re.compile('<li class="cards-li list-photo-li".*?<div class="cards-bottom">.*?<h4 class="card-name">(.*?)</h4>.*?<p class="cards-unit">(.*?)</p>.*?<span class="pirce"><em>(.*?)</em>', re.S)
-          car_list = pattern.findall(html)
-          self.save_html(car_list)
-  
-      def save_html(self, car_list):
-          for car in car_list:
-              print(car)
-  
-      def run(self):
-          for i in range(1,6):
-              page_url = self.url.format(i)
-              self.get_html(page_url)
-              time.sleep(random.randint(1,2))
-  
-  if __name__ == '__main__':
-      spider = CarSpider()
-      spider.run()
-  ```
-
-  
-
-## 请求模块(requests)
-
-```python
-html = requests.get(url=url,headers=headers).text
-html = requests.get(url=url,headers=headers).content.decode('utf-8')
-
-with open('xxx.txt','w',encoding='utf-8') as f:
-    f.write(html)
-```
-
-
-
-## 解析模块(re)
-
-- **使用流程**
-
-  ```python
-  p = re.compile('正则表达式',re.S)
-  r_list = p.findall(html)
-  ```
-
-- **贪婪匹配和非贪婪匹配**
-
-  ```python
-  贪婪匹配(默认) ： .*
-  非贪婪匹配     ： .*?
-  ```
-
-- **正则表达式分组**
-
-  ```python
-  【1】想要什么内容在正则表达式中加()
-  【2】多个分组,先按整体正则匹配,然后再提取()中数据。结果：[(),(),(),(),()]
-  ```
-
-**************************************************
 ## 抓取步骤
 
 ```python
@@ -519,228 +145,21 @@ if __name__ == '__main__':
 
 
 
-# day02笔记
-
-## **数据持久化 - MySQL**
-
-- **pymysql回顾**
-
-  ```python
-  import pymysql
-  
-  db = pymysql.connect('localhost','root','123456','maoyandb',charset='utf8')
-  cursor = db.cursor()
-  
-  ins = 'insert into filmtab values(%s,%s,%s)'
-  cursor.execute(ins,['霸王别姬','张国荣','1993'])
-  
-  db.commit()
-  cursor.close()
-  db.close()
-  ```
-
-## **数据持久化 - MongoDB**
-
-- **MongoDB特点**
-
-  ```python
-  【1】非关系型数据库,数据以键值对方式存储，端口27017
-  【2】MongoDB基于磁盘存储
-  【3】MongoDB数据类型单一,值为JSON文档,而Redis基于内存,
-     3.1> MySQL数据类型：数值类型、字符类型、日期时间类型、枚举类型
-     3.2> Redis数据类型：字符串、列表、哈希、集合、有序集合
-     3.3> MongoDB数据类型：值为JSON文档
-  【4】MongoDB: 库 -> 集合 -> 文档
-       MySQL  : 库 -> 表  ->  表记录
-  ```
-
-- **MongoDB常用命令**
-
-  ```python
-  Linux进入: mongo
-  >show dbs                  - 查看所有库
-  >use 库名                   - 切换库
-  >show collections          - 查看当前库中所有集合
-  >db.集合名.find().pretty()  - 查看集合中文档
-  >db.集合名.count()          - 统计文档条数
-  >db.集合名.drop()           - 删除集合
-  >db.dropDatabase()         - 删除当前库
-  ```
-
-- **pymongo模块使用**
-
-  ```python
-  import pymongo
-  
-  # 1.连接对象
-  conn = pymongo.MongoClient(host = 'localhost',port = 27017)
-  # 2.库对象
-  db = conn['maoyandb']
-  # 3.集合对象
-  myset = db['maoyanset']
-  # 4.插入数据库
-  myset.insert_one({'name':'赵敏'})
-  ```
-
-- **练习 - 将电影信息存入MongoDB数据库**
-
-  ```python
-  """
-  猫眼电影top100抓取（电影名称、主演、上映时间）
-  存入mongodb数据库中
-  """
-  import requests
-  import re
-  import time
-  import random
-  import pymongo
-  
-  class MaoyanSpider:
-      def __init__(self):
-          self.url = 'https://maoyan.com/board/4?offset={}'
-          self.headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36'}
-          # 三个对象：连接对象、库对象、集合对象
-          self.conn = pymongo.MongoClient('127.0.0.1', 27017)
-          self.db = self.conn['maoyandb']
-          self.myset = self.db['maoyanset2']
-  
-      def get_html(self, url):
-          html = requests.get(url=url, headers=self.headers).text
-          # 直接调用解析函数
-          self.parse_html(html)
-  
-      def parse_html(self, html):
-          """解析提取数据"""
-          regex = '<div class="movie-item-info">.*?title="(.*?)".*?<p class="star">(.*?)</p>.*?<p class="releasetime">(.*?)</p>'
-          pattern = re.compile(regex, re.S)
-          r_list = pattern.findall(html)
-          # r_list: [('活着','牛犇','2000-01-01'),(),(),...,()]
-          self.save_html(r_list)
-  
-      def save_html(self, r_list):
-          """数据处理函数"""
-          for r in r_list:
-              item = {}
-              item['name'] = r[0].strip()
-              item['star'] = r[1].strip()
-              item['time'] = r[2].strip()
-              print(item)
-              # 存入到mongodb数据库
-              self.myset.insert_one(item)
-  
-      def run(self):
-          """程序入口函数"""
-          for offset in range(0, 91, 10):
-              url = self.url.format(offset)
-              self.get_html(url=url)
-              # 控制数据抓取频率:uniform()生成指定范围内的浮点数
-              time.sleep(random.uniform(0,1))
-  
-  if __name__ == '__main__':
-      spider = MaoyanSpider()
-      spider.run()
-  ```
-
-## **数据持久化 - csv**
-
-- **csv描述**
-
-  ```python
-  【1】作用
-     将爬取的数据存放到本地的csv文件中
-  
-  【2】使用流程
-      2.1> 打开csv文件
-      2.2> 初始化写入对象
-      2.3> 写入数据(参数为列表)
-     
-  【3】示例代码
-      import csv 
-      with open('sky.csv','w') as f:
-          writer = csv.writer(f)
-          writer.writerow([])
-  ```
-
-- **示例**
-
-  ```python
-  【1】题目描述
-      创建 test.csv 文件，在文件中写入数据
-  
-  【2】数据写入 - writerow([])方法
-      import csv
-      with open('test.csv','w') as f:  # with open('test.csv','w',newline='') as f:----->windows里面的写法，因为再wiondows中每条数据会有一个空行 
-  	    writer = csv.writer(f)
-  	    writer.writerow(['超哥哥','25'])
-          
-  ```
-  
-- **练习 - 使用 writerow() 方法将猫眼电影数据存入本地 maoyan.csv 文件**
-
-  ```python
-  【1】在 __init__() 中打开csv文件，因为csv文件只需要打开和关闭1次即可
-  【2】在 save_html() 中将所抓取的数据处理成列表，使用writerow()方法写入
-  【3】在run() 中等数据抓取完成后关闭文件
-  ```
 
 
-- **代码实现**
+# 请求模块(requests)
 
-  ```python
-  """
-  猫眼电影top100抓取（电影名称、主演、上映时间）
-  存入csv文件,使用writerow()方法
-  """
-  import requests
-  import re
-  import time
-  import random
-  import csv
-  
-  class MaoyanSpider:
-      def __init__(self):
-          self.url = 'https://maoyan.com/board/4?offset={}'
-          self.headers = {'User-Agent':'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.3; .NET4.0C; Tablet PC 2.0; .NET4.0E)'}
-          # 打开文件,初始化写入对象
-          self.f = open('maoyan.csv', 'w', newline='', encoding='utf-8')
-          self.writer = csv.writer(self.f)
-  
-      def get_html(self, url):
-          html = requests.get(url=url, headers=self.headers).text
-          # 直接调用解析函数
-          self.parse_html(html)
-  
-      def parse_html(self, html):
-          """解析提取数据"""
-          regex = '<div class="movie-item-info">.*?title="(.*?)".*?<p class="star">(.*?)</p>.*?<p class="releasetime">(.*?)</p>'
-          pattern = re.compile(regex, re.S)
-          r_list = pattern.findall(html)
-          # r_list: [('活着','牛犇','2000-01-01'),(),(),...,()]
-          self.save_html(r_list)
-  
-      def save_html(self, r_list):
-          """数据处理函数"""
-          for r in r_list:
-              li = [ r[0].strip(), r[1].strip(), r[2].strip() ]
-              self.writer.writerow(li)
-              print(li)
-  
-      def run(self):
-          """程序入口函数"""
-          for offset in range(0, 91, 10):
-              url = self.url.format(offset)
-              self.get_html(url=url)
-              # 控制数据抓取频率:uniform()生成指定范围内的浮点数
-              time.sleep(random.uniform(1,2))
-  
-          # 所有数据抓取并写入完成后关闭文件
-          self.f.close()
-  
-  if __name__ == '__main__':
-      spider = MaoyanSpider()
-      spider.run()
-  ```
-## **useragent 池**
+```python
+html = requests.get(url=url,headers=headers).text
+html = requests.get(url=url,headers=headers).content.decode('utf-8')
+
+with open('xxx.txt','w',encoding='utf-8') as f:
+    f.write(html)
+```
+
+
+
+# useragent 池
 
 ```python
 sudo pip3 install fake_useragent		# 爬虫生成useragent的插件，大概有250个UserAgent
@@ -751,7 +170,298 @@ hearders = {'User-Agent': UserAgent().random}
 
 
 
-## **汽车之家数据抓取 - 二级页面**
+
+
+# 正则解析模块re
+
+## 解析模块(re)
+
+-   使用流程
+
+    ```python
+    p = re.compile('正则表达式',re.S)
+    r_list = p.findall(html)
+    ```
+
+    ​
+
+-   贪婪匹配和非贪婪匹配
+
+    ```python
+    贪婪匹配(默认) ： .*
+    非贪婪匹配     ： .*?
+    ```
+
+    ​
+
+-   正则表达式分组
+
+    ```python
+    【1】想要什么内容在正则表达式中加()
+    【2】多个分组,先按整体正则匹配,然后再提取()中数据。结果：[(),(),(),(),()]
+    ```
+
+
+
+
+
+## re模块使用流程
+
+```python
+# 方法一 
+r_list=re.findall('正则表达式',html,re.S)
+# re.S 让正则的.能够匹配\n换行符
+
+# 方法二
+pattern = re.compile('正则表达式',re.S)
+r_list = pattern.findall(html)
+```
+
+
+
+- 思考 - 请写出匹配任意一个字符的正则表达式？
+
+  ```python
+  import re
+  # 方法一
+  pattern = re.compile('[\s\S]')
+  result = pattern.findall(html)
+
+  # 方法二
+  pattern = re.compile('.',re.S)
+  result = pattern.findall(html)
+  ```
+
+
+
+
+
+- 代码示例
+
+  ```python
+  import re
+
+  html = '''
+  <div><p>九霄龙吟惊天变</p></div>
+  <div><p>风云际会潜水游</p></div>
+  '''
+  # 贪婪匹配
+  p = re.compile('<div><p>.*</p></div>',re.S)
+  r_list = p.findall(html)
+  print(r_list)
+
+  # 非贪婪匹配
+  p = re.compile('<div><p>.*?</p></div>',re.S)
+  r_list = p.findall(html)
+  print(r_list)
+  ```
+
+
+
+
+### 正则表达式分组
+
+- 作用
+
+  ```python
+  在完整的模式中定义子模式，将每个圆括号中子模式匹配出来的结果提取出来
+  ```
+  ​
+
+- 示例代码
+
+  ```python
+  import re
+
+  s = 'A B C D'
+  p1 = re.compile('\w+\s+\w+')
+  print(p1.findall(s))
+  # 分析结果是什么？？？
+  # ['A B', 'C D']
+
+  p2 = re.compile('(\w+)\s+\w+')
+  print(p2.findall(s))
+  # 第一步: ['A B', 'C D']
+  # 第二步: ['A', 'C']
+
+  p3 = re.compile('(\w+)\s+(\w+)')
+  print(p3.findall(s))
+  # 第一步: ['A B', 'C D']
+  # 第二步: [('A','B'), ('C','D')]
+  ```
+
+  ​
+
+- 分组总结
+
+
+  ```python
+1、在网页中,想要什么内容,就加()
+2、先按整体正则匹配,然后再提取分组()中的内容，如果有2个及以上分组(),则结果中以元组形式显示 [(),(),()]
+  ```
+
+
+
+- 课堂练习
+
+  ```python
+  # 从如下html代码结构中完成如下内容信息的提取：
+  问题1 ：[('Tiger',' Two...'),('Rabbit','Small..')]
+  问题2 ：
+  	动物名称 ：Tiger
+  	动物描述 ：Two tigers two tigers run fast
+      **********************************************
+  	动物名称 ：Rabbit
+  	动物描述 ：Small white rabbit white and white
+  ```
+  ​
+
+- 页面结构如下
+
+  ```python
+  <div class="animal">
+      <p class="name">
+  			<a title="Tiger"></a>
+      </p>
+      <p class="content">
+  			Two tigers two tigers run fast
+      </p>
+  </div>
+
+  <div class="animal">
+      <p class="name">
+  			<a title="Rabbit"></a>
+      </p>
+
+      <p class="content">
+  			Small white rabbit white and white
+      </p>
+  </div>
+  ```
+
+- **练习答案**
+
+  ```python
+  import re
+
+  html = '''<div class="animal">
+      <p class="name">
+          <a title="Tiger"></a>
+      </p>
+
+      <p class="content">
+          Two tigers two tigers run fast
+      </p>
+  </div>
+
+  <div class="animal">
+      <p class="name">
+          <a title="Rabbit"></a>
+      </p>
+
+      <p class="content">
+          Small white rabbit white and white
+      </p>
+  </div>'''
+
+  p = re.compile('<div class="animal">.*?title="(.*?)".*?content">(.*?)</p>.*?</div>',re.S)
+  r_list = p.findall(html)
+
+  for rt in r_list:
+      print('动物名称:',rt[0].strip())   # strip() 去掉字符串两头的空白包括\n\t和空格
+      print('动物描述:',rt[1].strip())
+      print('*' * 50)
+
+      
+  # 把想要提取的数据先复制出来，再按需删除，删除的地方加上.*?,需要提取的地方加(.*?)
+  ```
+
+
+
+
+# 案例1-猫眼电影top100抓取
+
+- **爬虫需求**
+
+  ```python
+  【1】确定URL地址
+      百度搜索 - 猫眼电影 - 榜单 - top100榜
+
+  【2】 爬取目标
+      所有电影的 电影名称、主演、上映时间
+  ```
+
+- **爬虫实现**
+
+  ```python
+  【1】查看网页源码，确认数据来源
+      响应内容中存在所需抓取数据 - 电影名称、主演、上映时间
+
+  【2】翻页寻找URL地址规律
+      第1页：https://maoyan.com/board/4?offset=0
+      第2页：https://maoyan.com/board/4?offset=10
+      第n页：offset=(n-1)*10
+
+  【3】编写正则表达式
+      <div class="movie-item-info">.*?title="(.*?)".*?class="star">(.*?)</p>.*?releasetime">(.*?)</p>
+      
+  【4】开干吧兄弟
+  ```
+
+- **代码实现**
+
+  ```python
+  """
+  猫眼电影top100抓取（电影名称、主演、上映时间）
+  """
+  import requests
+  import re
+  import time
+  import random
+
+  class MaoyanSpider:
+      def __init__(self):
+          self.url = 'https://maoyan.com/board/4?offset={}'
+          self.headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko'}
+
+      def get_html(self, url):
+          html = requests.get(url=url, headers=self.headers).text
+          # 直接调用解析函数
+          self.parse_html(html)
+
+      def parse_html(self, html):
+          """解析提取数据"""
+          regex = '<div class="movie-item-info">.*?title="(.*?)".*?<p class="star">(.*?)</p>.*?<p class="releasetime">(.*?)</p>'
+          pattern = re.compile(regex, re.S)
+          r_list = pattern.findall(html)
+          # r_list: [('活着','牛犇','2000-01-01'),(),(),...,()]
+          self.save_html(r_list)
+
+      def save_html(self, r_list):
+          """数据处理函数"""
+          item = {}
+          for r in r_list:
+              item['name'] = r[0].strip()
+              item['star'] = r[1].strip()
+              item['time'] = r[2].strip()
+              print(item)
+
+      def run(self):
+          """程序入口函数"""
+          for offset in range(0, 91, 10):
+              url = self.url.format(offset)
+              self.get_html(url=url)
+              # 控制数据抓取频率:uniform()生成指定范围内的浮点数
+              time.sleep(random.uniform(0,1))
+
+  if __name__ == '__main__':
+      spider = MaoyanSpider()
+      spider.run()
+  ```
+
+
+
+# 案例2-汽车之家数据抓取 - 二级页面
 
 - **领取任务**
 
@@ -759,11 +469,11 @@ hearders = {'User-Agent': UserAgent().random}
   【1】爬取地址
       汽车之家 - 二手车 - 价格从低到高
       https://www.che168.com/beijing/a0_0msdgscncgpi1lto1csp1exx0/
-  
+
     
   【2】爬取目标
       所有汽车的 型号、行驶里程、上牌时间、档位、排量、车辆所在地、价格
-  
+
   【3】爬取分析
       *********一级页面需抓取***********
           1、车辆详情页的链接
@@ -777,12 +487,12 @@ hearders = {'User-Agent': UserAgent().random}
           6、车辆所在地
           7、价格
   ```
-  
+
 - **实现步骤**
 
   ```python
   【1】确定响应内容中是否存在所需抓取数据 - 存在
-  
+
   【2】找URL地址规律
       第1页: https://www.che168.com/beijing/a0_0msdgscncgpi1lto1csp1exx0/
       第2页: https://www.che168.com/beijing/a0_0msdgscncgpi1lto1csp2exx0/
@@ -791,10 +501,10 @@ hearders = {'User-Agent': UserAgent().random}
   【3】 写正则表达式
       一级页面正则表达式:<li class="cards-li list-photo-li".*?<a href="(.*?)".*?</li>
       二级页面正则表达式:<div class="car-box">.*?<h3 class="car-brand-name">(.*?)</h3>.*?<ul class="brand-unit-item fn-clear">.*?<li>.*?<h4>(.*?)</h4>.*?<h4>(.*?)</h4>.*?<h4>(.*?)</h4>.*?<h4>(.*?)</h4>.*?<span class="price" id="overlayPrice">￥(.*?)<b>
-  
+
   【4】代码实现
   ```
-  
+
 - **代码实现**
 
   ```python
@@ -803,7 +513,7 @@ hearders = {'User-Agent': UserAgent().random}
   思路
       1、一级页面：汽车的链接
       2、二级页面：具体汽车信息
-  
+
   建立User-Agent池：防止被网站检测到是爬虫
       使用fake_useragent模块
       安装：sudo pip3 install fake_useragent
@@ -816,25 +526,25 @@ hearders = {'User-Agent': UserAgent().random}
   import time
   import random
   from fake_useragent import UserAgent
-  
+
   class CarSpider:
       def __init__(self):
           self.url = 'https://www.che168.com/beijing/a0_0msdgscncgpi1lto1csp{}exx0/'
-  
+
       def get_html(self, url):
           """功能函数1 - 获取html"""
           headers = { 'User-Agent':UserAgent().random }
           html = requests.get(url=url, headers=headers).text
-  
+
           return html
-  
+
       def re_func(self, regex, html):
           """功能函数2 - 正则解析函数"""
           pattern = re.compile(regex, re.S)
           r_list = pattern.findall(html)
-  
+
           return r_list
-  
+
       def parse_html(self, one_url):
           """爬虫逻辑函数"""
           one_html = self.get_html(url=one_url)
@@ -846,7 +556,7 @@ hearders = {'User-Agent': UserAgent().random}
               self.get_car_info(two_url)
               # 控制爬取频率
               time.sleep(random.randint(1,2))
-  
+
       def get_car_info(self, two_url):
           """获取1辆汽车的具体信息"""
           two_html = self.get_html(url=two_url)
@@ -862,17 +572,17 @@ hearders = {'User-Agent': UserAgent().random}
           item['address'] = car_list[0][4].strip()
           item['price'] = car_list[0][5].strip()
           print(item)
-  
+
       def run(self):
           for i in range(1,5):
               url = self.url.format(i)
               self.parse_html(url)
-  
+
   if __name__ == '__main__':
       spider = CarSpider()
       spider.run()
   ```
-  
+
 - **练习 - 将数据存入MySQL数据库**
 
   ```mysql
@@ -991,32 +701,7 @@ hearders = {'User-Agent': UserAgent().random}
       spider.run()
   ```
 
-## **Chrome浏览器安装插件**
 
-- **安装方法**
-
-  ```python
-  【1】在线安装
-      1.1> 下载插件 - google访问助手
-      1.2> 安装插件 - google访问助手: Chrome浏览器-设置-更多工具-扩展程序-开发者模式-拖拽(解压后的插件)
-      1.3> 在线安装其他插件 - 打开google访问助手 - google应用商店 - 搜索插件 - 添加即可
-  
-  【2】离线安装
-      2.1> 网上下载插件 - xxx.crx 重命名为 xxx.zip
-      2.2> Chrome浏览器-设置-更多工具-扩展程序-开发者模式
-      2.3> 拖拽 插件(或者解压后文件夹) 到浏览器中
-      2.4> 重启浏览器，使插件生效
-  ```
-
-- **爬虫常用插件**
-
-  ```python
-  【1】google-access-helper : 谷歌访问助手,可访问 谷歌应用商店
-  【2】Xpath Helper: 轻松获取HTML元素的xPath路径
-      打开/关闭: Ctrl + Shift + x
-  【3】JsonView: 格式化输出json格式数据
-  【4】Proxy SwitchyOmega: Chrome浏览器中的代理管理扩展程序
-  ```
 
 ## xpath解析
 
@@ -1037,7 +722,7 @@ hearders = {'User-Agent': UserAgent().random}
       //dl[@class="board-wrapper"]/dd[2]                          
   【4】获取所有电影详情页链接: 获取每个电影的a节点的href的属性值
       //p[@class="name"]/a/@href
-  
+
   【注意】                             
       1> 只要涉及到条件,加 [] : //dl[@class="xxx"]   //dl/dd[2]
       2> 只要获取属性值,加 @  : //dl[@class="xxx"]   //p/a/@href
@@ -1108,6 +793,8 @@ hearders = {'User-Agent': UserAgent().random}
        2.6)价格:   //div[@class="brand-price-item"]/span[@class="price"]/text()
   ```
 
+
+
 ## lxml解析库
 
 - **安装**
@@ -1153,17 +840,17 @@ hearders = {'User-Agent': UserAgent().random}
   import time
   import random
   from lxml import etree
-  
+
   class MaoyanSpider:
       def __init__(self):
           self.url = 'https://maoyan.com/board/4?offset={}'
           self.headers = {'User-Agent':'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.3; .NET4.0C; Tablet PC 2.0; .NET4.0E)'}
-  
+
       def get_html(self, url):
           html = requests.get(url=url, headers=self.headers).text
           # 直接调用解析函数
           self.parse_html(html)
-  
+
       def parse_html(self, html):
           """解析提取数据 - xpath"""
           p = etree.HTML(html)
@@ -1176,7 +863,7 @@ hearders = {'User-Agent': UserAgent().random}
               item['star'] = dd.xpath('.//p[@class="star"]/text()')[0].strip()
               item['time'] = dd.xpath('.//p[@class="releasetime"]/text()')[0].strip()
               print(item)
-  
+
       def run(self):
           """程序入口函数"""
           for offset in range(0, 91, 10):
@@ -1184,7 +871,7 @@ hearders = {'User-Agent': UserAgent().random}
               self.get_html(url=url)
               # 控制数据抓取频率:uniform()生成指定范围内的浮点数
               time.sleep(random.uniform(0,1))
-  
+
   if __name__ == '__main__':
       spider = MaoyanSpider()
       spider.run()
@@ -1196,13 +883,8 @@ hearders = {'User-Agent': UserAgent().random}
   汽车之家案例使用lxml+xpath实现
   ```
 
-  
 
 
-
-
-
-# **Day02回顾**
 
 ## **数据抓取**
 
@@ -1222,7 +904,7 @@ hearders = {'User-Agent': UserAgent().random}
       1.1> 爬取一级页面,提取 所需数据+链接,继续跟进
       1.2> 爬取二级页面,提取 所需数据+链接,继续跟进
       1.3> ... ... 
-  
+
   【2】代码实现思路
       2.1> 避免重复代码 - 请求、解析需定义函数
   ```
@@ -1239,7 +921,7 @@ hearders = {'User-Agent': UserAgent().random}
   import redis
   from hashlib import md5
   import sys
-  
+
   class XxxIncrSpider:
     def __init__(self):
       self.r = redis.Redis(host='localhost',port=6379,db=0)
@@ -1276,58 +958,7 @@ hearders = {'User-Agent': UserAgent().random}
       html = requests.get(url=url, headers=headers).content.decode('', 'ignore')
   ```
 
-## **数据持久化**
 
-- **csv**
-
-  ```python
-   import csv
-   with open('xxx.csv','w',encoding='utf-8',newline='') as f:
-  	writer = csv.writer(f)
-   	writer.writerow([])
-  ```
-
-- **MySQL**
-
-  ```python
-  import pymysql
-  
-  # __init__(self)：
-  	self.db = pymysql.connect('IP',... ...)
-  	self.cursor = self.db.cursor()
-  	
-  # save_html(self,r_list):
-  	self.cursor.execute('sql',[data1])
-  	self.db.commit()
-  	
-  # run(self):
-  	self.cursor.close()
-  	self.db.close()
-  ```
-
-- **MongoDB**
-
-  ```python
-  import pymongo
-  
-  
-  # __init__(self)：
-  	self.conn = pymongo.MongoClient('IP',27017)
-  	self.db = self.conn['cardb']
-  	self.myset = self.db['car_set']
-  	
-  # save_html(self,r_list):
-  	self.myset.insert_one(dict)
-  
-  # MongoDB - Commmand - 库->集合->文档
-  mongo
-  >show dbs
-  >use db_name
-  >show collections
-  >db.集合名.find().pretty()
-  >db.集合名.count()
-  >db.集合名.drop()
-  >db.dropDatabase()
   ```
 
 ## **xpath表达式**
@@ -1337,7 +968,7 @@ hearders = {'User-Agent': UserAgent().random}
   ```python
   【1】结果: 节点对象列表
      1.1) xpath示例: //div、//div[@class="student"]、//div/a[@title="stu"]/span
-  
+
   【2】结果: 字符串列表
      2.1) xpath表达式中末尾为: @src、@href、/text()
   ```
@@ -1441,17 +1072,17 @@ hearders = {'User-Agent': UserAgent().random}
   from fake_useragent import UserAgent
   import time
   import random
-  
+
   class DoubanBookSpider:
       def __init__(self):
           self.url = 'https://book.douban.com/top250?start={}'
-  
+
       def get_html(self, url):
           """使用随机的User-Agent"""
           headers = {'User-Agent':UserAgent().random}
           html = requests.get(url=url, headers=headers).text
           self.parse_html(html)
-  
+
       def parse_html(self, html):
           """lxml+xpath进行数据解析"""
           parse_obj = etree.HTML(html)
@@ -1474,16 +1105,16 @@ hearders = {'User-Agent': UserAgent().random}
               # 类别
               type_list = table.xpath('.//span[@class="inq"]/text()')
               item['type'] = type_list[0].strip() if type_list else None
-  
+
               print(item)
-  
+
       def run(self):
           for i in range(5):
               start = (i - 1) * 25
               page_url = self.url.format(start)
               self.get_html(page_url)
               time.sleep(random.randint(1,2))
-  
+
   if __name__ == '__main__':
       spider = DoubanBookSpider()
       spider.run()
@@ -1533,14 +1164,14 @@ hearders = {'User-Agent': UserAgent().random}
   ### 重要：页面中xpath不能全信，一切以响应内容为主
   ### 重要：页面中xpath不能全信，一切以响应内容为主
   ```
-  
+
 - **示意代码**
 
   ```python
   import requests
   from lxml import etree
   from fake_useragent import UserAgent
-  
+
   # 1.定义变量
   url = 'https://bj.lianjia.com/ershoufang/pg1/'
   headers = {'User-Agent':UserAgent().random}
@@ -1567,10 +1198,10 @@ hearders = {'User-Agent': UserAgent().random}
       # 单价
       unit_list = li.xpath('.//div[@class="unitPrice"]/span/text()')
       item['unit'] = unit_list[0].strip() if unit_list else None
-  
+
       print(item)
   ```
-  
+
 - **完整代码实现 - 自己实现**
 
   ```python
@@ -1579,16 +1210,17 @@ hearders = {'User-Agent': UserAgent().random}
   import time
   import random
   from fake_useragent import UserAgent
-  
+
   class LianjiaSpider(object):
       def __init__(self):
           self.url = 'https://bj.lianjia.com/ershoufang/pg{}/'
-  
+
       def parse_html(self,url):
   		html = requests.get(url=url,headers=headers,timeout=3).content.decode('utf-8','ignore')
   		self.get_data(html)
-  
-  
+  ```
+
+
       def get_data(self,html):
           p = etree.HTML(html)
           # 基准xpath: [<element li at xxx>,<element li>]
@@ -1618,26 +1250,26 @@ hearders = {'User-Agent': UserAgent().random}
                       item['model'] = item['area'] = item['direct'] = item['perfect'] = item['floor'] = item['year'] = item['type'] = None
               else:
                   item['model'] = item['area'] = item['direct'] = item['perfect'] = item['floor'] = item['year'] = item['type'] = None
-  
+    
               # 总价+单价
               total_list = li.xpath('.//div[@class="totalPrice"]/span/text()')
               item['total'] = total_list[0].strip() if total_list else None
               unit_list = li.xpath('.//div[@class="unitPrice"]/span/text()')
               item['unit'] = unit_list[0].strip() if unit_list else None
-  
+    
               print(item)
-  
+    
       def run(self):
           for pg in range(1,101):
               url = self.url.format(pg)
               self.parse_html(url)
               time.sleep(random.randint(1,2))
-  
+
   if __name__ == '__main__':
       spider = LianjiaSpider()
       spider.run()
   ```
-  
+
 - **持久化到数据库中 - 自己实现**
 
   ```python
@@ -1651,7 +1283,7 @@ hearders = {'User-Agent': UserAgent().random}
 
   ```python
   【1】定义 : 代替你原来的IP地址去对接网络的IP地址
-  
+
   【2】作用 : 隐藏自身真实IP,避免被封
   ```
 
@@ -1660,7 +1292,7 @@ hearders = {'User-Agent': UserAgent().random}
   ```python
   【1】获取代理IP网站
      西刺代理、快代理、全网代理、代理精灵、... ...
-  
+
   【2】参数类型
      proxies = { '协议':'协议://IP:端口号' }
      proxies = {
@@ -1674,7 +1306,7 @@ hearders = {'User-Agent': UserAgent().random}
   ```python
   # 使用免费普通代理IP访问测试网站: http://httpbin.org/get
   import requests
-  
+
   url = 'http://httpbin.org/get'
   headers = {'User-Agent':'Mozilla/5.0'}
   # 定义代理,在代理IP网站中查找免费代理IP
@@ -1691,7 +1323,7 @@ hearders = {'User-Agent': UserAgent().random}
   ```python
   【1】语法结构
      proxies = { '协议':'协议://用户名:密码@IP:端口号' }
-  
+
   【2】示例
      proxies = {
   	  'http':'http://用户名:密码@IP:端口号',
@@ -1711,7 +1343,7 @@ hearders = {'User-Agent': UserAgent().random}
   headers = {
       'User-Agent' : 'Mozilla/5.0',
   }
-  
+
   html = requests.get(url,proxies=proxies,headers=headers,timeout=5).text
   print(html)
   ```
@@ -1727,14 +1359,14 @@ hearders = {'User-Agent': UserAgent().random}
       2、依次对每个代理IP进行测试,能用的保存到文件中
   """
   import requests
-  
+
   class ProxyPool:
       def __init__(self):
           self.url = '代理网站的API链接'
           self.headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36'}
           # 打开文件,用来存放可用的代理IP
           self.f = open('proxy.txt', 'w')
-  
+
       def get_html(self):
           html = requests.get(url=self.url, headers=self.headers).text
           proxy_list = html.split('\r\n')
@@ -1742,7 +1374,7 @@ hearders = {'User-Agent': UserAgent().random}
               # 依次测试每个代理IP是否可用
               if self.check_proxy(proxy):
                   self.f.write(proxy + '\n')
-  
+
       def check_proxy(self, proxy):
           """测试1个代理IP是否可用,可用返回True,否则返回False"""
           test_url = 'http://httpbin.org/get'
@@ -1761,12 +1393,12 @@ hearders = {'User-Agent': UserAgent().random}
           except:
               print(proxy,'无效')
               return False
-  
+
       def run(self):
           self.get_html()
           # 关闭文件
           self.f.close()
-  
+
   if __name__ == '__main__':
       spider = ProxyPool()
       spider.run()
@@ -1801,7 +1433,7 @@ hearders = {'User-Agent': UserAgent().random}
 
   ```python
   【1】适用场景 : Post类型请求的网站
-  
+
   【2】参数 : data={}
      2.1) Form表单数据: 字典
      2.2) res = requests.post(url=url,data=data,headers=headers)
@@ -1822,9 +1454,9 @@ hearders = {'User-Agent': UserAgent().random}
 
   ```python
   【1】打开浏览器，F12打开控制台，找到Network选项卡
-  
+
   post请求就找三个数据，url,headers,formdata
-  
+
   【2】控制台常用选项
      2.1) Network: 抓取网络数据包
        a> ALL: 抓取所有的网络数据包
@@ -2120,7 +1752,7 @@ if __name__ == '__main__':
   import random
   import re
   import json
-  
+
   class DoubanSpider:
       def __init__(self):
           self.url = 'https://movie.douban.com/j/chart/top_list?'
@@ -2128,19 +1760,19 @@ if __name__ == '__main__':
           # 存入json文件
           self.f = open('douban.json', 'w', encoding='utf-8')
           self.all_film_list = []
-  
+
       def get_agent(self):
           """获取随机的User-Agent"""
           return UserAgent().random
-  
+
       def get_html(self, params):
           headers = {'User-Agent':self.get_agent()}
           html = requests.get(url=self.url, params=params, headers=headers).text
           # 把json格式的字符串转为python数据类型
           html = json.loads(html)
-  
+
           self.parse_html(html)
-  
+
       def parse_html(self, html):
           """解析"""
           # html: [{},{},{},{}]
@@ -2152,7 +1784,7 @@ if __name__ == '__main__':
               print(item)
               self.all_film_list.append(item)
               self.i += 1
-  
+
       def run(self):
           # d: {'剧情':'11','爱情':'13','喜剧':'5',...,...}
           d = self.get_d()
@@ -2176,14 +1808,14 @@ if __name__ == '__main__':
                   }
                   self.get_html(params=params)
                   time.sleep(random.randint(1,2))
-  
+
               # 把数据存入json文件
               json.dump(self.all_film_list, self.f, ensure_ascii=False)
               self.f.close()
               print('数量:',self.i)
           else:
               print('请做出正确的选择')
-  
+
       def get_d(self):
           """{'剧情':'11','爱情':'13','喜剧':'5',...,...}"""
           url = 'https://movie.douban.com/chart'
@@ -2196,17 +1828,17 @@ if __name__ == '__main__':
           d = {}
           for r in r_list:
               d[r[0]] = r[1]
-  
+
           return d
-  
+
       def get_total(self, code):
           """获取某个类别下的电影总数"""
           url = 'https://movie.douban.com/j/chart/top_list_count?type={}&interval_id=100%3A90'.format(code)
           html = requests.get(url=url,headers={'User-Agent':self.get_agent()}).text
           html = json.loads(html)
-  
+
           return html['total']
-  
+
   if __name__ == '__main__':
       spider = DoubanSpider()
       spider.run()
@@ -2218,7 +1850,7 @@ if __name__ == '__main__':
 
   ```python
   【1】作用 : 把json格式的字符串转为Python数据类型
-  
+
   【2】示例 : html = json.loads(res.text)
   ```
 
@@ -2236,19 +1868,19 @@ if __name__ == '__main__':
   【3】示例代码
       # 示例1
       import json
-  
+
       item = {'name':'QQ','app_id':1}
       with open('小米.json','a') as f:
         json.dump(item,f,ensure_ascii=False)
     
       # 示例2
       import json
-  
+
       item_list = []
       for i in range(3):
         item = {'name':'QQ','id':i}
         item_list.append(item)
-  
+
       with open('xiaomi.json','a') as f:
           json.dump(item_list,f,ensure_ascii=False)
   ```
@@ -2261,7 +1893,7 @@ if __name__ == '__main__':
       将响应内容由: json 转为 python
   【2】数据保存 - json.dump(item_list,f,ensure_ascii=False)
       将抓取的数据保存到本地 json文件
-  
+
   # 抓取数据一般处理方式
   【1】txt文件
   【2】csv文件
@@ -2287,13 +1919,13 @@ if __name__ == '__main__':
   ```python
   【1】导入模块
      from queue import Queue
-  
+
   【2】使用
       q = Queue()
       q.put(url)
       q.get()   # 当队列为空时，阻塞
       q.empty() # 判断队列是否为空，True/False
-  
+
   【3】q.get()解除阻塞方式
      3.1) q.get(block=False)
      3.2) q.get(block=True,timeout=3)
@@ -2306,20 +1938,20 @@ if __name__ == '__main__':
   ```python
   # 导入模块
   from threading import Thread
-  
+
   # 使用流程  
   t = Thread(target=函数名) # 创建线程对象
   t.start() # 创建并启动线程
   t.join()  # 阻塞等待回收线程
-  
+
   # 如何创建多线程
   t_list = []
-  
+
   for i in range(5):
       t = Thread(target=函数名)
       t_list.append(t)
       t.start()
-  
+
   for t in t_list:
       t.join()
   ```
@@ -2328,11 +1960,11 @@ if __name__ == '__main__':
 
   ```python
   from threading import Lock
-  
+
   lock = Lock()
   lock.acquire()
   lock.release()
-  
+
   【注意】上锁成功后,再次上锁会阻塞
   ```
 
@@ -2349,7 +1981,7 @@ if __name__ == '__main__':
   import random
   from threading import Thread,Lock
   from queue import Queue
-  
+
   class DoubanSpider:
       def __init__(self):
           self.url = 'https://movie.douban.com/j/chart/top_list?type=13&interval_id=100%3A90&action=&start={}&limit=20'
@@ -2357,18 +1989,18 @@ if __name__ == '__main__':
           # 队列 + 锁
           self.q = Queue()
           self.lock = Lock()
-  
+
       def get_agent(self):
           """获取随机的User-Agent"""
           return UserAgent().random
-  
+
       def url_in(self):
           """把所有要抓取的URL地址入队列"""
           for start in range(0,684,20):
               url = self.url.format(start)
               # url入队列
               self.q.put(url)
-  
+
       # 线程事件函数：请求+解析+数据处理
       def get_html(self):
           while True:
@@ -2379,14 +2011,14 @@ if __name__ == '__main__':
                   headers = {'User-Agent': self.get_agent()}
                   url = self.q.get()
                   self.lock.release()
-  
+
                   html = requests.get(url=url, headers=headers).json()
                   self.parse_html(html)
               else:
                   # 如果队列为空,则最终必须释放锁
                   self.lock.release()
                   break
-  
+
       def parse_html(self, html):
           """解析"""
           # html: [{},{},{},{}]
@@ -2400,7 +2032,7 @@ if __name__ == '__main__':
               self.lock.acquire()
               self.i += 1
               self.lock.release()
-  
+
       def run(self):
           # 先让URL地址入队列
           self.url_in()
@@ -2410,12 +2042,12 @@ if __name__ == '__main__':
               t = Thread(target=self.get_html)
               t_list.append(t)
               t.start()
-  
+
           for t in t_list:
               t.join()
-  
+
           print('数量:',self.i)
-  
+
   if __name__ == '__main__':
       start_time = time.time()
       spider = DoubanSpider()
@@ -2461,7 +2093,7 @@ if __name__ == '__main__':
               
       2.3) phantomjs
          https://phantomjs.org/download.html
-  
+
   【3】Ubuntu安装
       3.1) 下载后解压 : tar -zxvf geckodriver.tar.gz 
           
@@ -2470,7 +2102,7 @@ if __name__ == '__main__':
           
       3.3) 添加可执行权限
            sudo chmod 777 /usr/bin/geckodriver
-  
+
   【4】Windows安装
       4.1) 下载对应版本的phantomjs、chromedriver、geckodriver
       4.2) 把chromedriver.exe拷贝到python安装目录的Scripts目录下(添加到系统环境变量)
@@ -2482,7 +2114,7 @@ if __name__ == '__main__':
   【1】解压 - 放到用户主目录(chromedriver、geckodriver、phantomjs)
   【2】拷贝 - sudo cp /home/tarena/chromedriver /usr/bin/
   【3】权限 - sudo chmod 777 /usr/bin/chromedriver
-  
+
   # 验证
   【Ubuntu | Windows】
   ipython3
@@ -2490,7 +2122,7 @@ if __name__ == '__main__':
   webdriver.Chrome()
   或者
   webdriver.Firefox()
-  
+
   【mac】
   ipython3
   from selenium import webdriver
@@ -2503,11 +2135,11 @@ if __name__ == '__main__':
 
   ```python
   """示例代码一：使用 selenium+浏览器 打开百度"""
-  
+
   # 导入seleinum的webdriver接口
   from selenium import webdriver
   import time
-  
+
   # 创建浏览器对象
   browser = webdriver.Chrome()
   browser.get('http://www.baidu.com/')
@@ -2518,10 +2150,10 @@ if __name__ == '__main__':
 
   ```python
   """示例代码二：打开百度，搜索赵丽颖，点击搜索，查看"""
-  
+
   from selenium import webdriver
   import time
-  
+
   # 1.创建浏览器对象 - 已经打开了浏览器
   browser = webdriver.Chrome()
   # 2.输入: http://www.baidu.com/
@@ -2556,7 +2188,7 @@ if __name__ == '__main__':
       1.6) 【匹配a节点时常用】browser.find_element_by_partical_link_text('部分链接文本')
       1.7) 【最没用】browser.find_element_by_tag_name('标记名称')
       1.8) 【较常用】browser.find_element_by_css_selector('css表达式')
-  
+
   【2】多元素查找('结果为[节点对象列表]')
       2.1) browser.find_elements_by_id('id属性值')
       2.2) browser.find_elements_by_name('name属性值')
@@ -2573,11 +2205,11 @@ if __name__ == '__main__':
   ```python
   from selenium import webdriver
   import time
-  
+
   url = 'https://maoyan.com/board/4'
   browser = webdriver.Chrome()
   browser.get(url)
-  
+
   def get_data():
       # 基准xpath: [<selenium xxx li at xxx>,<selenium xxx li at>]
       li_list = browser.find_elements_by_xpath('//*[@id="app"]/div/div/div[1]/dl/dd')
@@ -2590,9 +2222,9 @@ if __name__ == '__main__':
           item['star'] = info_list[2]
           item['time'] = info_list[3]
           item['score'] = info_list[4]
-  
+
           print(item)
-  
+
   while True:
       get_data()
       try:
@@ -2673,13 +2305,13 @@ driver.find_element_by_link_text('高级搜索').click()
   【3】timeout
   【4】headers
   ```
-  
+
 - **requests.post()**
 
   ```python
   data : 字典，Form表单数据
   ```
-  
+
 - **常见的反爬机制及处理方式**
 
   ```python
@@ -2714,7 +2346,7 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   【1】打开首页
-  
+
   【2】准备抓包: F12开启控制台
       
   【3】寻找地址
@@ -2724,7 +2356,7 @@ driver.find_element_by_link_text('高级搜索').click()
   【4】发现规律
      4.1) 找到返回具体数据的地址，在页面中多输入几个单词，找到对应URL地址
      4.2) 分析对比 Network - All(或者XHR) - Form Data，发现对应的规律
-  
+
   【5】寻找JS加密文件
      5.1) 控制台右上角 ...->Search->搜索关键字->单击->跳转到Sources，左下角格式化符号{}
       
@@ -2741,7 +2373,7 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   【1】F12打开控制台，执行页面动作抓取网络数据包
-  
+
   【2】抓取json文件URL地址
      2.1) 控制台中 XHR ：找到异步加载的数据包
      2.2) GET请求: Network -> XHR -> URL 和 Query String Parameters(查询参数)
@@ -2773,7 +2405,7 @@ driver.find_element_by_link_text('高级搜索').click()
           b) 查看页面跳转时URL地址变化,查看是否新跳转 -- (民政部案例)
           
      1.3) 开始码代码进行数据抓取
-  
+
   【2】响应内容中不存在
      2.1) 确认抓取数据在响应内容中是否存在
       
@@ -2795,7 +2427,7 @@ driver.find_element_by_link_text('高级搜索').click()
       1.1) from threading import Thread
       1.2) from threading import Lock
       1.3) from queue import Queue
-  
+
   【2】整体思路
       2.1) 创建URL队列: q = Queue()
       2.2) 产生URL地址,放入队列: q.put(url)
@@ -2871,7 +2503,7 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   phantomjs为无界面浏览器(又称无头浏览器)，在内存中进行页面加载,高效
   ```
-  
+
 - **环境安装**
 
   ```python
@@ -2896,7 +2528,7 @@ driver.find_element_by_link_text('高级搜索').click()
   		from selenium import webdriver
   		webdriver.Chrome()
   		webdriver.Firefox()
-  
+
   	4.2) Mac
   		from selenium import webdriver
   		webdriver.Chrome(executable_path='/Users/xxx/chromedriver')
@@ -2909,11 +2541,11 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   """示例代码一：使用 selenium+浏览器 打开百度"""
-  
+
   # 导入seleinum的webdriver接口
   from selenium import webdriver
   import time
-  
+
   # 创建浏览器对象
   browser = webdriver.Chrome()
   browser.get('http://www.baidu.com/')
@@ -2924,10 +2556,10 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   """示例代码二：打开百度，搜索赵丽颖，点击搜索，查看"""
-  
+
   from selenium import webdriver
   import time
-  
+
   # 1.创建浏览器对象 - 已经打开了浏览器
   browser = webdriver.Chrome()
   # 2.输入: http://www.baidu.com/
@@ -2962,7 +2594,7 @@ driver.find_element_by_link_text('高级搜索').click()
       1.6) 【匹配a节点时常用】browser.find_element_by_partical_link_text('部分链接文本')
       1.7) 【最没用】browser.find_element_by_tag_name('标记名称')
       1.8) 【较常用】browser.find_element_by_css_selector('css表达式')
-  
+
   【2】多元素查找('结果为[节点对象列表]')
       2.1) browser.find_elements_by_id('id属性值')
       2.2) browser.find_elements_by_name('name属性值')
@@ -2979,7 +2611,7 @@ driver.find_element_by_link_text('高级搜索').click()
       driver.find_element_by_class_name('btn.btn-account').click()
       
   【4】如果找不到节点，会抛出异常
-  
+
   ```
 
 - **猫眼电影示例**
@@ -2987,11 +2619,11 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   from selenium import webdriver
   import time
-  
+
   url = 'https://maoyan.com/board/4'
   browser = webdriver.Chrome()
   browser.get(url)
-  
+
   def get_data():
       # 基准xpath: [<selenium xxx li at xxx>,<selenium xxx li at>]
       li_list = browser.find_elements_by_xpath('//*[@id="app"]/div/div/div[1]/dl/dd')
@@ -3004,9 +2636,9 @@ driver.find_element_by_link_text('高级搜索').click()
           item['star'] = info_list[2]
           item['time'] = info_list[3]
           item['score'] = info_list[4]
-  
+
           print(item)
-  
+
   while True:
       get_data()
       try:
@@ -3091,7 +2723,7 @@ driver.find_element_by_link_text('高级搜索').click()
   http://www.mca.gov.cn/article/sj/xzqh/2019/
   """
   from selenium import webdriver
-  
+
   class GovSpider(object):
       def __init__(self):
           # 设置无界面
@@ -3100,7 +2732,7 @@ driver.find_element_by_link_text('高级搜索').click()
           # 添加参数
           self.browser = webdriver.Chrome(options=options)
           self.one_url = 'http://www.mca.gov.cn/article/sj/xzqh/2019/'
-  
+
       def get_incr_url(self):
           self.browser.get(self.one_url)
           # 提取最新链接节点对象并点击
@@ -3109,18 +2741,18 @@ driver.find_element_by_link_text('高级搜索').click()
           all_handlers = self.browser.window_handles
           self.browser.switch_to.window(all_handlers[1])
           self.get_data()
-  
+
       def get_data(self):
           tr_list = self.browser.find_elements_by_xpath('//tr[@height="19"]')
           for tr in tr_list:
               code = tr.find_element_by_xpath('./td[2]').text.strip()
               name = tr.find_element_by_xpath('./td[3]').text.strip()
               print(name,code)
-  
+
       def run(self):
           self.get_incr_url()
           self.browser.quit()
-  
+
   if __name__ == '__main__':
     spider = GovSpider()
     spider.run()
@@ -3138,7 +2770,7 @@ driver.find_element_by_link_text('高级搜索').click()
       2.1) 切换到要处理的Frame
       2.2) 在Frame中定位页面元素并进行操作
       2.3) 返回当前处理的Frame的上一级页面或主页面
-  
+
   【3】常用方法
       3.1) 切换到frame  -  browser.switch_to.frame(frame节点对象)
       3.2) 返回上一级   -  browser.switch_to.parent_frame()
@@ -3159,22 +2791,22 @@ driver.find_element_by_link_text('高级搜索').click()
   """
   from selenium import webdriver
   import time
-  
+
   # 打开豆瓣官网
   browser = webdriver.Chrome()
   browser.get('https://www.douban.com/')
-  
+
   # 切换到iframe子页面
   login_frame = browser.find_element_by_xpath('//*[@id="anony-reg-new"]/div/div[1]/iframe')
   browser.switch_to.frame(login_frame)
-  
+
   # 密码登录 + 用户名 + 密码 + 登录豆瓣
   browser.find_element_by_xpath('/html/body/div[1]/div[1]/ul[1]/li[2]').click()
   browser.find_element_by_xpath('//*[@id="username"]').send_keys('自己的用户名')
   browser.find_element_by_xpath('//*[@id="password"]').send_keys('自己的密码')
   browser.find_element_by_xpath('/html/body/div[1]/div[2]/div[1]/div[5]/a').click()
   time.sleep(3)
-  
+
   # 点击我的豆瓣
   browser.find_element_by_xpath('//*[@id="db-nav-sns"]/div/div/div[3]/ul/li[2]/a').click()
   ```
@@ -3312,16 +2944,16 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   【1】USER_AGENT = 'Mozilla/5.0'
-  
+
   【2】ROBOTSTXT_OBEY = False
       是否遵循robots协议,一般我们一定要设置为False
-  
+
   【3】CONCURRENT_REQUESTS = 32
       最大并发量,默认为16
       
   【4】DOWNLOAD_DELAY = 0.5
       下载延迟时间: 访问相邻页面的间隔时间,降低数据抓取的频率
-  
+
   【5】COOKIES_ENABLED = False | True
       Cookie默认是禁用的，取消注释则 启用Cookie，即：True和False都是启用Cookie
       
@@ -3412,7 +3044,7 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   options = webdriver.ChromeOptions()
   options.add_argument('--headless')
-  
+
   browser = webdriver.Chrome(options=options)
   browser.get(url)
   ```
@@ -3437,16 +3069,16 @@ driver.find_element_by_link_text('高级搜索').click()
       node.send_keys(Keys.CONTROL, 'c')
       node.send_keys(Keys.CONTROL, 'v')
       node.send_keys(Keys.ENTER)
-  
+
   【2】鼠标操作
       from selenium.webdriver import ActionChains
       ActionChains(browser).move_to_element(node).perform()
-  
+
   【3】切换句柄
       all_handles = browser.window_handles
       time.sleep(1)
       browser.switch_to.window(all_handles[1])
-  
+
   【4】iframe子框架
       browser.switch_to.frame(iframe_element)
       # 写法1 - 任何场景都可以: 
@@ -3475,7 +3107,7 @@ driver.find_element_by_link_text('高级搜索').click()
   """
   from selenium import webdriver
   import time
-  
+
   class YdSpider:
       def __init__(self):
           self.url = 'http://fanyi.youdao.com/'
@@ -3485,21 +3117,21 @@ driver.find_element_by_link_text('高级搜索').click()
           self.driver = webdriver.Chrome(options=self.options)
           # 打开有道翻译官网
           self.driver.get(self.url)
-  
+
       def parse_html(self, word):
           # 发送翻译单词
           self.driver.find_element_by_id('inputOriginal').send_keys(word)
           time.sleep(1)
           # 获取翻译结果
           result = self.driver.find_element_by_xpath('//*[@id="transTarget"]/p/span').text
-  
+
           return result
-  
+
       def run(self):
           word = input('请输入要翻译的单词:')
           print(self.parse_html(word))
           self.driver.quit()
-  
+
   if __name__ == '__main__':
       spider = YdSpider()
       spider.run()
@@ -3512,13 +3144,13 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   from selenium import webdriver
   import time
-  
+
   driver = webdriver.Chrome()
   driver.get('https://mail.qq.com/')
-  
+
   # 切换到iframe子框架
   driver.switch_to.frame("login_frame")
-  
+
   # 用户名+密码+登录
   driver.find_element_by_id('u').send_keys('2621470058')
   driver.find_element_by_id('p').send_keys('zhanshen001')
@@ -3539,14 +3171,14 @@ driver.find_element_by_link_text('高级搜索').click()
       4、点击登录按钮
   """
   from selenium import webdriver
-  
+
   driver = webdriver.Chrome()
   driver.get('https://mail.163.com/')
-  
+
   # 1、切换iframe子页面 - 此处手写xpath,此处iframe中id的值每次都在变化
   node = driver.find_element_by_xpath('//div[@id="loginDiv"]/iframe[1]')
   driver.switch_to.frame(node)
-  
+
   # 2、输入用户名和密码
   driver.find_element_by_name('email').send_keys('wangweichao_2020')
   driver.find_element_by_name('password').send_keys('zhanshen001')
@@ -3596,7 +3228,7 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   from selenium import webdriver
   import time
-  
+
   class JdSpider(object):
       def __init__(self):
           self.url = 'https://www.jd.com/'
@@ -3604,14 +3236,14 @@ driver.find_element_by_link_text('高级搜索').click()
           self.options = webdriver.ChromeOptions()
           self.options.add_argument('--headless')
           self.browser = webdriver.Chrome(options=self.options)
-  
+
       def get_html(self):
           # get():等页面所有元素加载完成后,才会执行后面的代码
           self.browser.get(self.url)
           # 搜索框 + 搜索按钮
           self.browser.find_element_by_xpath('//*[@id="key"]').send_keys('爬虫书')
           self.browser.find_element_by_xpath('//*[@id="search"]/div/div[2]/button').click()
-  
+
       # 循环体中的函数: 拉进度条,提取数据
       def parse_html(self):
           # 执行js脚本,将进度条拉到最底部
@@ -3621,7 +3253,7 @@ driver.find_element_by_link_text('高级搜索').click()
           # 给页面元素加载预留时间
           time.sleep(3)
           li_list = self.browser.find_elements_by_xpath('//*[@id="J_goodsList"]/ul/li')
-  
+
           for li in li_list:
               item = {}
               item['price'] = li.find_element_by_xpath('.//div[@class="p-price"]').text
@@ -3629,7 +3261,7 @@ driver.find_element_by_link_text('高级搜索').click()
               item['commit'] = li.find_element_by_xpath('.//div[@class="p-commit"]/strong').text
               item['shop'] = li.find_element_by_xpath('.//div[@class="p-shopnum"]').text
               print(item)
-  
+
       def run(self):
           self.get_html()
           while True:
@@ -3639,7 +3271,7 @@ driver.find_element_by_link_text('高级搜索').click()
               else:
                   self.browser.quit()
                   break
-  
+
   if __name__ == '__main__':
       spider = JdSpider()
       spider.run()
@@ -3655,8 +3287,9 @@ driver.find_element_by_link_text('高级搜索').click()
   【3】调度器（Scheduler）-----维护请求队列
   【4】下载器（Downloader）----获取响应对象
   【5】管道文件（Pipeline）-----数据入库处理
-  
-  
+  ```
+
+
   【两个中间件】
       下载器中间件（Downloader Middlewares）
           引擎->下载器,包装请求(随机代理等)
@@ -3685,7 +3318,7 @@ driver.find_element_by_link_text('高级搜索').click()
   【3】运行爬虫
       scrapy crawl 爬虫名
   ```
-  
+
 - **scrapy项目目录结构**
 
   ```python
@@ -3715,7 +3348,7 @@ driver.find_element_by_link_text('高级搜索').click()
   【6】DEFAULT_REQUEST_HEADERS = {}
       请求头,相当于requests.get(headers=headers)
   ```
-  
+
 - **创建爬虫项目步骤**
 
   ```python
@@ -3742,7 +3375,7 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   【1】抓取瓜子二手车官网二手车收据（我要买车）
-  
+
   【2】URL地址：https://www.guazi.com/bj/buy/o{}/#bread
       URL规律: o1  o2  o3  o4  o5  ... ...
           
@@ -3767,7 +3400,7 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   """items.py"""
   import scrapy
-  
+
   class CarItem(scrapy.Item):
       # 链接、名称、价格
       url = scrapy.Field()
@@ -3784,11 +3417,11 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   """
   此方法其实还是一页一页抓取，效率并没有提升，和单线程一样
-  
+
   xpath表达式如下:
   【1】基准xpath,匹配所有汽车节点对象列表
       li_list = response.xpath('//ul[@class="carlist clearfix js-top"]/li')
-  
+
   【2】遍历后每辆车信息的xpath表达式
       汽车链接: './a[1]/@href'
       汽车名称: './/h2[@class="t"]/text()'
@@ -3797,8 +3430,9 @@ driver.find_element_by_link_text('高级搜索').click()
   # -*- coding: utf-8 -*-
   import scrapy
   from ..items import CarItem
-  
-  
+  ```
+
+
   class GuaziSpider(scrapy.Spider):
       # 爬虫名
       name = 'car'
@@ -3808,7 +3442,7 @@ driver.find_element_by_link_text('高级搜索').click()
       start_urls = ['https://www.guazi.com/bj/buy/o1/#bread']
       # 生成URL地址的变量
       n = 1
-  
+    
       def parse(self, response):
           # 基准xpath: 匹配所有汽车的节点对象列表
           li_list = response.xpath('//ul[@class="carlist clearfix js-top"]/li')
@@ -3818,10 +3452,10 @@ driver.find_element_by_link_text('高级搜索').click()
               item['url'] = li.xpath('./a[1]/@href').get()
               item['name'] = li.xpath('./a[1]/@title').get()
               item['price'] = li.xpath('.//div[@class="t-price"]/p/text()').get()
-  
+    
               # 把抓取的数据,传递给了管道文件 pipelines.py
               yield item
-  
+    
           # 1页数据抓取完成,生成下一页的URL地址,交给调度器入队列
           if self.n < 5:
               self.n += 1
@@ -3839,7 +3473,7 @@ driver.find_element_by_link_text('高级搜索').click()
   # -*- coding: utf-8 -*-
   import scrapy
   from ..items import CarItem
-  
+
   class GuaziSpider(scrapy.Spider):
       # 爬虫名
       name = 'car2'
@@ -3853,7 +3487,7 @@ driver.find_element_by_link_text('高级搜索').click()
               url = 'https://www.guazi.com/bj/buy/o{}/#bread'.format(i)
               # scrapy.Request(): 把请求交给调度器入队列
               yield scrapy.Request(url=url,callback=self.parse)
-  
+
       def parse(self, response):
           # 基准xpath: 匹配所有汽车的节点对象列表
           li_list = response.xpath('//ul[@class="carlist clearfix js-top"]/li')
@@ -3863,7 +3497,7 @@ driver.find_element_by_link_text('高级搜索').click()
               item['url'] = li.xpath('./a[1]/@href').get()
               item['name'] = li.xpath('./a[1]/@title').get()
               item['price'] = li.xpath('.//div[@class="t-price"]/p/text()').get()
-  
+
               # 把抓取的数据,传递给了管道文件 pipelines.py
               yield item
   ```
@@ -3883,47 +3517,48 @@ driver.find_element_by_link_text('高级搜索').click()
   )charset=utf8;
   """
   # -*- coding: utf-8 -*-
-  
+
   # 管道1 - 从终端打印输出
   class CarPipeline(object):
       def process_item(self, item, spider):
           print(dict(item))
           return item
-  
+
   # 管道2 - 存入MySQL数据库管道
   import pymysql
   from .settings import *
-  
+
   class CarMysqlPipeline(object):
       def open_spider(self,spider):
           """爬虫项目启动时只执行1次,一般用于数据库连接"""
           self.db = pymysql.connect(MYSQL_HOST,MYSQL_USER,MYSQL_PWD,MYSQL_DB,charset=CHARSET)
           self.cursor = self.db.cursor()
-  
+
       def process_item(self,item,spider):
           """处理从爬虫文件传过来的item数据"""
           ins = 'insert into guazitab values(%s,%s,%s)'
           car_li = [item['name'],item['price'],item['url']]
           self.cursor.execute(ins,car_li)
           self.db.commit()
-  
+
           return item
-  
+
       def close_spider(self,spider):
           """爬虫程序结束时只执行1次,一般用于数据库断开"""
           self.cursor.close()
           self.db.close()
-  
-  
+  ```
+
+
   # 管道3 - 存入MongoDB管道
   import pymongo
-  
+
   class CarMongoPipeline(object):
       def open_spider(self,spider):
           self.conn = pymongo.MongoClient(MONGO_HOST,MONGO_PORT)
           self.db = self.conn[MONGO_DB]
           self.myset = self.db[MONGO_SET]
-  
+    
       def process_item(self,item,spider):
           car_dict = {
               'name' : item['name'],
@@ -3943,21 +3578,21 @@ driver.find_element_by_link_text('高级搜索').click()
       "Cookie": "此处填写抓包抓取到的Cookie",
       "User-Agent": "此处填写自己的User-Agent",
     }
-  
+
   # 优先级，1——1000，数字越小越高
   【5】ITEM_PIPELINES = {
        'Car.pipelines.CarPipeline': 300,
        'Car.pipelines.CarMysqlPipeline': 400,
        'Car.pipelines.CarMongoPipeline': 500,
     }
-  
+
   【6】定义MySQL相关变量
   MYSQL_HOST = 'localhost'
   MYSQL_USER = 'root'
   MYSQL_PWD = '123456'
   MYSQL_DB = 'guazidb'
   CHARSET = 'utf8'
-  
+
   【7】定义MongoDB相关变量
   MONGO_HOST = 'localhost'
   MONGO_PORT = 27017
@@ -3991,7 +3626,7 @@ driver.find_element_by_link_text('高级搜索').click()
   		"""爬虫结束时执行1次,用于断开数据库连接"""   
   【3】settings.py中添加此管道
   	ITEM_PIPELINES = {'':200}
-  
+
   【注意】 ：process_item() 函数中一定要 return item ,当前管道的process_item()的返回值会作为下一个管道 process_item()的参数
   ```
 
@@ -4003,7 +3638,7 @@ driver.find_element_by_link_text('高级搜索').click()
    
   【2】存入json文件
       scrapy crawl car -o car.json
-  
+
   【3】注意: settings.py中设置导出编码 - 主要针对json文件
       FEED_EXPORT_ENCODING = 'utf-8'
   ```
@@ -4049,9 +3684,9 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   # 添加二级页面所需抓取的数据结构
-  
+
   import scrapy
-  
+
   class GuaziItem(scrapy.Item):
       # define the fields for your item here like:
       # 一级页面: 链接、名称、价格
@@ -4074,7 +3709,7 @@ driver.find_element_by_link_text('高级搜索').click()
   # -*- coding: utf-8 -*-
   import scrapy
   from ..items import CarItem
-  
+
   class GuaziSpider(scrapy.Spider):
       # 爬虫名
       name = 'car2'
@@ -4088,7 +3723,7 @@ driver.find_element_by_link_text('高级搜索').click()
               url = 'https://www.guazi.com/bj/buy/o{}/#bread'.format(i)
               # scrapy.Request(): 把请求交给调度器入队列
               yield scrapy.Request(url=url,callback=self.parse)
-  
+
       def parse(self, response):
           # 基准xpath: 匹配所有汽车的节点对象列表
           li_list = response.xpath('//ul[@class="carlist clearfix js-top"]/li')
@@ -4100,7 +3735,7 @@ driver.find_element_by_link_text('高级搜索').click()
               item['price'] = li.xpath('.//div[@class="t-price"]/p/text()').get()
               # Request()中meta参数: 在不同解析函数之间传递数据,item数据会随着response一起返回
               yield scrapy.Request(url=item['url'], meta={'meta_1': item}, callback=self.detail_parse)
-  
+
       def detail_parse(self, response):
           """汽车详情页的解析函数"""
           # 获取上个解析函数传递过来的 meta 数据
@@ -4108,7 +3743,7 @@ driver.find_element_by_link_text('高级搜索').click()
           item['km'] = response.xpath('//ul[@class="assort clearfix"]/li[2]/span/text()').get()
           item['disp'] = response.xpath('//ul[@class="assort clearfix"]/li[3]/span/text()').get()
           item['trans'] = response.xpath('//ul[@class="assort clearfix"]/li[4]/span/text()').get()
-  
+
           # 1条数据最终提取全部完成,交给管道文件处理
           yield item
   ```
@@ -4119,14 +3754,14 @@ driver.find_element_by_link_text('高级搜索').click()
   # 将数据存入mongodb数据库,此处我们就不对MySQL表字段进行操作了,如有兴趣可自行完善
   # MongoDB管道
   import pymongo
-  
+
   class GuaziMongoPipeline(object):
       def open_spider(self,spider):
           """爬虫项目启动时只执行1次,用于连接MongoDB数据库"""
           self.conn = pymongo.MongoClient(MONGO_HOST,MONGO_PORT)
           self.db = self.conn[MONGO_DB]
           self.myset = self.db[MONGO_SET]
-  
+
       def process_item(self,item,spider):
           car_dict = dict(item)
           self.myset.insert_one(car_dict)
@@ -4200,12 +3835,12 @@ driver.find_element_by_link_text('高级搜索').click()
   import scrapy
   from ..items import DaomuItem
   import os
-  
+
   class DaomuSpider(scrapy.Spider):
       name = 'daomu'
       allowed_domains = ['www.daomubiji.com']
       start_urls = ['http://www.daomubiji.com/']
-  
+
       def parse(self, response):
           """一级页面解析函数：提取大标题+大链接,并把大链接交给调度器入队列"""
           a_list = response.xpath('//li[contains(@id,"menu-item-20")]/a')
@@ -4219,7 +3854,7 @@ driver.find_element_by_link_text('高级搜索').click()
                   os.makedirs(item['directory'])
               # 交给调度器入队列
               yield scrapy.Request(url=parent_url, meta={'meta_1':item}, callback=self.detail_page)
-  
+
       # 返回了11个response,调用了这个函数
       def detail_page(self, response):
           """二级页面解析函数：提取小标题、小链接"""
@@ -4234,7 +3869,7 @@ driver.find_element_by_link_text('高级搜索').click()
               item['directory'] = meta_1['directory']
               # 再次交给调度器入队列
               yield scrapy.Request(url=son_url, meta={'item':item}, callback=self.get_content)
-  
+
       # 盗墓笔记1: 传过来了75个response
       # 盗墓笔记2: 传过来了 n 个response
       # ... ...
@@ -4244,7 +3879,7 @@ driver.find_element_by_link_text('高级搜索').click()
           # content_list: ['段落1','段落2','段落3',...]
           content_list = response.xpath('//article[@class="article-content"]/p/text()').extract()
           item['content'] = '\n'.join(content_list)
-  
+
           # 至此,一条item数据全部提取完成
           yield item
   ```
@@ -4258,7 +3893,7 @@ driver.find_element_by_link_text('高级搜索').click()
           filename = '{}{}.txt'.format(item['directory'], item['son_title'].replace(' ', '_'))
           with open(filename, 'w') as f:
               f.write(item['content'])
-  
+
           return item
   ```
 
@@ -4352,7 +3987,7 @@ driver.find_element_by_link_text('高级搜索').click()
               item = TencentItem()
               item['name'] = xxxx
               yield item
-  
+
   【6】pipelines.py(数据处理)
       class TencentPipeline(object):
           def process_item(self, item, spider):
@@ -4403,7 +4038,7 @@ driver.find_element_by_link_text('高级搜索').click()
   【1】方式一:基于start_urls
       1.1) 从爬虫文件(spider)的start_urls变量中遍历URL地址交给调度器入队列,
       1.2) 把下载器返回的响应对象（response）交给爬虫文件的parse(self,response)函数处理
-  
+
   【2】方式二
       重写start_requests()方法，从此方法中获取URL，交给指定的callback解析函数处理
       2.1) 去掉start_urls变量
@@ -4417,7 +4052,7 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   ***************************存入MySQL、MongoDB****************************
-  
+
   【1】在setting.py中定义相关变量
   【2】pipelines.py中新建管道类，并导入settings模块
   	def open_spider(self,spider):
@@ -4432,9 +4067,9 @@ driver.find_element_by_link_text('高级搜索').click()
           
   【3】settings.py中添加此管道
   	ITEM_PIPELINES = {'':200}
-  
+
   【注意】 process_item() 函数中一定要 return item
-  
+
   ********************************存入JSON、CSV文件***********************
   scrapy crawl maoyan -o maoyan.csv
   scrapy crawl maoyan -o maoyan.json
@@ -4480,13 +4115,13 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   # 重新指定调度器: 启用Redis调度存储请求队列
   SCHEDULER = "scrapy_redis.scheduler.Scheduler"
-  
+
   # 重新指定去重机制: 确保所有的爬虫通过Redis去重
   DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-  
+
   # 不清除Redis队列: 暂停/恢复/断点续爬(默认清除为False,设置为True不清除)
   SCHEDULER_PERSIST = True
-  
+
   # 优先级队列 （默认）
   SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.PriorityQueue'
   #可选用的其它队列
@@ -4494,12 +4129,12 @@ driver.find_element_by_link_text('高级搜索').click()
   SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.FifoQueue'
   # 后进先出
   SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.LifoQueue'
-  
+
   # redis管道
   ITEM_PIPELINES = {
       'scrapy_redis.pipelines.RedisPipeline': 300
   }
-  
+
   #指定连接到redis时使用的端口和地址
   REDIS_HOST = 'localhost'
   REDIS_PORT = 6379
@@ -4527,7 +4162,7 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   【1】完成正常scrapy项目数据抓取（非分布式 - 拷贝之前的Tencent）
-  
+
   【2】设置settings.py，完成分布式设置
       2.1-必须) 使用scrapy_redis的调度器
            SCHEDULER = "scrapy_redis.scheduler.Scheduler"
@@ -4546,7 +4181,7 @@ driver.find_element_by_link_text('高级搜索').click()
            'scrapy_redis.pipelines.RedisPipeline': 200
               
   【3】把代码原封不动的拷贝到分布式中的其他爬虫服务器,同时开始运行爬虫
-  
+
   【结果】：多台机器同时抓取,数据会统一存到Ubuntu的redis中，而且所抓数据不重复
   ```
 
@@ -4564,9 +4199,9 @@ driver.find_element_by_link_text('高级搜索').click()
       1.7) MYSQL_HOST = '192.168.1.105'
       
   【2】将代码拷贝到分布式中所有爬虫服务器
-  
+
   【3】多台爬虫服务器同时运行scrapy爬虫
-  
+
   # 赠送腾讯MySQL数据库建库建表语句
   """
   create database tencentdb charset utf8;
@@ -4589,14 +4224,14 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   【1】作用
       处理图形验证码
-  
+
   【2】三个重要概念 - OCR、tesseract-ocr、pytesseract
       2.1) OCR
           光学字符识别(Optical Character Recognition),通过扫描等光学输入方式将各种票据、报刊、书籍、文稿及其它印刷品的文字转化为图像信息，再利用文字识别技术将图像信息转化为电子文本
-  
+
       2.2) tesseract-ocr
           OCR的一个底层识别库（不是模块，不能导入），由Google维护的开源OCR识别库
-  
+
       2.3) pytesseract
           Python模块,可调用底层识别库，是对tesseract-ocr做的一层Python API封装
   ```
@@ -4606,11 +4241,11 @@ driver.find_element_by_link_text('高级搜索').click()
   ```python
   【1】Ubuntu安装
       sudo apt-get install tesseract-ocr
-  
+
   【2】Windows安装
       2.1) 下载安装包
       2.2) 添加到环境变量(Path)
-  
+
   【3】测试（终端 | cmd命令行）
       tesseract xxx.jpg 文件名
   ```
@@ -4625,7 +4260,7 @@ driver.find_element_by_link_text('高级搜索').click()
       import pytesseract
       # Python图片处理库
       from PIL import Image
-  
+
       # 创建图片对象
       img = Image.open('test1.jpg')
       # 图片转字符串
@@ -4658,7 +4293,7 @@ driver.find_element_by_link_text('高级搜索').click()
   # 导入鼠标事件类
   from selenium.webdriver import ActionChains
   import time
-  
+
   # 加速度函数
   def get_tracks(distance):
       """
@@ -4683,7 +4318,7 @@ driver.find_element_by_link_text('高级搜索').click()
               a = 2
           else:
               a = -3
-  
+
           # 初速度
           v0 = v
           # 0.3秒内的位移
@@ -4696,41 +4331,42 @@ driver.find_element_by_link_text('高级搜索').click()
           v = v0 + a*t
       return tracks
       # tracks: [第一个0.3秒的移动距离,第二个0.3秒的移动距离,...]
-  
-  
+  ```
+
+
   # 1、打开豆瓣官网 - 并将窗口最大化
   browser = webdriver.Chrome()
   browser.maximize_window()
   browser.get('https://www.douban.com/')
-  
+
   # 2、切换到iframe子页面
   login_frame = browser.find_element_by_xpath('//*[@id="anony-reg-new"]/div/div[1]/iframe')
   browser.switch_to.frame(login_frame)
-  
+
   # 3、密码登录 + 用户名 + 密码 + 登录豆瓣
   browser.find_element_by_xpath('/html/body/div[1]/div[1]/ul[1]/li[2]').click()
   browser.find_element_by_xpath('//*[@id="username"]').send_keys('15110225726')
   browser.find_element_by_xpath('//*[@id="password"]').send_keys('zhanshen001')
   browser.find_element_by_xpath('/html/body/div[1]/div[2]/div[1]/div[5]/a').click()
   time.sleep(4)
-  
+
   # 4、切换到新的iframe子页面 - 滑块验证
   auth_frame = browser.find_element_by_xpath('//*[@id="TCaptcha"]/iframe')
   browser.switch_to.frame(auth_frame)
-  
+
   # 5、按住开始滑动位置按钮 - 先移动180个像素
   element = browser.find_element_by_xpath('//*[@id="tcaptcha_drag_button"]')
   # click_and_hold(): 按住某个节点并保持
   ActionChains(browser).click_and_hold(on_element=element).perform()
   # move_to_element_with_offset(): 移动到距离某个元素(左上角坐标)多少距离的位置
   ActionChains(browser).move_to_element_with_offset(to_element=element,xoffset=180,yoffset=0).perform()
-  
+
   # 6、使用加速度函数移动剩下的距离
   tracks = get_tracks(28)
   for track in tracks:
       # move_by_offset() : 鼠标从当前位置移动到某个坐标
       ActionChains(browser).move_by_offset(xoffset=track,yoffset=0).perform()
-  
+
   # 7、延迟释放鼠标: release()
   time.sleep(0.5)
   ActionChains(browser).release().perform()
@@ -4744,10 +4380,10 @@ driver.find_element_by_link_text('高级搜索').click()
   【1】Tools -> Options -> HTTPS
       1.1) 添加证书信任:  勾选 Decrypt Https Traffic 后弹出窗口，一路确认
       1.2) 设置之抓浏览器的包:  ...from browsers only
-  
+
   【2】Tools -> Options -> Connections
       2.1) 设置监听端口（默认为8888）
-  
+
   【3】配置完成后重启Fiddler（'重要'）
       3.1) 关闭Fiddler,再打开Fiddler
   ```
@@ -4756,14 +4392,14 @@ driver.find_element_by_link_text('高级搜索').click()
 
   ```python
   【1】安装Proxy SwitchyOmega谷歌浏览器插件
-  
+
   【2】配置代理
       2.1) 点击浏览器右上角插件SwitchyOmega -> 选项 -> 新建情景模式 -> myproxy(名字) -> 创建
       2.2) 输入  HTTP://  127.0.0.1  8888
       2.3) 点击 ：应用选项
       
   【3】点击右上角SwitchyOmega可切换代理
-  
+
   【注意】: 一旦切换了自己创建的代理,则必须要打开Fiddler才可以上网
   ```
 

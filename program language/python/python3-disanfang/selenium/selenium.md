@@ -92,6 +92,14 @@ driver.current_url
 
 # 隐式等待
 driver.implicitly_wait()
+
+# 获取当前句柄
+driver.current_window_handle
+
+# 所有句柄
+driver.window_handles
+
+driver.switch_to
 ```
 
 
@@ -146,15 +154,19 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
 
-driver = webdriver.Chrome()
-driver.get("http://www.baidu.com")
+def demo_id_and_name():
+    _ = webdriver.ChromeOptions()
+    _.add_argument("--start-maximized")
+    driver = webdriver.Chrome(options=_)
+    driver.get("http://www.baidu.com")
 
-driver.find_element(By.ID, "kw").send_keys("Selenium我要自学网")
-driver.find_element(By.NAME, "wd").send_keys("Selenium我要自学网")
+    driver.find_element(By.ID, "kw").send_keys("Selenium我要自学网")
+    driver.find_element(By.NAME, "wd").send_keys("Selenium我要自学网")
 
-sleep(2)
-driver.find_element(By.ID, "su").click()
-driver.close()
+    sleep(2)
+    driver.find_element(By.ID, "su").click()
+    driver.close()
+
 
 ```
 
@@ -163,15 +175,18 @@ driver.close()
 ## tag_name定位
 
 ```python
-# 案例：打开我要自学网页面，在用户名输入框输入用户名“selenium”
-driver = webdriver.Chrome()
-driver.get("http://www.51zxw.com")
-# 定位标签名为input的元素
-driver.find_element(By.TAG_NAME, "input").send_keys("selenium")
-# 获取页面所有标签名称为“input”的标签。
-driver.find_elements(By.TAG_NAME, "input")[0].send_keys("selenium")
-sleep(3)
-driver.quit()
+def demo_tag_name():
+    # 案例：打开我要自学网页面，在用户名输入框输入用户名“selenium”
+    _ = webdriver.ChromeOptions()
+    _.add_argument("--start-maximized")
+    driver = webdriver.Chrome(options=_)
+    driver.get("http://www.51zxw.com")
+    # 定位标签名为input的元素
+    driver.find_element(By.TAG_NAME, "input").send_keys("selenium")
+    # 获取页面所有标签名称为“input”的标签。
+    driver.find_elements(By.TAG_NAME, "input")[0].send_keys("selenium")
+    sleep(3)
+    driver.quit()
 ```
 
 
@@ -179,14 +194,17 @@ driver.quit()
 ## class_name定位
 
 ```python
-# 根据标签中属性class来进行定位的一种方法
-driver = webdriver.Chrome()
-driver.get("http://www.baidu.com")
-driver.find_element(By.CLASS_NAME, "s_ipt").send_keys("Selenium 我要自学网")
-sleep(2)
-driver.find_element(By.ID, "su").click()
-sleep(3)
-driver.quit()
+def demo_class_name():
+    # 根据标签中属性class来进行定位的一种方法
+    _ = webdriver.ChromeOptions()
+    _.add_argument("--start-maximized")
+    driver = webdriver.Chrome(options=_)
+    driver.get("http://www.baidu.com")
+    driver.find_element(By.CLASS_NAME, "s_ipt").send_keys("Selenium 我要自学网")
+    sleep(2)
+    driver.find_element(By.ID, "su").click()
+    sleep(3)
+    driver.quit()
 ```
 
 
@@ -194,14 +212,17 @@ driver.quit()
 ## link_text与partial_link_text定位
 
 ```python
-# link_text定位就是根据超链接文字进行定位。
-driver = webdriver.Chrome()
-driver.get("http://www.51zxw.net/")
-driver.find_element(By.LINK_TEXT, '程序设计').click()
-sleep(3)
-driver.find_element(By.PARTIAL_LINK_TEXT, '数据库教程').click()
-sleep(3)
-driver.quit()
+def demo_link():
+    # link_text定位就是根据超链接文字进行定位。
+    _ = webdriver.ChromeOptions()
+    _.add_argument("--start-maximized")
+    driver = webdriver.Chrome(options=_)
+    driver.get("http://www.51zxw.net/")
+    driver.find_element(By.LINK_TEXT, '程序设计').click()
+    sleep(3)
+    driver.find_element(By.PARTIAL_LINK_TEXT, '数据库教程').click()
+    sleep(3)
+    driver.quit()
 ```
 
 
@@ -352,104 +373,78 @@ driver.quit()
 # 鼠标操作
 
 ```python
-鼠标操作：现在页面中随处可以看到需要右击、双击、鼠标悬停、甚至是鼠标拖动等操作的功能设计。在webdriver中这些关于鼠标操作的方法由ActionChains类提供。
-ActionChains类提供的鼠标操作的常用方法：
-perform()执行所有ActionChains中存储的行为
-context_click() 右击
-double_click() 双击
-drag_and_drop() 拖动
-move_to_element() 鼠标悬停
-
 from selenium import webdriver
-# 导入鼠标事件类
-from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
 
-driver = webdriver.Chrome()
-driver.get('http://www.baidu.com/')
+_ = webdriver.ChromeOptions()
+_.add_argument("--start-maximized")
+driver = webdriver.Chrome(options=_)
+driver.get("https://www.baidu.com/")
 
-# 移动到 设置，perform()是真正执行操作，必须有
-element = driver.find_element_by_xpath('//*[@id="u1"]/a[8]')
-ActionChains(driver).move_to_element(element).perform()
+ele_set = driver.find_element(By.XPATH, "//span[text()='设置']")
+webdriver.ActionChains(driver).move_to_element(ele_set).perform()
 
 # 单击，弹出的Ajax元素，根据链接节点的文本内容查找
-driver.find_element_by_link_text('高级搜索').click()
-```
+driver.find_element(By.LINK_TEXT, '高级搜索').click()
 
-```python
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from time import sleep
 
-driver=webdriver.Firefox()
 
-driver.get("http://www.baidu.com")
-driver.maximize_window()
 
-driver.find_element_by_css_selector("#kw").send_keys("Python")
 
-# 获取搜索框元素对象
-element=driver.find_element_by_css_selector("#kw")
-
-sleep(3)
-#双击操作
-ActionChains(driver).double_click(element).perform()
-
-sleep(2)
-
-#右击操作
-ActionChains(driver).context_click(element).perform()
-
-sleep(3)
-
-#鼠标悬停
-above=driver.find_element_by_css_selector(".pf")
-ActionChains(driver).move_to_element(above).perform()
-
-sleep(4)
+input("结束符：")
 driver.quit()
+
 ```
+
+
 
 # 键盘操作
 
 ```python
+"""
 node.send_keys(Keys.SPACE)
 node.send_keys(Keys.CONTROL, 'a')
 node.send_keys(Keys.CONTROL, 'c')
 node.send_keys(Keys.CONTROL, 'v')
 node.send_keys(Keys.ENTER)
-
 # 案例： 在百度搜索关键词“Python” 然后将关键词复制或剪切到搜狗搜索框进行搜索
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from time import sleep
+"""
 
-driver=webdriver.Firefox()
+import time
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+_ = webdriver.ChromeOptions()
+_.add_argument("--start-maximized")
+driver = webdriver.Chrome(options=_)
 
 driver.get("http://www.baidu.com")
-driver.find_element_by_css_selector("#kw").send_keys("Python")
+driver.find_element(By.CSS_SELECTOR, "#kw").send_keys("Python")
 
-sleep(2)
+time.sleep(2)
 # 键盘全选操作 Ctrl+A
-driver.find_element_by_css_selector("#kw").send_keys(Keys.CONTROL,'a')
+driver.find_element(By.CSS_SELECTOR, "#kw").send_keys(webdriver.Keys.CONTROL, 'a')
 
 # 键盘选择复制或剪切操作 Ctrl+C
-driver.find_element_by_css_selector("#kw").send_keys(Keys.CONTROL,'c')
-driver.find_element_by_css_selector("#kw").send_keys(Keys.CONTROL,'x')
+driver.find_element(By.CSS_SELECTOR, "#kw").send_keys(webdriver.Keys.CONTROL, 'c')
+driver.find_element(By.CSS_SELECTOR, "#kw").send_keys(webdriver.Keys.CONTROL, 'x')
 
 # 打开搜狗页面
 driver.get("http://www.sogou.com/")
-sleep(2)
+time.sleep(2)
 
 # 粘贴复制内容
-driver.find_element_by_css_selector(".sec-input").send_keys(Keys.CONTROL,'v')
-sleep(2)
+driver.find_element(By.CSS_SELECTOR, ".sec-input").send_keys(webdriver.Keys.CONTROL, 'v')
+time.sleep(2)
 
 # 点击搜索按钮
 # driver.find_element_by_xpath("//input[@id='stb']").click()
-driver.find_element_by_css_selector("#stb").click()
+driver.find_element(By.CSS_SELECTOR, "#stb").click()
 
-sleep(3)
+input("结束符：")
 driver.quit()
+
 ```
 
 
@@ -538,16 +533,12 @@ driver.quit()
 
 # 元素等待
 
-
-
 ```python
+"""
 元素等待
-
 概念
-
 · 显示等待是针对某一个元素进行相关等待判定；
-
-· 隐式等待不针对某一个元素进行等待，全局元素等待。
+· 隐式等待不针对某一个元素进行等待，全局元素等待。只能判断元素是否可见
 a.相关模块
 WebDriverWait 显示等待针对元素必用
 expected_conditions 预期条件类（里面包含方法可以调用，用于显示等待）
@@ -556,82 +547,103 @@ a.相关模块
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait		    #注意字母大写
-from selenium.webdriver.support import expected_conditions as EC 	
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
-显示等待
-案例：检测百度页面搜索按钮是否存在，存在就输入关键词“自学网 Selenium” 然后点击搜索
+"""
+from time import sleep, ctime
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
-from time import sleep
-
-driver=webdriver.Firefox()
+# 显示等待
+# 案例：检测百度页面搜索按钮是否存在，存在就输入关键词“自学网 Selenium” 然后点击搜索
+_ = webdriver.ChromeOptions()
+_.add_argument("--start-maximized")
+driver = webdriver.Chrome(options=_)
 
 driver.get("http://www.baidu.com")
 
-
-driver.find_element_by_css_selector("#kw").send_keys("自学网 Selenium")
-
+driver.find_element(By.CSS_SELECTOR, "#kw").send_keys("自学网 Selenium")
 sleep(2)
 
-#显示等待--判断搜索按钮是否存在
-element=WebDriverWait(driver,5,0.5).until(EC.presence_of_element_located((By.ID,"su")))
+# 显示等待--判断搜索按钮是否存在
+element = WebDriverWait(driver, 5, 0.5).until(ec.presence_of_element_located((By.ID, "su")))
 element.click()
 sleep(3)
 
-driver.quit()
-隐式等待
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from time import sleep,ctime
+input("继续")
 
-driver=webdriver.Firefox()
+# 隐式等待
 driver.get("http://www.baidu.com")
-
-sleep(2)
-
-driver.implicitly_wait(5) #隐式等待时间设定 5秒
-
-#检测搜索框是否存在
+driver.implicitly_wait(5)  # 隐式等待时间设定 5秒
+# 检测搜索框是否存在
 try:
-	print(ctime())
-	driver.find_element_by_css_selector("#kw").send_keys("Python")
-	driver. find_element_by_css_selector("#su").click
-except NoSuchElementException as msg:
-	print(msg)
+    print(ctime())
+    driver.find_element(By.CSS_SELECTOR, "#kw").send_keys("Python")
+    driver.find_element(By.CSS_SELECTOR, "#su").click()
+except ec.NoSuchElementException as msg:
+    print(msg)
 finally:
-	print(ctime())
+    print(ctime())
 
-sleep(3)
+input("结束")
 driver.quit()
 
 ```
+
+
 
 # 滚动条控制操作
 
 ```python
-# 案例：打开我要自学网页面，然后将滚动条拖到最底部，然后再拖到顶部
-from  selenium import webdriver
-from time import sleep
+import time
 
-driver=webdriver.Firefox()
-driver.get("http://www.51zxw.net/")
-sleep(2)
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
-#将滚动调拖到最底部
-js="var action=document.documentElement.scrollTop=10000"
-driver.execute_script(js)
-sleep(2)
+_ = webdriver.ChromeOptions()
+_.add_argument("--start-maximized")
+driver = webdriver.Chrome(options=_)
 
-#将滚动条拖到最顶部
-js="var action=document.documentElement.scrollTop=0"
-driver.execute_script(js)
-sleep(3)
+driver.get("https://ke.qq.com/")
 
+# 方式1
+# target = driver.find_element(By.XPATH, "//h3[text()='为你推荐']")
+# 将该模块与浏览器顶部对齐
+# driver.execute_script('arguments[0].scrollIntoView();', target)
+# 将该模块与浏览器底部对齐
+# driver.execute_script('arguments[0].scrollIntoView(false);', target)
+
+# 方式2
+# 滚动到页面最底部
+# driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
+# time.sleep(3)
+# 滚动到页面最顶部
+# driver.execute_script("window.scrollTo(document.body.scrollHeight,0)")
+
+# 方式3
+# 将滚动调拖到最底部
+# driver.execute_script("var action=document.documentElement.scrollTop=10000")
+# time.sleep(3)
+# 将滚动条拖到最顶部
+# driver.execute_script("var action=document.documentElement.scrollTop=0")
+
+# 方式4
+# 滚动到页面最底部
+driver.execute_script("window.scrollTo(0,document.documentElement.scrollHeight)")
+time.sleep(3)
+# 滚动到页面最顶部
+driver.execute_script("window.scrollTo(document.documentElement.scrollHeight,0)")
+
+
+
+input("结束符：")
 driver.quit()
 ```
+
+
 
 # 网页截图操作
 
@@ -656,6 +668,8 @@ sleep(2)
 driver.quit()
 ```
 
+
+
 # 上传文件
 
 ```python
@@ -673,6 +687,8 @@ driver.find_element_by_css_selector(".upload-pic").send_keys(r"E:\Python_script\
 sleep(3)
 driver.quit()
 ```
+
+
 
 # Cookie处理
 
@@ -706,6 +722,8 @@ for cookie in driver.get_cookies():
 
 driver.quit()
 ```
+
+
 
 # 自动化测试验证码问题
 
