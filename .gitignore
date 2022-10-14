@@ -1,3 +1,5 @@
 .idea/
-os/res/
 object-oriented/
+*.zip
+*.tar.gz
+*.tgz
