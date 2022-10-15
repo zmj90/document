@@ -14,7 +14,7 @@ ENV CLASS_PATH=.:${JAVA_HOME}/lib
 ENV PATH=${JAVA_HOME}/bin:$PATH
 ENV TOMCAT_HOME=/usr/local/apache-tomcat-8.5.81
 
-RUN ./ubuntu-config.sh && ./install-software.sh && mv jenkins.war $TOMCAT_HOME/webapps
+RUN ./ubuntu-config.sh && ./install-software.sh
 
 VOLUME /root/.jenkins
 
