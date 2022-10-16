@@ -280,3 +280,110 @@ XPath 表达式可返回节点集、字符串、逻辑值以及数字。
 
 
 
+# xpath解析
+
+
+
+-   匹配演示 - 猫眼电影top100
+
+    ```python
+    【1】查找所有的dd节点
+        //dd
+    【2】获取所有电影的名称的a节点: 所有class属性值为name的a节点
+        //p[@class="name"]/a
+    【3】获取dl节点下第2个dd节点的电影节点
+        //dl[@class="board-wrapper"]/dd[2]                          
+    【4】获取所有电影详情页链接: 获取每个电影的a节点的href的属性值
+        //p[@class="name"]/a/@href
+
+    【注意】                             
+        1> 只要涉及到条件,加 [] : //dl[@class="xxx"]   //dl/dd[2]
+        2> 只要获取属性值,加 @  : //dl[@class="xxx"]   //p/a/@href
+    ```
+
+    ​
+
+-   选取节点
+
+    ```python
+    【1】// : 从所有节点中查找（包括子节点和后代节点）
+    【2】@  : 获取属性值
+      2.1> 使用场景1（属性值作为条件）
+           //div[@class="movie-item-info"]
+      2.2> 使用场景2（直接获取属性值）
+           //div[@class="movie-item-info"]/a/img/@src
+        
+    【3】练习 - 猫眼电影top100
+      3.1> 匹配电影名称
+          //div[@class="movie-item-info"]/p[1]/a/@title
+      3.2> 匹配电影主演
+          //div[@class="movie-item-info"]/p[2]/text()
+      3.3> 匹配上映时间
+          //div[@class="movie-item-info"]/p[3]/text()
+      3.4> 匹配电影链接
+          //div[@class="movie-item-info"]/p[1]/a/@href
+    ```
+
+    ​
+
+-   匹配多路径（或）
+
+    ```python
+    xpath表达式1 | xpath表达式2 | xpath表达式3
+    ```
+
+    ​
+
+-   常用函数
+
+    ```python
+    【1】text() ：获取节点的文本内容
+        xpath表达式末尾不加 /text() :则得到的结果为节点对象
+        xpath表达式末尾加 /text() 或者 /@href : 则得到结果为字符串
+            
+    【2】contains() : 匹配属性值中包含某些字符串节点
+        匹配class属性值中包含 'movie-item' 这个字符串的 div 节点
+         //div[contains(@class,"movie-item")]
+    ```
+
+    ​
+
+-   终极总结
+
+    ```python
+    【1】字符串: xpath表达式的末尾为: /text() 、/@href  得到的列表中为'字符串'
+     
+    【2】节点对象: 其他剩余所有情况得到的列表中均为'节点对象' 
+        [<element dd at xxxa>,<element dd at xxxb>,<element dd at xxxc>]
+        [<element div at xxxa>,<element div at xxxb>]
+        [<element p at xxxa>,<element p at xxxb>,<element p at xxxc>]
+        
+    【1】基准xpath: 匹配所有电影信息的节点对象列表
+       //dl[@class="board-wrapper"]/dd
+       [<element dd at xxx>,<element dd at xxx>,...]
+        
+    【2】遍历对象列表，依次获取每个电影信息
+       item = {}
+       for dd in dd_list:
+    	 	item['name'] = dd.xpath('.//p[@class="name"]/a/text()').strip()
+    	 	item['star'] = dd.xpath('.//p[@class="star"]/text()').strip()
+    	 	item['time'] = dd.xpath('.//p[@class="releasetime"]/text()').strip()
+    ```
+
+    ​
+
+-   课堂练习
+
+    ```python
+    【1】匹配汽车之家-二手车,所有汽车的链接 : 
+        //li[@class="cards-li list-photo-li"]/a[1]/@href
+        //a[@class="carinfo"]/@href
+    【2】匹配汽车之家-汽车详情页中,汽车的
+         2.1)名称:  //div[@class="car-box"]/h3/text()
+         2.2)里程:  //ul/li[1]/h4/text()
+         2.3)时间:  //ul/li[2]/h4/text()
+         2.4)挡位+排量: //ul/li[3]/h4/text()
+         2.5)所在地: //ul/li[4]/h4/text()
+         2.6)价格:   //div[@class="brand-price-item"]/span[@class="price"]/text()
+    ```
+
