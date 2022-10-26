@@ -36,35 +36,38 @@ Save all Ctrl + S
 
 常用快捷键
 
-| 快捷键                   | 功能                              |
-| --------------------- | ------------------------------- |
-| Ctrl + Q              | 快速查看文档                          |
-| Ctrl + F1             | 显示错误描述或警告信息                     |
-| Ctrl + /              | 行注释（可选中多行）                      |
-| Ctrl + Alt + L        | 代码格式化                           |
-| Ctrl + Alt + O        | 自动导入                            |
-| Ctrl + Alt + I        | 自动缩进                            |
-| Tab / Shift + Tab     | 缩进、不缩进当前行（可选中多行）                |
-| Ctrl+C/Ctrl+Insert    | 复制当前行或选定的代码块到剪贴板                |
-| Ctrl + D              | 复制选定的区域                         |
-| Ctrl + Y              | 删除当前行                           |
-| Shift + Enter         | 换行（不用鼠标操作了）                     |
-| Ctrl +Ｊ               | 插入模版                            |
-| Ctrl + Shift +/-      | 展开/折叠全部代码块                      |
-| Ctrl + Numpad+        | 全部展开                            |
-| Ctrl + Numpad-        | 全部折叠                            |
-| Ctrl + Delete         | 删除到字符结束                         |
-| Ctrl + Backspace      | 删除到字符开始                         |
-| Ctrl + Shift + F7     | 将当前单词在整个文件中高亮，F3移动到下一个，ESC取消高亮。 |
-| Alt + up/down         | 方法上移或下移动                        |
-| Alt + Shift + up/down | 当前行上移或下移动                       |
-| Ctrl + B/鼠标左键         | 转到方法定义处                         |
-| Ctrl + W              | 选中增加的代码块                        |
-| Shift + F6            | 方法或变量重命名                        |
-| Ctrl + E              | 最近访问的文件                         |
-| Esc                   | 从其他窗口回到编辑窗口                     |
-| Shift + Esc           | 隐藏当前窗口，焦点到编辑窗口                  |
-| F12                   | 回到先前的工具窗口                       |
+| 快捷键                    | 功能                              |
+| ---------------------- | ------------------------------- |
+| Ctrl + Q               | 快速查看文档                          |
+| Ctrl + F1              | 显示错误描述或警告信息                     |
+| Ctrl + /               | 行注释（可选中多行）                      |
+| Ctrl + Alt + L         | 代码格式化                           |
+| Ctrl + Alt + O         | 自动导入                            |
+| Ctrl + Alt + I         | 自动缩进                            |
+| Tab / Shift + Tab      | 缩进、不缩进当前行（可选中多行）                |
+| Ctrl+C/Ctrl+Insert     | 复制当前行或选定的代码块到剪贴板                |
+| Ctrl + D               | 复制选定的区域                         |
+| Ctrl + Y               | 删除当前行                           |
+| Shift + Enter          | 换行（不用鼠标操作了）                     |
+| Ctrl +Ｊ                | 插入模版                            |
+| Ctrl + Shift +/-       | 展开/折叠全部代码块                      |
+| Ctrl + Numpad+         | 全部展开                            |
+| Ctrl + Numpad-         | 全部折叠                            |
+| Ctrl + Delete          | 删除到字符结束                         |
+| Ctrl + Backspace       | 删除到字符开始                         |
+| Ctrl + Shift + F7      | 将当前单词在整个文件中高亮，F3移动到下一个，ESC取消高亮。 |
+| Alt + up/down          | 方法上移或下移动                        |
+| Alt + Shift + up/down  | 当前行上移或下移动                       |
+| Ctrl + B/鼠标左键          | 转到方法定义处                         |
+| Ctrl + W               | 选中增加的代码块                        |
+| Shift + F6             | 方法或变量重命名                        |
+| Ctrl + E               | 最近访问的文件                         |
+| Esc                    | 从其他窗口回到编辑窗口                     |
+| Shift + Esc            | 隐藏当前窗口，焦点到编辑窗口                  |
+| F12                    | 回到先前的工具窗口                       |
+| Ctrl + Shift + Alt + j | 选中相同名称                          |
+
+
 
 全部快捷键
 
