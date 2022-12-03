@@ -479,3 +479,14 @@ $ git lfs install
 $ git lfs track "* .zip"
 ```
 
+
+
+# 解决中文显示的问题
+
+```bash
+# 第一步
+git config --global core.quotepath false
+# 第二步
+在git bash的界面中右击空白处，Options->Text->Locale改为zh_CN，Character set改为UTF-8
+```
+

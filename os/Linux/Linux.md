@@ -922,6 +922,19 @@ du命令解释： Summarize disk usage of each FILE, recursively for directories
 
 ```
 
+
+
+## ln
+
+```bash
+# ln [参数][源文件或目录][目标文件或目录]
+ln -s  # 创建软连接
+```
+
+
+
+
+
 ## 常用
 
 ```shell
