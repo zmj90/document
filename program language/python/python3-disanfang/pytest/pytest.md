@@ -185,3 +185,15 @@ def teardown(self):
     ./report      生成的allure报告的路径
 
     --clean      清空./report 路径原来的报告
+
+
+
+# 插件
+
+```python
+allure-pytest
+pytest-html
+pytest-ordering
+pytest-rerunfailures
+```
+

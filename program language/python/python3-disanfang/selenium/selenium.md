@@ -785,6 +785,9 @@ driver.quit()
 # 4 动态属性
 冻结窗口
 setTimeout(function(){debugger}, 5000)
+
+debugger
+快捷键F8 or ctrl+\
 ```
 
 

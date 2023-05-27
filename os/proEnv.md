@@ -499,6 +499,18 @@ vim ipython3.8
 
 
 
+## 模块搜索路径
+
+### 添加方式
+
+1.  `PYTHONPATH`
+2.  在site-packages中创建*.pth文件
+3.  sys.path
+4.  将模块直接放入site-packages
+5.  集成开发环境
+
+
+
 ## chrome
 
 ```shell

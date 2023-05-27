@@ -246,5 +246,7 @@ notepad 打开记事本
 calc 启动计算器
 write 写字板
 mspaint 画图板
+gpedit.msc 本地组策略
+Certmgr.msc	证书
 ```
 

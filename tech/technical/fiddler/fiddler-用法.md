@@ -27,6 +27,8 @@
 ![在这里插入图片描述](fiddler-用法.assets/20210527225233272.png)
 ![在这里插入图片描述](fiddler-用法.assets/20210527225238764.png)
 
+![Snipaste_2023-04-12_01-07-37](fiddler-用法.assets/Snipaste_2023-04-12_01-07-37.png)
+
 
 
 # **Fiddler抓包工具**
