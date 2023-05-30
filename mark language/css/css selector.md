@@ -596,6 +596,18 @@ a[src$=".pdf"]
 
 
 
+# 多条件选择
+
+```python
+.borded.highlight{font-size:200%}//选择同时具有border和highlight类的元素
+.a#b{}//选择所有class为a，id为b的元素
+.a[b="c"]{}//选择所有class为a且拥有b属性，且b属性值为“c”的元素
+```
+
+
+
+
+
 # CSS 选择器
 
 ------
