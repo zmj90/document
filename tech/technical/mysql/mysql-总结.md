@@ -185,3 +185,31 @@ mysql> \. filename
 ```
 
 有关更多信息[，](https://dev.mysql.com/doc/refman/8.0/en/mysql-batch-commands.html)请参见[第4.5.1.5节“从文本文件执行SQL语句”](https://dev.mysql.com/doc/refman/8.0/en/mysql-batch-commands.html)。
+
+
+
+# 经验
+
+```mysql
+select 'CA20181110683' % 4;
+select null % 4;
+
+select substr('FA2019071001-2022-02', 4, 9);
+
+select * from cooperation_projects_clean 
+where 
+project_code = case substr(project_code, 4, 9) % 4
+when 0 then project_code
+end;
+
+select 
+project_no, @n:=@n+1 
+-- *
+from sync_project_info, (select @n:=0) a;
+
+
+SHOW VARIABLES LIKE 'event_scheduler';
+
+SET GLOBAL event_scheduler = ON;
+```
+

@@ -490,3 +490,18 @@ git config --global core.quotepath false
 在git bash的界面中右击空白处，Options->Text->Locale改为zh_CN，Character set改为UTF-8
 ```
 
+
+
+# 统计代码行
+
+```bash
+git统计代码行数命令
+git log --author="zwx996578" --pretty=tformat: --numstat | gawk '{ add += $1 ; subs += $2 ; loc += $1 - $2 } END { printf "增加行数:%s;删除的行数:%s;总行数:%s\n",add,subs,loc }'
+git log --author="zwx996578" --since='2023-03-01' --until='2023-12-31' --pretty=tformat: --numstat | gawk '{ add += $1 ; subs += $2 ; loc += $1 - $2 } END { printf "增加行数:%s;删除的行数:%s;总行数:%s\n",add,subs,loc }'
+
+git统计代码行数命令
+git log --author="zhongmajun WX996578" --since='2022-01-01' --until='2022-12-31'--pretty=tformat: --numstat | gawk '{ add += $1 ; subs += $2 ; loc += $1 - $2 } END { printf "增加行数:%s 删除的行数:%s 总行数: %s\n",add,subs,loc }'
+git log --author="zhongmajun WX996578"  --pretty=tformat: --numstat | awk '{ add += $1 ; subs += $2 ; loc += $1 - $2 } END { printf "增加行数:%s;删除的行数:%s;总行数:%s\n",add,subs,loc }'
+
+```
+

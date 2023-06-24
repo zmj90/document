@@ -113,3 +113,31 @@ docker start 容器id
 
 ![Snipaste_2022-04-23_15-17-41](Docker手册.assets/Snipaste_2022-04-23_15-17-41.png)
 
+
+
+
+
+# 经验
+
+```bash
+查看日志步骤：
+查看部署的服务
+docker service ls
+查看容器部署的节点
+docker service ps 容器
+1、docker ps 查看容器Id xx
+2、进入容器 docker exec  -ti   xx  /bin/bash
+ xx就是容器id
+3、cd .. 
+4、cd {服务名}/log
+5、cat xxx.log	
+
+docker run -d -p 30001:8080 --name jenkins tomcat:v1.0
+docker logs –f –t  微服务容器ID
+docker logs –tfn row(从日志末尾开始行数)  微服务容器ID 
+
+export JAVA_HOME=/usr/local/jdk-11.0.15
+export PATH=$JAVA_HOME/bin:$PATH
+
+```
+
