@@ -211,5 +211,9 @@ from sync_project_info, (select @n:=0) a;
 SHOW VARIABLES LIKE 'event_scheduler';
 
 SET GLOBAL event_scheduler = ON;
+
+# 联表更新
+update tech_develop_basic dev inner join tech_develop_technical_achievements am on dev.pro_code = am.project_id
+set am.project_id = dev.id;
 ```
 
