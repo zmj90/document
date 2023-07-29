@@ -590,9 +590,18 @@ nohup ./startup.sh & //作为服务启动
       <user username="robot" password="<must-be-changed>" roles="manager-script"/>
     -->
     <user username="admin" password="<must-be-changed>" roles="manager-gui,manager-status"/>
+
     ```
 
-    ​
+-   $CATALINA_HOME/conf/server.xml
+
+    ```bash
+    # 设置启动端口
+        <Connector port="8082" protocol="HTTP/1.1"
+                   connectionTimeout="20000"
+                   redirectPort="8443" />
+    ```
+
 
 
 
@@ -661,9 +670,19 @@ jmeter运行环境搭建
 
 
 
+# jd-jui
+
+```python
+https://github.com/java-decompiler/jd-gui
+```
 
 
 
+# chrome
+
+```python
+https://github.com/FelisCatus/SwitchyOmega
+```
 
 
 
