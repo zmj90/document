@@ -450,5 +450,37 @@ end if;
 end
 ```
 
+```mysql
+CREATE DEFINER=`root`@`%` PROCEDURE `person_center`(IN user_id varchar(30))
+BEGIN
+
+select 
+(
+select count(*) from idea_discussion_topic where creater = user_id and draft = 0 and product_line = '045969'
+) 发表文章数,
+
+(
+select count(*) from idea_discussion_topic idt inner join idea_discussion_collection idc
+on idt.product_line = '045969' and idt.creater != user_id and idt.topic_id = idc.topic_id and idc.user_id = user_id
+) 收藏文章数,
+
+(
+-- 以前的逻辑
+-- select count(distinct ida.topic_id) from idea_discussion_topic idt inner join idea_discussion_answer ida
+-- on idt.product_line = '045969' and idt.topic_id = ida.topic_id and ida.creater = user_id
+-- 现在的逻辑
+select count(distinct idt.topic_id) from idea_discussion_topic idt 
+left join idea_discussion_answer ida on idt.product_line = '045969' and idt.topic_id = ida.topic_id and ida.creater = user_id
+left join t_tech_exchange_topic_like tl on idt.topic_id = tl.topic_id and tl.user_id = user_id
+where ida.id is not null or tl.id is not null
+) 参与文章,
+
+(
+select count(*) from idea_discussion_topic where creater = user_id and draft = 1 and product_line = '045969'
+) 草稿;
+
+END
+```
+
 
 
