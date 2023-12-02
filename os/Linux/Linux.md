@@ -262,9 +262,10 @@ Ubuntu官网：[https://ubuntu.com/](https://ubuntu.com/)
 
     echo $PATH
     export PATH=$PATH:/home/roc/operation_tools
-
-
     ```
+
+
+    ​```
 
 
 
@@ -1063,4 +1064,27 @@ sh first.sh
 echo 'your are in second file'
 sh first.sh
 ```
+
+
+
+## 其他命令
+
+```bash
+wget
+```
+
+
+
+
+
+## 命令安装
+
+```bash
+sudo apt update
+sudo apt install curl
+```
+
+
+
+
 

@@ -250,3 +250,11 @@ gpedit.msc 本地组策略
 Certmgr.msc	证书
 ```
 
+
+
+# 常用命令
+
+```bash
+cd, dir, md, rd,      copy, xcopy, del, ren, more,      echo, find, help, set, tasklist, taskkill,      ipconfig, ping, net, netstat, nslookup
+```
+

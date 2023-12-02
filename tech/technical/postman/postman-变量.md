@@ -7,3 +7,25 @@
 
 ```
 
+
+
+```javascript
+var jsonData = pm.response.json();
+for (var i=0; i<jsonData.data.length;i++){
+var flag="flag"+i;
+var uuid="uuid"+i
+pm.environment.set(flag, jsonData.data[i].deleteFlag);
+pm.environment.set(uuid, jsonData.data[i].taskUUID);
+// console.log(flag);
+// console.log(jsonData.data[i].deleteFlag);
+}
+```
+
+
+
+```javascript
+var jsonData = pm.response.json();
+var id = jsonData.data.id;
+pm.environment.set("id", id);
+```
+

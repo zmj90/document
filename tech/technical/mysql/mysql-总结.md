@@ -234,6 +234,10 @@ project_code = case substr(project_code, 4, 9) % 4
 when 0 then project_code
 end;
 
+select * from cooperation_projects_clean 
+where substr(project_code, 4, 9) % 4 = 0;
+
+
 # 更新指定行的数据；优化方案：在set的时候就判断
 update cooperation_projects_clean
 set project_manager = '钟马俊', project_manager_id = 'zwx996578', partner_manager = '钟马俊', partner_manager_id = 'zwx996578'
