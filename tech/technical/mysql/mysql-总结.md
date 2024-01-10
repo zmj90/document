@@ -209,6 +209,8 @@ from sync_project_info, (select @n:=0) a;
 # 联表更新
 update tech_develop_basic dev inner join tech_develop_technical_achievements am on dev.pro_code = am.project_id
 set am.project_id = dev.id;
+
+# mysql可以对查询的字段进行运算
 ```
 
 

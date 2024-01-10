@@ -588,6 +588,13 @@ for r in  ["a", "b", "c"]:
     result.append(r + c)
 3. 推导式写法：
 result = [r + c for r in list01 for c in list02]
+
+数组的空间是从栈分配的
+
+类变量:类名访问，对象访问
+类方法:类名访问，对象访问
+实例变量:对象访问
+实例方法:对象访问，类名访问
 ```
 ### 元组tuple
 ```python
