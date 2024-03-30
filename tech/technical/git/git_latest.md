@@ -505,3 +505,38 @@ git log --author="zhongmajun WX996578"  --pretty=tformat: --numstat | awk '{ add
 
 ```
 
+
+
+# 总结
+
+```bash
+# 将工作区内容切换到上个commit版本
+git restore --source=HEAD
+
+git filter-branch --env-filter '
+OLD_EMAIL="zhongmajun1@h-partners.com"
+CORRECT_NAME="c00578830"
+CORRECT_EMAIL="Alan.Chen666@huawei.com"
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_COMMITTER_NAME="$CORRECT_NAME"
+    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_AUTHOR_NAME="$CORRECT_NAME"
+    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+fi
+' --tag-name-filter cat -- --branches --tags
+
+git rebase -i 5d28908f6664
+
+git commit --amend --author="c00578830 <Alan.Chen666@huawei.com>" --no-edit
+
+git rebase --continue
+
+git cherry-pick
+
+git push --set-upstream origin z60031395
+```
+

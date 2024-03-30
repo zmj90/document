@@ -1035,6 +1035,51 @@ ssh [-p port] user@remote
 
   
 
+## 4 总结
+
+```bash
+# echo $?
+这是一个Shell命令，它用于获取上一个命令的退出状态码。如果上一个命令执行成功，它将返回0，否则它将返回一个非零值。由于在这个对话框中没有上一个命令，
+因此执行echo $?将返回0。
+grep没查到返回1
+$ command > /dev/null 2>&1
+pts/0
+PPP 适配器
+cat /etc/os-release
+cat /proc/version
+uname -a
+cat /dev/null > 文件
+pidof
+ftp
+sftp: sftp -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -P 22 aa_release@8.46.251.250
+grep -v
+PS1
+1:查看防火状态
+systemctl status firewalld
+service  iptables status
+2:暂时关闭防火墙
+systemctl stop firewalld
+service  iptables stop
+3:永久关闭防火墙
+systemctl disable firewalld
+chkconfig iptables off
+4:重启防火墙
+systemctl enable firewalld
+service iptables restart
+grep -irE "" --color
+pgrep -f "spdk_tgt"
+fio
+/dev/disk/by-path
+zgrep
+sleep
+sas盘基本信息，可以通过这个信息查看：lsblk -S -o NAME,SERIAL,WWN,REV,SIZE,PHY-SEC,VENDOR -b
+tar 重复压缩会覆盖
+```
+
+
+
+
+
 # shell
 
 ```bash

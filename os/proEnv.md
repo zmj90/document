@@ -199,6 +199,39 @@ PasswordAuthentication no #不适用密码认证登录	修改这项就可以
 systemctl restart sshd
 ```
 
+
+
+## ftp
+
+```bash
+sudo apt-get update    # 更新软件源列表
+sudo apt-get install vsftpd    # 安装vsftpd软件包
+
+开启ftp远程连接
+
+cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
+vim /etc/vsftpd.conf
+修改如下：
+anonymous_enable=NO: 关闭匿名访问功能；
+local_enable=YES: 允许本地用户访问；
+write_enable=YES: 允许写入操作；
+chroot_local_user=YES: 限制用户只能访问其主目录；
+pam_service_name=ftp
+添加如下：
+allow_writeable_chroot=YES
+
+cp pam.d/vsftpd /etc/pam.d/vsftpd.bak
+vim /etc/pam.d/vsftpd
+注释掉#auth required pam_shells.so
+
+sudo service vsftpd restart
+
+```
+
+
+
+
+
 ## selenium
 
 ```python
