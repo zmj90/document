@@ -1074,6 +1074,23 @@ zgrep
 sleep
 sas盘基本信息，可以通过这个信息查看：lsblk -S -o NAME,SERIAL,WWN,REV,SIZE,PHY-SEC,VENDOR -b
 tar 重复压缩会覆盖
+lspci
+lsblk
+LS_OPTIONS="-A -N"
+chsh
+cat /etc/shells
+echo $SHELL
+wc
+smartctl
+lshw
+lspci
+lsblk
+lsusb
+ldd --version
+crontab
+at
+date
+ldconfig -p | grep libcrypto.so.10
 ```
 
 
