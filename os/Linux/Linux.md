@@ -820,13 +820,61 @@ ip ad
 
 
 
+#### nslookup
+
 ```bash
 nslookup
-lsblk [选项] [<块设备> …]
-wget http://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip
+
 ```
 
 
+
+#### lsblk
+
+```bash
+lsblk [选项] [<块设备> …]
+
+```
+
+
+
+
+
+#### netstat
+
+```bash
+netstat命令：netstat -tlnp 该命令可以列出所有正在监听的TCP端口和UDP端口，以及它们所对应的进程。 
+-t 参数表示只显示TCP端口，
+-l 参数表示只显示正在监听的端口，
+-n 参数表示以数字形式显示端口号，
+-p 参数表示显示进程名称。 
+
+ss命令：ss -tlnp 该命令与netstat类似，也可以列出所有正在监听的TCP端口和UDP端口，以及它们所对应的进程。 
+-t 参数表示只显示TCP端口，
+-l 参数表示只显示正在监听的端口，
+-n 参数表示以数字形式显示端口号，
+-p 参数表示显示进程名称。 
+推荐使用ss命令，因为它比netstat更快速和准确。
+
+```
+
+
+
+#### systemctl
+
+```bash
+systemctl list-unit-files --type=service
+
+```
+
+
+
+#### wget
+
+```bash
+wget
+
+```
 
 
 
@@ -1035,7 +1083,21 @@ ssh [-p port] user@remote
 
   
 
-## 4 总结
+## 4 下载安装
+
+```bash
+sudo apt update
+sudo apt install curl
+
+yum install network-scripts NetworkManager
+yum install network-scripts net-tools traceroute
+
+wget http://chromedriver.storage.googleapis.com/103.0.5060.53/chromedriver_linux64.zip
+```
+
+
+
+## 5 总结
 
 ```bash
 # echo $?
@@ -1091,9 +1153,11 @@ crontab
 at
 date
 ldconfig -p | grep libcrypto.so.10
+lscpu
+
+nl
+
 ```
-
-
 
 
 
@@ -1129,22 +1193,9 @@ sh first.sh
 
 
 
-## 其他命令
-
-```bash
-wget
-```
 
 
 
-
-
-## 命令安装
-
-```bash
-sudo apt update
-sudo apt install curl
-```
 
 
 
