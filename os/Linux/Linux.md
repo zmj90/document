@@ -228,12 +228,12 @@ Ubuntu官网：[https://ubuntu.com/](https://ubuntu.com/)
 
   ```shell
   command [-options] [parameter]
-
+  
   说明：
   command：命令名称，一般为英文单词或单词的缩写
   [-options]：命令选项，辅助命令进行功能细化，也可以省略
   parameter：传给命令的参数，可以是0个或多个
-
+  
   #1 查看当前正在使用的 Shell
   # 使用一个环境变量，就可以查看到当前正在使用的 Shell 啦
   echo $SHELL
@@ -247,25 +247,25 @@ Ubuntu官网：[https://ubuntu.com/](https://ubuntu.com/)
     ```shell
     http://c.biancheng.net/linux/export.html
     在 Linux 系统中，除了 export 之外，env、set 和 declare 这三个命令也可以显示 Shell 中的变量。那这四个命令有什么区别呢？
-
+    
     这个问题，我们需要从 Shell 变量说起。Shell 的变量，可以分为“环境变量”和“自定义变量”两种类型，两者的区别在于作用范围不同。环境变量可以在其进程的子进程中继续有效，而自定义变量的势力范围则无法延伸到其进程的子进程中。
-
+    
     好了，知道了环境变量和自定义变量的区别，我们正式开始介绍 export/env/set/declare 的区别：
     env：显示当前用户的环境变量，但不会显示其自定义变量。
     export：功能同 env 一样，也是显示当前用户的环境变量，只不过该命令的输出是按变量名进行排序的。
     declare：显示当前 Shell 中定义的所有变量，包括用户的环境变量和自定义变量，该命令的输出按变量名进行排序。
     set：功能同 declare 一样，显示当前 Shell 中定义的所有变量，包括用户的环境变量和自定义变量。
-
+    
     根据上面的说明，我们可以得出下面的结论：
     env 和 export 显示的是环境变量。
     set 和 declare 显示的是环境变量和自定义变量。
-
+    
     echo $PATH
     export PATH=$PATH:/home/roc/operation_tools
     ```
 
 
-    ​```
+    ```
 
 
 
@@ -577,6 +577,20 @@ tree -d 只显示目录
 ```bash
 # 查询是否使用了端口
 netstat -anp | grep 端口号
+
+```
+
+
+
+#### nmcli
+
+```bash
+nmcli c r
+nmcli c s
+nmcli c up enp125s0f5
+nmcli c de enp125s0f5
+nmcli c add type ethernet con-name enp125s0f0 ifname enp125s0f0 ipv4.method manual ipv4.address 51.36.216.216/19 ipv4.gateway 51.36.192.1
+nmcli c m ipv4.method manual ipv4.address 51.36.216.216/19 ipv4.gateway 51.36.192.1
 
 ```
 
@@ -1035,16 +1049,16 @@ ssh [-p port] user@remote
 2. scp拷贝
 
    ```shell
-
+   
    # 注意：`:` 后面的路径写绝对路径
    scp  demo.py levi@192.168.100.5:/home/tarena
-
+   
    # 把远程主目录下demo.py文件 复制到本地当前目录下
    scp  levi@192.168.100.5:/home/tarena/demo.py  .
-
+   
    # 加上 -r 选项可以传送文件夹
    scp -r demo levi@192.168.100.5:/home/tarena/
-
+   
    ```
 
 
@@ -1157,41 +1171,61 @@ lscpu
 
 nl
 
+在 Linux 中，可以使用`readlink`命令来查看符号链接的全部路径。例如，如果你有一个名为`link`的符号链接，可以使用以下命令来查看它的全部路径:```readlink -flink```其中，`-f`选项表示显示符号链接的全部路径。执行上述命令后，会输出`link`符号链接所指向的文件的完整路径。
+参考答案2：
+要查看符号链接的全部路径，可以使用`readlink`命令。以下是示例命令：
+readlink -f /path/to/symlink
+其中，`-f`选项会将符号链接解析为其最终目标文件的绝对路径。将`/path/to/symlink`替换为你要查看的符号链接的路径即可。
+
+set -eux
+
+设置时区：timedatectl set-timezone Asia/Shanghai
+
 ```
 
 
 
-# shell
+# FAQ
+
+
+
+## 1. 运行方式
 
 ```bash
-# 如何在其它Shell脚本中调用first.sh呢？主要有三种方法：source、点号以及sh命令。
-# 1.source
-
-#!/bin/bash
-#---------------
-#@file:second.sh
-#---------------
-echo 'your are in second file'
-source first.sh
-
-# 2.点号
-
-#!/bin/bash
-echo 'your are in second file'
-. first.sh
-# 注意，点号与脚本文件之间记得要有空格。
-
-# 3.sh命令
-
-#!/bin/bash
-echo 'your are in second file'
-sh first.sh
-#!/bin/bash
-echo 'your are in second file'
-sh first.sh
+# 通过bash 或 sh
+常用的sh命令选项如下：
+-e：当命令执行出错时，立即退出。
+-x：在执行命令之前，先显示该命令以及其参数。
+-v：在执行命令之前，先显示该命令。
+-c：执行命令之前，先清除环境变量。
+-f：读取脚本文件。
 ```
 
 
+
+```bash
+# source 或 .
+source first.sh
+. first.sh
+# 注意，点号与脚本文件之间记得要有空格。
+# 注意：source 或 . 是在当前shell中执行的
+```
+
+
+
+```sh
+# 相对路径和绝对路径
+./first.sh
+/root/first.sh
+```
+
+
+
+```sh
+# 通过重定向
+sh < first.sh
+bash < first.sh
+```
 
 
 
