@@ -1229,6 +1229,26 @@ bash < first.sh
 
 
 
+## 2. 配置网络
+
+```bash
+IPADDR=192.168.0.10
+PREFIX=16
+GATEWAY=192.168.0.1
+
+ip link set enp125s0f5 up
+ip link set enp125s0f5 down
+
+nmcli c r
+nmcli c show
+nmcli c up enp125s0f5
+nmcli c down enp125s0f5
+nmcli c de enp125s0f5
+nmcli c m enp125s0f5 ipv4.method manual ipv4.address 51.36.216.216/19 ipv4.gateway 51.36.192.1
+nmcli c add type ethernet con-name enp125s0f5 ifname enp125s0f5 ipv4.method manual ipv4.address 51.36.216.216/19 ipv4.gateway 51.36.192.1
+
+```
+
 
 
 
